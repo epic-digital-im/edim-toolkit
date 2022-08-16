@@ -32,7 +32,7 @@ import {
 
 import Selector from '../components/Selector';
 import DraggableList from '@edim/toolkit/src/components/Draggable/DraggableList'
-import { PM_AttributeAttributes } from '@app/shared/parse-types';
+import { SchemaConfig, PM_AttributeAttributes } from '@app/shared/parse-types';
 
 const CellRenderMap = {
   "Date": EditableDateCell,
@@ -52,23 +52,16 @@ const locked = [
   'objectId',
 ];
 
-interface ClassTableContainerProps {
-  className?: string;
-}
-
 interface ClassSchema {
   className: string;
   fields: { [key: string]: { type: string; } };
 }
 
-interface ClassSchemaConfig {
-  columnOrder: string[];
-}
-
 interface SchemaSettingsModalProps extends Partial<ModalProps> {
   schema: ClassSchema;
-  config: ClassSchemaConfig;
+  config: SchemaConfig;
   onColumnOrderChange: (columnOrder: string[]) => void;
+  refetch?: () => void;
 }
 
 const SchemaPropOptions = ({ prop, config, refetch }) => {
@@ -116,7 +109,6 @@ const SchemaPropOptions = ({ prop, config, refetch }) => {
       <HamburgerIcon mr={3} />
       {prop}
       <Input
-        type={'text'}
         value={width}
         width={'100px'}
         onChange={handleUpdate}
@@ -124,6 +116,7 @@ const SchemaPropOptions = ({ prop, config, refetch }) => {
         type="number"
       />
       <IconButton
+        aria-label='Toggle visibility'
         icon={visibility ? <IoEyeSharp /> : <IoEyeOffSharp />}
         onClick={toggleVisible}
       />
@@ -203,8 +196,6 @@ export const SchemaTable = () => {
       });
     }
   }
-
-  console.log(classSchemaConfig);
 
   const ClassSchemaRequest = useQuery(
     ['ClassSchemas'],

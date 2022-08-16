@@ -797,6 +797,7 @@ export interface ClassTableProps {
   inactive?: boolean | undefined;
   hidePaging?: boolean | undefined;
   hideSearch?: boolean | undefined;
+  onColumnOrderChange?: (newOrder: string[]) => void;
 }
 
 export const ClassTable: React.FC<ClassTableProps> = (props) => {

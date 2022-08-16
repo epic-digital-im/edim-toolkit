@@ -18,7 +18,7 @@
     "babel-build": "yarn run clean && babel ./src --out-dir dist --extensions '.ts,.tsx'",
     "travis-deploy-once": "travis-deploy-once",
     "semantic-release": "semantic-release",
-    "start:local": "yarn run clean && tsc --watch",
+    "start:local": "tsc --watch",
     "test": "jest"
   },
   "license": "ISC",

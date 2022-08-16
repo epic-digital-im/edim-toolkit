@@ -2,7 +2,7 @@ import Parse from 'parse';
 import CreateSelect from 'react-select';
 import { useState, useMemo } from "react";
 import useGoogle from "react-google-autocomplete/lib/usePlacesAutocompleteService";
-import config from '../../config'
+// import config from '../../config'
 import { Place } from '@app/shared/types';
 
 

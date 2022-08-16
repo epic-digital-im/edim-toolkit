@@ -1,7 +1,7 @@
 import Parse from 'parse';
 import React, { useState, useRef, useMemo, useEffect } from "react";
 import { useQuery, useQueryClient } from "react-query";
-import ParseLiveQuery from '../hoc/ParseLiveQuery';
+import { ParseLiveQuery } from '../hoc/ParseLiveQuery';
 import ClassSearchSelect from '../components/SearchSelect/ClassSearchSelect';
 import WeekdaySelect from '../components/WeekDaySelector';
 import Selector from '../components/Selector';
@@ -16,9 +16,9 @@ import Card from "../components/Card/Card";
 import CardBody from "../components/Card/CardBody";
 import CardHeader from "../components/Card/CardHeader";
 
-import Table from './FilterTable';
+import { FilterTable } from './FilterTable';
 
-import ParsePropUpdater from "./PropUpdater";
+import { ParsePropUpdater } from "./PropUpdater";
 import { SingleDatePickerParse } from '../forms/Fields/DatePickerField';
 
 function useDebounce(value: any, delay: number) {
@@ -49,7 +49,7 @@ const abbrevString = (str: string, maxLength: number) => {
   return str.substring(0, maxLength) + '...';
 }
 
-interface EditableAttributeCellProps {
+export interface EditableAttributeCellProps {
   attributeName: string;
   objectClass: ClassNames;
   valueGetter: (data: any) => string;
@@ -776,7 +776,7 @@ export const EditableWeekdayCell = ({
 }
 
 
-interface CrudTableProps {
+export interface ClassTableProps {
   history: any;
   objectClass: string;
   columnsData: any[];
@@ -799,7 +799,7 @@ interface CrudTableProps {
   hideSearch?: boolean | undefined;
 }
 
-const CrudTable: React.FC<CrudTableProps> = (props) => {
+export const ClassTable: React.FC<ClassTableProps> = (props) => {
   const {
     objectClass,
     renderHeader,
@@ -864,7 +864,7 @@ const CrudTable: React.FC<CrudTableProps> = (props) => {
         {renderHeader()}
       </CardHeader>}
       <CardBody pb="1.5rem">
-        <Table
+        <FilterTable
           {...tableProps}
           initialState={tableState}
           queryKey={queryKey}
@@ -877,5 +877,3 @@ const CrudTable: React.FC<CrudTableProps> = (props) => {
     </Card>
   );
 }
-
-export default CrudTable;

@@ -52,7 +52,7 @@ import {
 
 import FormDialog from '../components/FormDialog';
 
-interface FitlerTableProps {
+export interface FitlerTableProps {
   history: any;
   columnsData: any[];
   columnStyle: any;
@@ -157,7 +157,7 @@ function fuzzyTextFilterFn(rows, id, filterValue) {
 // Let the table remove the filter if the string is empty
 fuzzyTextFilterFn.autoRemove = val => !val
 
-const FitlerTable = (props: FitlerTableProps) => {
+export const FilterTable = (props: FitlerTableProps) => {
   const {
     columnsData,
     columnStyle,
@@ -910,5 +910,3 @@ const FitlerTable = (props: FitlerTableProps) => {
     </Box>
   );
 }
-
-export default FitlerTable;

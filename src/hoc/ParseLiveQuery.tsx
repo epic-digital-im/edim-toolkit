@@ -13,7 +13,7 @@ export interface ParseLiveQueryProps {
   enableLive?: boolean;
 }
 
-const ParseLiveQuery = ({
+export const ParseLiveQuery = ({
   initialState,
   objectClass,
   objectId,
@@ -204,5 +204,3 @@ export const ParseCollectionLiveQuery = ({
   }, [])
   return children(query);
 }
-
-export default ParseLiveQuery;

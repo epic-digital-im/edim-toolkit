@@ -72,5 +72,3 @@ export const ParsePropUpdater = (props: DatePickerFieldProps): ReactNode => {
     value,
   })
 }
-
-export default ParsePropUpdater;

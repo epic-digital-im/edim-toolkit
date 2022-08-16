@@ -1,7 +1,8 @@
 import Parse from 'parse';
 import React, { useEffect, useState, useMemo } from 'react';
 
-import ClassTable, {
+import {
+  ClassTable,
   EditableCell,
   EditableNumberCell,
   EditableDateCell,
@@ -12,15 +13,13 @@ import ClassTable, {
 
 import { HamburgerIcon, SettingsIcon } from '@chakra-ui/icons';
 
-import { IoEyeSharp, IoEyeOffSharp, IoSettings } from 'react-icons/io5'
+import { IoEyeSharp, IoEyeOffSharp } from 'react-icons/io5'
 
 import { useQuery } from 'react-query';
 import {
-  Button,
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter,
   ModalContent,
   ModalOverlay,
   ModalCloseButton,
@@ -28,9 +27,9 @@ import {
   useDisclosure,
   Flex,
   Input,
-  Icon,
   IconButton
 } from '@chakra-ui/react';
+
 import Selector from '../components/Selector';
 import DraggableList from '@edim/toolkit/src/components/Draggable/DraggableList'
 import { PM_AttributeAttributes } from '@app/shared/parse-types';
@@ -161,7 +160,7 @@ const SchemaSettingsModal: React.FC<SchemaSettingsModalProps> = ({ schema, confi
   )
 }
 
-const EventClassTable = ({ }: ClassTableContainerProps) => {
+export const SchemaTable = () => {
   const [selectedSchema, setSelectedSchema] = useState<any>();
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -319,5 +318,3 @@ const EventClassTable = ({ }: ClassTableContainerProps) => {
     </>
   );
 }
-
-export default EventClassTable;

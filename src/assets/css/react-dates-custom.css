@@ -1,0 +1,41 @@
+.SingleDatePicker {
+  width: 100%;
+}
+
+.SingleDatePickerInput__showClearDate {
+  padding-right: 0;  
+  width: 100%;
+}
+.SingleDatePickerInput .DateInput {
+  width: 100%;
+}
+.SingleDatePickerInput .DateInput_input {
+  font-size: 0.9rem;
+  width: 100%;
+  padding: 5px 11px 5px;
+}
+
+.DateRangePickerInput .DateInput_input {
+  font-size: 0.9rem;
+  width: 100%;
+  padding: 5px 11px 5px;
+  text-align: center;
+}
+
+.CalendarDay__selected, .CalendarDay__selected:active, .CalendarDay__selected:hover {  
+  background: #2852DC;
+  border: 1px double #2852DC;
+  color: #fff;
+}
+
+.CalendarDay__selected_span {
+  background: #7CA0FF;
+  border: 1px double #7CA0FF;
+  color: #fff;
+}
+
+.CalendarDay__selected_span:active, .CalendarDay__selected_span:hover {
+  background: #485B75;
+  border: 1px double #485B75;
+  color: #fff;
+}

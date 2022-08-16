@@ -1,0 +1,60 @@
+{
+  "name": "@edim/toolkit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "author": "Epic Digital | Interactive Media LLC",
+  "type": "module",
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "typescript",
+      "prettier"
+    ]
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "ts-build": "yarn run clean && tsc",
+    "babel-build": "yarn run clean && babel ./src --out-dir dist --extensions '.ts,.tsx'",
+    "travis-deploy-once": "travis-deploy-once",
+    "semantic-release": "semantic-release",
+    "start:local": "yarn run clean && tsc --watch",
+    "test": "jest"
+  },
+  "license": "ISC",
+  "peerDependencies": {
+    "@faker-js/faker": "^7.4.0",
+    "@tanstack/react-table": "^8.5.11",
+    "react": "^17.0.2",
+    "react-beautiful-dnd": "^13.1.0",
+    "react-dom": "17.0.2",
+    "react-query": "^4.0.0"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^7.4.0",
+    "@tanstack/react-table": "^8.5.11",
+    "react": "^17.0.2",
+    "react-dom": "17.0.2",
+    "react-query": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/parse": "^2.18.13",
+    "@typescript-eslint/eslint-plugin": "^4.16.1",
+    "@typescript-eslint/parser": "^4.16.1",
+    "eslint": "^7.21.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-config-typescript": "^3.0.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "jest": "^27.0.1",
+    "node-polyfill-webpack-plugin": "^2.0.1",
+    "nodemon": "^2.0.15",
+    "prettier": "^2.3.0",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^27.0.1",
+    "ts-loader": "^9.2.2",
+    "tslint": "^5.20.1",
+    "typescript": "^4.3.2",
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.0"
+  }
+}

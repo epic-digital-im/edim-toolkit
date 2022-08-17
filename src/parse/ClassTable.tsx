@@ -10,8 +10,6 @@ import { Attribute } from "@app/shared/parse-types";
 import { NavLink, useHistory } from 'react-router-dom';
 import { Icon, IconButton, Text, Flex, Button, Spinner, Input, Switch, useToast } from "@chakra-ui/react";
 
-import { FiMap } from "react-icons/fi";
-
 import Card from "../components/Card/Card";
 import CardBody from "../components/Card/CardBody";
 import CardHeader from "../components/Card/CardHeader";
@@ -89,7 +87,6 @@ export const EditableAttributeCell = ({
           })
       } else {
         const iv = initialValue?.toJSON();
-        console.log(iv);
         if (iv) {
           setInitialData(iv);
         }
@@ -619,59 +616,31 @@ export const EditableRelationCell = ({
   row: { original },
   column: { id },
 }) => {
-    const history = useHistory();
     const initialValue = original._object.get(id);
     const initialData = initialValue?.toJSON();
-    const [isLoading, setIsLoading] = useState(false);
-
-    const handleUpdate = (value: any) => {
-      const object = original._object;
-      setIsLoading(true);
-      object.set(id, value);
-      object.save().then(() => {
-        setIsLoading(false);
-      });
-    }
-
-    const handleClear = () => {
-      const object = original._object;
-      setIsLoading(true);
-      object.set(id, null);
-      object.save().then(() => {
-        setIsLoading(false);
-      });
-    }
-
-
 
     return (
       <Flex width={'100%'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'}>
         <ParsePropUpdater object={original._object} property={id}>
           {({ onChange, value, isLoading }) => {
+            const handleClear = () => {
+              onChange(null);
+            }
             return (
-              <>
-                <ClassSearchSelect
-                  isClearable={isClearable}
-                  isLoading={isLoading}
-                  disabled={isLoading}
-                  style={{ width: '100%' }}
-                  objectClass={objectClass}
-                  queryName={objectClass}
-                  initialValue={initialData}
-                  valueGetter={valueGetter}
-                  labelGetter={labelGetter}
-                  onSelect={onChange}
-                  onClear={handleClear}
-                />
-                {objectClass === ClassNames.Route && (
-                  <IconButton
-                    size={"md"}
-                    icon={<Icon as={FiMap} />}
-                    onClick={() => history.push(`/admin/routes?t=Map&weekday=${weekdayList[original._object.get('weekday')]}`)}
-                    aria-label={"View Map"}
-                    mx={'0.5rem'}
-                  />)}
-              </>
+              <ClassSearchSelect
+                isClearable={isClearable}
+                isLoading={isLoading}
+                disabled={isLoading}
+                style={{ width: '100%' }}
+                objectClass={objectClass}
+                queryName={objectClass}
+                initialValue={initialData}
+                valueGetter={valueGetter}
+                labelGetter={labelGetter}
+                onSelect={onChange}
+                onClear={handleClear}
+                isCreateable
+              />
             )
           }}
         </ParsePropUpdater>

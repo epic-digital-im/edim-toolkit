@@ -33,6 +33,7 @@ import {
 import Selector from '../components/Selector';
 import DraggableList from '@edim/toolkit/src/components/Draggable/DraggableList'
 import { SchemaConfig, PM_AttributeAttributes } from '@app/shared/parse-types';
+import getters from '@app/shared/utils/getters';
 
 const CellRenderMap = {
   "Date": EditableDateCell,
@@ -217,26 +218,34 @@ export const SchemaTable = () => {
   const columns = useMemo(() => {
     if (!selectedSchema) return [];
     return Object.keys(selectedSchema.fields)
-      .filter((field, i) => {
+      .filter((field) => {
         const visibility = classSchemaConfig?.get('columnVisibility') || [];
         return visibility[field] !== false;
       })
-      .map((field, i) => {
+      .map((field) => {
         const f = selectedSchema.fields[field];
         let CellRender = CellRenderMap[f.type] || EditableCell;
 
+        // console.log(f.type, CellRenderMap[f.type])
+
         if (f.type === 'Pointer' && f.targetClass.indexOf('Attribute') > -1) {
-          console.log(f.type, f.targetClass, field, f.targetClass);
+          // console.log(f.type, f.targetClass, field, f.targetClass);
           CellRender = EditableAttributeCell({
             attributeName: field,
             objectClass: f.targetClass,
             valueGetter: (row: PM_AttributeAttributes) => row.objectId,
             labelGetter: (row: PM_AttributeAttributes) => row.value,
           });
+        } else if (f.type === 'Pointer') {
+          CellRender = EditableRelationCell({
+            objectClass: f.targetClass,
+            ...getters(f.targetClass),
+            isClearable: true,
+          });
         }
 
         const columnWidths = classSchemaConfig?.get('columnWidths') || {};
-        console.log(classSchemaConfig, columnWidths, columnWidths[field]);
+
         return {
           Header: field,
           accessor: field,

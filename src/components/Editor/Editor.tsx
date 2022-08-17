@@ -1,23 +1,5 @@
-/*!
-
-=========================================================
-* Purity UI Dashboard PRO - v1.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/purity-ui-dashboard-pro
-* Copyright 2021 Creative Tim (https://www.creative-tim.com/)
-
-* Design by Creative Tim & Coded by Simmmple
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-
-// Chakra imports
+import React, { useState } from 'react';
 import { Box, Button } from "@chakra-ui/react";
-import { Component } from "react";
 import ReactQuill from "react-quill";
 
 const CustomToolbar = () => (
@@ -75,29 +57,23 @@ const CustomToolbar = () => (
   </Box>
 );
 
-export default class Editor extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { editorHtml: "" };
-    this.handleChange = this.handleChange.bind(this);
-  }
+const Editor = ({ value, onChange, placeholder }) => {
+  const [state, setState] = useState({ editorHtml: value || "" });
 
-  handleChange(html) {
-    this.setState({ editorHtml: html });
+  const handleChange = (html) => {
+    setState({ editorHtml: html });
+    if (onChange) onChange(html);
   }
-
-  render() {
-    return (
-      <div className="text-editor">
-        <CustomToolbar />
-        <ReactQuill
-          onChange={this.handleChange}
-          placeholder={this.props.placeholder}
-          modules={Editor.modules}
-        />
-      </div>
-    );
-  }
+  return (
+    <div className="text-editor">
+      <CustomToolbar />
+      <ReactQuill
+        onChange={handleChange}
+        placeholder={placeholder}
+        modules={Editor.modules}
+      />
+    </div>
+  );
 }
 
 Editor.modules = {
@@ -136,3 +112,5 @@ Editor.formats = [
   "image",
   "color",
 ];
+
+export default Editor;

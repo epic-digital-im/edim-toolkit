@@ -637,7 +637,7 @@ const FitlerTable = (props: FitlerTableProps) => {
                                   zIndex={index === 0 ? 750 : 1}
                                   height={'50px'}
                                   boxSizing={'border-box'}
-                                  backgroundColor={column.bgColor || 'white'}
+                                  backgroundColor={column.bgColor || bgColor}
                                 >
                                   {(column.canFilter && column.Filter) ? column.render('Filter') : (
                                     <Flex
@@ -694,7 +694,7 @@ const FitlerTable = (props: FitlerTableProps) => {
                         return (
                           <Flex
                             key={rowKey}
-                            backgroundColor={rowIndex % 2 ? "gray.50" : "white"}
+                            backgroundColor={rowIndex % 2 ? "gray.50" : bgColor}
                             display="flex"
                             flexDirection={"row"}
                             borderTopWidth={"1px"}
@@ -726,7 +726,7 @@ const FitlerTable = (props: FitlerTableProps) => {
                                   left={index === 0 ? "0px" : "auto"}
                                   // height={'70px'}
                                   width={width}
-                                  backgroundColor={rowIndex % 2 ? "gray.50" : "white"}
+                                  backgroundColor={rowIndex % 2 ? "gray.50" : bgColor}
                                   zIndex={index === 0 ? 10 : 1}
                                   boxSizing={'border-box'}
                                   padding={0}

@@ -2,11 +2,17 @@ import { useColorMode, useColorModeValue } from "@chakra-ui/react";
 
 const useColorPalette = () => {
   const { colorMode } = useColorMode();
+
   const bgColorLight = "white";
   const bgColorDark = "gray.700";
 
   const textColorLight = "gray.700";
-  const textColorDark = "white";
+  const textColorDark = "gray.500";
+
+  const inputBgColorLight = "white";
+  const inputBgColorDark = "#1a202c";
+  const inputBorderColor = "#474b54";
+  const inputBgColor = useColorModeValue(inputBgColorLight, inputBgColorDark);
 
   const bgPrevButton = useColorModeValue("gray.100", "gray.100");
   const bgProfile = useColorModeValue(
@@ -31,6 +37,10 @@ const useColorPalette = () => {
     bgProfile,
     borderProfileColor,
     emailColor,
+    inputBgColor,
+    inputBgColorLight,
+    inputBgColorDark,
+    inputBorderColor
   }
 }
 

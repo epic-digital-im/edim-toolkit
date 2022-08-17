@@ -1,67 +1,59 @@
 import React from 'react';
 import { useField } from "formik";
 import { useEffect, useState } from "react";
-import { SingleDatePicker } from 'react-dates';
 import { ParsePropUpdater } from "../../parse/PropUpdater";
-import moment from 'moment-timezone';
+import Editor from '../../components/Editor/Editor';
 import useColorPalette from '../../hooks/useColorPalette';
 
 import {
   FormControl,
-  FormLabel,
-  useColorModeValue,
+  FormLabel
 } from "@chakra-ui/react";
 
-interface DatePickerFieldProps {
+interface EditorTextFieldProps {
   name: string;
-  value: Date;
-  onChange: (value: Date | null) => void;
+  value: number;
+  onChange: (value: number) => void;
 }
 
-export const SingleDatePickerInput: React.FC<DatePickerFieldProps> = (props) => {
-  const { onChange, name } = props;
-  const [value, setValue] = useState(props.value ? moment(props.value) : null);
+export const EditorTextInput: React.FC<EditorTextFieldProps> = (props) => {
+  const { onChange, placeholder } = props;
+  const [value, setValue] = useState(props.value);
   const [focused, setFocused] = useState<boolean>(false);
 
   useEffect(() => {
-    setValue(props.value ? moment(props.value) : null);
+    setValue(props.value);
   }, [props.value]);
 
   const handleClose = () => {
     setFocused(false)
   }
 
-  const handleChange = (value: moment.Moment | null) => {
+  const handleChange = (value: number | null) => {
     setValue(value);
-    onChange(value !== null ? value.toDate() : null);
+    if (onChange) onChange(value);
   };
 
   return (
-    <SingleDatePicker
-      id={`${name}_date`}
-      date={value}
-      onDateChange={handleChange}
-      focused={focused}
-      onFocusChange={({ focused }) => setFocused(focused)}
-      onClose={handleClose}
-      showClearDate
-      isDayBlocked={() => false}
-      isOutsideRange={() => false}
+    <Editor
+      onChange={handleChange}
+      placeholder={placeholder}
+      value={value}
     />
   )
 }
 
-interface SingleDatePickerParseProps {
+interface EditorTextParseProps {
   object: Parse.Object<any>;
   property: string;
 }
 
-export const SingleDatePickerParse: React.FC<SingleDatePickerParseProps> = (props) => {
+export const EditorTextParse: React.FC<EditorTextParseProps> = (props) => {
   return (
     <ParsePropUpdater {...props}>
       {({ onChange, value }) => {
         return (
-          <SingleDatePickerInput
+          <EditorTextInput
             value={value}
             onChange={onChange}
           />
@@ -71,7 +63,7 @@ export const SingleDatePickerParse: React.FC<SingleDatePickerParseProps> = (prop
   )
 }
 
-export const DatePickerField = ({ label, ...props }: any) => {
+export const EditorTextField = ({ label, ...props }: any) => {
   const [field, meta, helpers] = useField(props);
   const { textColor } = useColorPalette();
   return (
@@ -83,7 +75,7 @@ export const DatePickerField = ({ label, ...props }: any) => {
       >
         {label}
       </FormLabel>
-      <SingleDatePickerInput
+      <EditorTextInput
         {...props}
         {...field}
         onChange={helpers.setValue}
@@ -104,4 +96,4 @@ export const DatePickerField = ({ label, ...props }: any) => {
   );
 };
 
-export default DatePickerField;
+export default EditorTextField;

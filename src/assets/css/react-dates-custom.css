@@ -22,6 +22,12 @@
   text-align: center;
 }
 
+.chakra-ui-light .DateInput_input,
+.chakra-ui-light .DateInput_input__focused {
+  color: #484848;
+  background-color: white;
+}
+
 .CalendarDay__selected, .CalendarDay__selected:active, .CalendarDay__selected:hover {  
   background: #2852DC;
   border: 1px double #2852DC;
@@ -38,4 +44,60 @@
   background: #485B75;
   border: 1px double #485B75;
   color: #fff;
+}
+
+.chakra-ui-dark .CalendarMonth_caption,
+.chakra-ui-dark .DayPicker_weekHeader_li {
+  color: #718096;
+}
+
+.chakra-ui-dark .DateInput_input,
+.chakra-ui-dark .DateInput_input__focused {
+  color: #718096;
+  background-color: #1a202c;
+}
+.chakra-ui-dark .SingleDatePickerInput__withBorder {
+  border: 1px solid #474b54;
+  border-radius: 4px;
+}
+.chakra-ui-dark .DayPicker__horizontal,
+.chakra-ui-dark .CalendarMonthGrid,
+.chakra-ui-dark .CalendarMonth,
+.chakra-ui-dark .CalendarDay__default {
+  color: #718096;
+  background-color: #1a202c;
+}
+
+.chakra-ui-dark .DayPickerNavigation_button__default,
+.chakra-ui-dark .CalendarDay__default {
+  border: 1px solid #000;
+}
+ 
+.chakra-ui-dark .DayPickerNavigation_button__default,
+.chakra-ui-dark .CalendarDay__selected:active, 
+.chakra-ui-dark .CalendarDay__selected:hover,
+.chakra-ui-dark .CalendarDay__default {  
+  color: #718096;
+  background-color: #1a202c;
+}
+
+.chakra-ui-dark .CalendarDay__selected,
+.chakra-ui-dark .CalendarDay__default:active,
+.chakra-ui-dark .CalendarDay__default:hover {  
+  background: #2852DC;
+  border: 1px double #2852DC;
+  color: #fff;
+}
+
+.chakra-ui-dark .CalendarDay__selected_span {
+  background: #7CA0FF;
+  border: 1px double #7CA0FF;
+  color: #fff;
+}
+
+.chakra-ui-dark .CalendarDay__selected_span:active, 
+.chakra-ui-dark .CalendarDay__selected_span:hover {
+  background: #485B75;
+  border: 1px double #485B75;
+  color: #fff
 }

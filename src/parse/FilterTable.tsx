@@ -242,7 +242,11 @@ export const FilterTable = (props: FitlerTableProps) => {
   // }, [isLoading, query]);
 
   const textColor = useColorModeValue("gray.500", "white");
-  const bgColor = useColorModeValue("gray.200", "gray.900");
+  const bgColor = useColorModeValue("gray.100", "gray.800");
+  const bgColor2 = useColorModeValue("white", "gray.700");
+
+  const rowBg1 = useColorModeValue("gray.50", "gray.800");
+  const rowBg2 = useColorModeValue("white", "gray.700");
 
   // When our cell renderer calls updateMyData, we'll use
   // the rowIndex, columnId and new value to update the
@@ -612,7 +616,7 @@ export const FilterTable = (props: FitlerTableProps) => {
                   overflowY={'auto'}
                   id="scroll-pane"
                   borderWidth={"1px"}
-                  borderColor={"gray.200"}
+                  borderColor={rowBg2}
                 >
                   <Flex
                     width={tableWidth}
@@ -658,16 +662,16 @@ export const FilterTable = (props: FitlerTableProps) => {
                                   key={`${rowIndex}_${index}`}
                                   style={columnStyle}
                                   borderRightWidth={"1px"}
-                                  borderRightColor={"gray.200"}
+                                  borderRightColor={rowBg2}
                                   borderBottomWidth={"1px"}
-                                  borderBottomColor={"gray.200"}
+                                  borderBottomColor={rowBg2}
                                   position={index === 0 ? "sticky" : "relative"}
                                   left={index === 0 ? "0px" : "auto"}
                                   width={width}
                                   zIndex={index === 0 ? 750 : 1}
                                   height={'50px'}
                                   boxSizing={'border-box'}
-                                  backgroundColor={column.bgColor || 'white'}
+                                  backgroundColor={column.bgColor || rowBg1}
                                 >
                                   {(column.canFilter && column.Filter) ? column.render('Filter') : (
                                     <Flex direction={'row'} justifyContent={canReorder ? 'space-between' : 'space-around'} width={'100%'}>
@@ -680,7 +684,7 @@ export const FilterTable = (props: FitlerTableProps) => {
                                         color="gray.400"
                                         {...column.getSortByToggleProps()}
                                       >
-                                        <Box textColor={"gray.900"} textAlign={'center'}>{column.render("Header")}</Box>
+                                        <Box textColor={textColor} textAlign={'center'}>{column.render("Header")}</Box>
                                         <Icon
                                           w={{ sm: "10px", md: "14px" }}
                                           h={{ sm: "10px", md: "14px" }}
@@ -728,11 +732,11 @@ export const FilterTable = (props: FitlerTableProps) => {
                         return (
                           <Flex
                             key={`${rowIndex}_${rowKey}`}
-                            backgroundColor={rowIndex % 2 ? "gray.50" : "white"}
+                            backgroundColor={rowIndex % 2 ? rowBg1 : rowBg2}
                             display="flex"
                             flexDirection={"row"}
                             borderTopWidth={"1px"}
-                            borderTopColor={"gray.200"}
+                            borderTopColor={bgColor2}
                             overflow={'visible'}
                             zIndex={pageSize - rowIndex}
                           >
@@ -754,11 +758,11 @@ export const FilterTable = (props: FitlerTableProps) => {
                                   alignItems="center"
                                   fontSize={{ sm: "14px" }}
                                   borderRightWidth={"1px"}
-                                  borderRightColor={"gray.200"}
+                                  borderRightColor={bgColor2}
                                   position={index === 0 ? "sticky" : "relative"}
                                   left={index === 0 ? "0px" : "auto"}
                                   width={width}
-                                  backgroundColor={rowIndex % 2 ? "gray.50" : "white"}
+                                  backgroundColor={rowIndex % 2 ? rowBg1 : rowBg2}
                                   zIndex={index === 0 ? 10 : 1}
                                   boxSizing={'border-box'}
                                   padding={0}

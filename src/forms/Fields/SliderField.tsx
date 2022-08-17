@@ -1,9 +1,8 @@
 import React from 'react';
 import { useField } from "formik";
 import { useEffect, useState } from "react";
-import { SingleDatePicker } from 'react-dates';
+import { Slider, SliderTrack, SliderFilledTrack, SliderThumb } from '@chakra-ui/react';
 import { ParsePropUpdater } from "../../parse/PropUpdater";
-import moment from 'moment-timezone';
 import useColorPalette from '../../hooks/useColorPalette';
 
 import {
@@ -12,56 +11,51 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 
-interface DatePickerFieldProps {
+interface SliderFieldProps {
   name: string;
-  value: Date;
-  onChange: (value: Date | null) => void;
+  value: number;
+  onChange: (value: number) => void;
 }
 
-export const SingleDatePickerInput: React.FC<DatePickerFieldProps> = (props) => {
+export const SliderInput: React.FC<SliderFieldProps> = (props) => {
   const { onChange, name } = props;
-  const [value, setValue] = useState(props.value ? moment(props.value) : null);
+  const [value, setValue] = useState(props.value);
   const [focused, setFocused] = useState<boolean>(false);
 
   useEffect(() => {
-    setValue(props.value ? moment(props.value) : null);
+    setValue(props.value);
   }, [props.value]);
 
   const handleClose = () => {
     setFocused(false)
   }
 
-  const handleChange = (value: moment.Moment | null) => {
+  const handleChange = (value: number | null) => {
     setValue(value);
-    onChange(value !== null ? value.toDate() : null);
+    if (onChange) onChange(value);
   };
 
   return (
-    <SingleDatePicker
-      id={`${name}_date`}
-      date={value}
-      onDateChange={handleChange}
-      focused={focused}
-      onFocusChange={({ focused }) => setFocused(focused)}
-      onClose={handleClose}
-      showClearDate
-      isDayBlocked={() => false}
-      isOutsideRange={() => false}
-    />
+    <Slider aria-label='slider-ex-1' defaultValue={30} onChange={handleChange}>
+      <SliderTrack>
+        <SliderFilledTrack />
+      </SliderTrack>
+      <SliderThumb />
+    </Slider>
   )
 }
 
-interface SingleDatePickerParseProps {
+interface SliderParseProps {
   object: Parse.Object<any>;
   property: string;
 }
 
-export const SingleDatePickerParse: React.FC<SingleDatePickerParseProps> = (props) => {
+export const SliderParse: React.FC<SliderParseProps> = (props) => {
   return (
     <ParsePropUpdater {...props}>
       {({ onChange, value }) => {
         return (
-          <SingleDatePickerInput
+          <SliderInput
             value={value}
             onChange={onChange}
           />
@@ -71,7 +65,7 @@ export const SingleDatePickerParse: React.FC<SingleDatePickerParseProps> = (prop
   )
 }
 
-export const DatePickerField = ({ label, ...props }: any) => {
+export const SliderField = ({ label, ...props }: any) => {
   const [field, meta, helpers] = useField(props);
   const { textColor } = useColorPalette();
   return (
@@ -83,7 +77,7 @@ export const DatePickerField = ({ label, ...props }: any) => {
       >
         {label}
       </FormLabel>
-      <SingleDatePickerInput
+      <SliderInput
         {...props}
         {...field}
         onChange={helpers.setValue}
@@ -104,4 +98,4 @@ export const DatePickerField = ({ label, ...props }: any) => {
   );
 };
 
-export default DatePickerField;
+export default SliderField;

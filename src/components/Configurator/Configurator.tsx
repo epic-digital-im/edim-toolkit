@@ -16,10 +16,7 @@ import { HSeparator } from "../Separator/Separator";
 import PropTypes from "prop-types";
 import React from "react";
 
-import { useContainer as useAuth } from "../../providers/auth";
-
 export default function Configurator(props) {
-  const { logout } = useAuth();
   const { secondary, isOpen, onClose, fixed, custom, ...rest } = props;
 
   const { colorMode, toggleColorMode } = useColorMode();
@@ -66,18 +63,6 @@ export default function Configurator(props) {
               </Flex>
 
               <HSeparator />
-
-              <Box mt="24px">
-                <Flex
-                  justifyContent="space-between"
-                  alignItems="center"
-                  mb="24px"
-                >
-                  <Button width={"100%"} onClick={logout}>
-                    Sign Out
-                  </Button>
-                </Flex>
-              </Box>
 
               {custom && custom()}
             </Flex>

@@ -1,12 +1,12 @@
 import Parse from 'parse';
-import { useColorMode } from '@chakra-ui/react';
+import { useColorModeValue } from '@chakra-ui/react';
 import React, { useEffect, useState, useMemo } from 'react';
 import Select, { SingleValue, ActionMeta } from 'react-select';
 import CreateSelect from 'react-select/creatable';
 import { useQuery } from "react-query";
 import { ClassNames } from '@app/shared/types';
 import toJson from '../../utils/toJson';
-import { useColorPalette } from '../../hooks';
+import getters from '@app/shared/utils/getters';
 
 interface ClassSearchSelectProps {
   style?: any;
@@ -31,6 +31,7 @@ interface ClassSearchSelectProps {
   isMulti?: boolean;
   isCreateable?: boolean;
   name: string;
+  placeholder?: string;
 }
 
 interface Value {
@@ -45,26 +46,16 @@ function sortLabelAscending(a: Value, b: Value) {
 }
 
 const ClassSearchSelect = (props: ClassSearchSelectProps) => {
-  const { colorMode } = useColorMode();
-  const {
-    bgColor,
-    bgColorLight,
-    bgColorDark,
-    textColor,
-    textColorLight,
-    textColorDark,
-  } = useColorPalette();
+  const bgColor = useColorModeValue("white", "#1a202c");
+  const textColor = useColorModeValue("#484848", "#718096");
 
   const {
     style,
-    label,
     objectClass,
     onSelect,
     onClear,
     onRemove,
     initialValue,
-    valueGetter,
-    labelGetter,
     isLoading,
     disabled,
     filters,
@@ -73,11 +64,12 @@ const ClassSearchSelect = (props: ClassSearchSelectProps) => {
     additionalOptions,
     error,
     isClearable,
-    autoSelectFirst,
     isMulti,
     isCreateable,
-    name,
+    placeholder,
   } = props;
+
+  const { labelGetter, valueGetter } = getters(objectClass);
 
   const fetchItems = async () => {
     if (!objectClass) return [];
@@ -96,7 +88,7 @@ const ClassSearchSelect = (props: ClassSearchSelectProps) => {
     refetchOnWindowFocus: false,
   });
 
-  const { data, isError } = ClassQuery;
+  const { data } = ClassQuery;
 
   const items = useMemo(() => {
     return data?.map((item: any) => toJson(item)) || [];
@@ -106,7 +98,8 @@ const ClassSearchSelect = (props: ClassSearchSelectProps) => {
 
   const onCreate = async (value: any) => {
     const object = new Parse.Object(objectClass);
-    object.set('value', value);
+    const prop = getters(objectClass).prop || 'value';
+    object.set(prop, value);
     if (filters) {
       filters.forEach(filter => {
         object.set(filter.prop, filter.value);
@@ -127,7 +120,6 @@ const ClassSearchSelect = (props: ClassSearchSelectProps) => {
         })));
       } else {
         const v = data && data.find(item => item.id === initialValue.objectId);
-        console.log(v)
         if (v) {
           const vData = v.toJSON();
           setValue({
@@ -138,8 +130,6 @@ const ClassSearchSelect = (props: ClassSearchSelectProps) => {
       }
     }
   }, [initialValue, data, isLoading, ClassQuery.isLoading]);
-
-  console.log(value)
 
   const options = useMemo(() => {
     const o = items.map((item: any) => ({
@@ -212,63 +202,45 @@ const ClassSearchSelect = (props: ClassSearchSelectProps) => {
         }
       } else {
         setValue(newOption);
+        if (onSelect) onSelect(item);
       }
     });
-    // this.setState({ isLoading: true });
-    // console.group('Option created');
-    // console.log('Wait a moment...');
-    // setTimeout(() => {
-    //   const { options } = this.state;
-    //   const newOption = createOption(inputValue);
-    //   console.log(newOption);
-    //   console.groupEnd();
-    //   this.setState({
-    //     isLoading: false,
-    //     options: [...options, newOption],
-    //     value: newOption,
-    //   });
-    // }, 1000);
   };
 
   const customStyles = {
-    container: (provided, state) => ({
+    container: (provided) => ({
       ...provided,
       width: '100%',
-      // backgroundColor: bgColor,
-      // color: textColor,
+      backgroundColor: bgColor,
+      color: textColor,
     }),
-    control: (provided, state) => ({
+    control: (provided) => ({
       ...provided,
       width: style?.width,
       borderColor: (error) ? 'red' : null,
-      // backgroundColor: bgColor,
-      // color: textColor,
+      backgroundColor: bgColor,
+      color: textColor,
     }),
-    menu: (provided, state) => ({
+    menu: (provided) => ({
       ...provided,
-      // backgroundColor: bgColor,
-      // color: textColor,
+      backgroundColor: bgColor,
+      color: textColor,
     }),
-    option: (provided, state) => ({
+    option: (provided) => ({
       ...provided,
-      // backgroundColor: bgColor,
-      // color: textColor,
+      backgroundColor: bgColor,
+      color: textColor,
     }),
-    placeholder: (provided, state) => ({
+    placeholder: (provided) => ({
       ...provided,
-      // backgroundColor: bgColor,
-      // color: textColor,
+      backgroundColor: bgColor,
+      color: textColor,
     }),
-    singleValue: (provided, state) => ({
+    singleValue: (provided) => ({
       ...provided,
-      // backgroundColor: bgColor,
-      // color: textColor,
-    }),
-    input: (provided, state) => ({
-      ...provided,
-      // backgroundColor: bgColor,
-      // color: textColor,
-    }),
+      backgroundColor: bgColor,
+      color: textColor,
+    })
   }
 
   const SelectComponent = (isCreateable)
@@ -287,7 +259,7 @@ const ClassSearchSelect = (props: ClassSearchSelectProps) => {
       styles={customStyles}
       isClearable={isClearable}
       isMulti={isMulti}
-      placeholder={`Select ${objectClass}`}
+      placeholder={placeholder || `Select ${objectClass}`}
     />
   )
 }

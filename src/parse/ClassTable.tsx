@@ -1,4 +1,4 @@
-import Parse from 'parse';
+import Parse from 'parse/dist/parse.min.js';
 import React, { useState, useRef, useMemo, useEffect } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import { ParseLiveQuery } from '../hoc/ParseLiveQuery';

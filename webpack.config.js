@@ -18,4 +18,10 @@ module.exports = {
     filename: "index.js",
     path: path.resolve(__dirname, "dist"),
   },
+  react: {
+    commonjs: "Parse",
+    commonjs2: "Parse",
+    amd: "React",
+    root: "React",
+  },
 };

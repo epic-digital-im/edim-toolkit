@@ -1,4 +1,4 @@
-import Parse from 'parse';
+import Parse from 'parse/dist/parse.min.js';
 import CreateSelect from 'react-select';
 import { useState, useMemo } from "react";
 import useGoogle from "react-google-autocomplete/lib/usePlacesAutocompleteService";

@@ -1,6 +1,6 @@
-import Parse from 'parse';
+import Parse from 'parse/dist/parse.min.js';
 import { useQuery, useQueryClient, UseQueryOptions, UseQueryResult } from 'react-query';
-import { useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 
 export interface ParseLiveQueryProps {
   initialState?: any;

@@ -1,4 +1,4 @@
-import Parse from 'parse';
+import Parse from 'parse/dist/parse.min.js';
 import { Component, useEffect, useState } from "react";
 import { Input, Button, Box, FormControl, FormLabel, Grid, GridItem, useColorModeValue } from "@chakra-ui/react";
 

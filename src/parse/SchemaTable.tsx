@@ -1,4 +1,4 @@
-import Parse from 'parse';
+import Parse from 'parse/dist/parse.min.js';
 import React, { useEffect, useState, useMemo } from 'react';
 
 import {

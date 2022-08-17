@@ -1,4 +1,4 @@
-import Parse from 'parse';
+import Parse from 'parse/dist/parse.min.js';
 import { useColorModeValue } from '@chakra-ui/react';
 import React, { useEffect, useState, useMemo } from 'react';
 import Select, { SingleValue, ActionMeta } from 'react-select';

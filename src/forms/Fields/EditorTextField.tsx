@@ -3,7 +3,7 @@ import { useField } from "formik";
 import { useEffect, useState } from "react";
 import { ParsePropUpdater } from "../../parse/PropUpdater";
 import Editor from '../../components/Editor/Editor';
-import useColorPalette from '../../hooks/useColorPalette';
+import { useColorPalette } from "@app/theme";
 
 import {
   FormControl,

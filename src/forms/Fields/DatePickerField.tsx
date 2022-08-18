@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { SingleDatePicker } from 'react-dates';
 import { ParsePropUpdater } from "../../parse/PropUpdater";
 import moment from 'moment-timezone';
-import useColorPalette from '../../hooks/useColorPalette';
+import { useColorPalette } from "@app/theme";
 
 import {
   FormControl,

@@ -14,7 +14,8 @@ import { NavLink } from 'react-router-dom';
 
 import { useContainer as useAuth } from '../../../providers/auth';
 import toJson from '../../../utils/toJson';
-import { useColorPalette } from '../../../hooks';
+
+import { useColorPalette } from "@app/theme";
 
 const ProfileWidget = ({ location, isCustomer }: { location: any, isCustomer?: boolean }) => {
   const { textColor } = useColorPalette();

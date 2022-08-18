@@ -7,8 +7,9 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 
-import ClassSearchSelect from '../../components/SearchSelect/ClassSearchSelect';
-import useColorPalette from '../../hooks/useColorPalette';
+import ClassSearchSelect from '../../components/Selectors/ClassSearchSelect';
+
+import { useColorPalette } from "@app/theme";
 
 export const ClassSearchSelectField = ({ label, handleSelect, ...props }: any) => {
   const { textColor } = useColorPalette();

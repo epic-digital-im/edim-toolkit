@@ -12,7 +12,7 @@ interface DeleteButtonProps {
   type?: 'button' | 'icon';
 }
 
-const DeleteButton: React.FC<DeleteButtonProps> = ({ object, onDelete, label, refetch, type }) => {
+export const DeleteButton: React.FC<DeleteButtonProps> = ({ object, onDelete, label, refetch, type }) => {
   const toast = useToast();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [isDeleting, setIsDeleting] = useState(false);

@@ -50,3 +50,5 @@ export function ItemContent(props) {
     </>
   );
 }
+
+export default ItemContent;

@@ -50,7 +50,7 @@ import {
   useColumnOrder,
 } from "react-table";
 
-import FormDialog from '../components/FormDialog';
+import FormDialog from '../components/Dialogs/FormDialog';
 
 export interface FitlerTableProps {
   history: any;
@@ -244,6 +244,7 @@ export const FilterTable = (props: FitlerTableProps) => {
   const textColor = useColorModeValue("gray.500", "white");
   const bgColor = useColorModeValue("gray.100", "gray.800");
   const bgColor2 = useColorModeValue("white", "gray.700");
+  const inputBgColor = useColorModeValue("white", "gray.700");
 
   const rowBg1 = useColorModeValue("gray.50", "gray.800");
   const rowBg2 = useColorModeValue("white", "gray.700");
@@ -469,7 +470,8 @@ export const FilterTable = (props: FitlerTableProps) => {
                         borderRadius="12px"
                         maxW="75px"
                         cursor="pointer"
-                        backgroundColor="white"
+                        backgroundColor={inputBgColor}
+                        color={textColor}
                       >
                         <option>25</option>
                         <option>50</option>
@@ -500,7 +502,8 @@ export const FilterTable = (props: FitlerTableProps) => {
                       maxW="175px"
                       fontSize="sm"
                       _focus={{ borderColor: "qcmidnight.400" }}
-                      backgroundColor="white"
+                      backgroundColor={inputBgColor}
+                      color={textColor}
                       onChange={(e) => setGlobalFilter(e.target.value)}
                       mx={'0.5rem'}
                     />}

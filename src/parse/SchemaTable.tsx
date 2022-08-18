@@ -30,7 +30,7 @@ import {
   IconButton
 } from '@chakra-ui/react';
 
-import Selector from '../components/Selector';
+import Selector from '../components/Selectors/Selector';
 import DraggableList from '@edim/toolkit/src/components/Draggable/DraggableList'
 import { SchemaConfig, PM_AttributeAttributes } from '@app/shared/parse-types';
 import getters from '@app/shared/utils/getters';

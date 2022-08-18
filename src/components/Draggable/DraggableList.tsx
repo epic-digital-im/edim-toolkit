@@ -1,5 +1,6 @@
 import React from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { useColorMode } from '@chakra-ui/react';
 
 // a little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
@@ -12,26 +13,8 @@ const reorder = (list, startIndex, endIndex) => {
 
 const grid = 8;
 
-const getItemStyle = (isDragging, draggableStyle) => ({
-  // some basic styles to make the items look a bit nicer
-  userSelect: "none",
-  padding: grid * 2,
-  margin: `0 0 ${grid}px 0`,
-
-  // change background colour if dragging
-  background: isDragging ? "lightgreen" : "white",
-
-  // styles we need to apply on draggables
-  ...draggableStyle
-});
-
-const getListStyle = isDraggingOver => ({
-  background: isDraggingOver ? "lightblue" : "lightgrey",
-  padding: grid,
-  width: 250
-});
-
 const DraggableList = ({ items, onColumnOrderChange, renderItem }) => {
+  const { colorMode } = useColorMode();
   const [itemState, setItemState] = React.useState(items);
 
   const onDragEnd = (result) => {
@@ -50,6 +33,30 @@ const DraggableList = ({ items, onColumnOrderChange, renderItem }) => {
       onColumnOrderChange(items);
     }
   }
+
+  const bg1 = (colorMode === 'light') ? 'white' : "#1a202c";
+  const bg2 = (colorMode === 'light') ? '#d3d3d3' : "#1f2733";
+  const bg3 = (colorMode === 'light') ? 'white' : "#292c32";
+  const bg4 = (colorMode === 'light') ? 'white' : "#292c32";
+
+  const getItemStyle = (isDragging, draggableStyle) => ({
+    // some basic styles to make the items look a bit nicer
+    userSelect: "none",
+    padding: grid * 2,
+    margin: `0 0 ${grid}px 0`,
+
+    // change background colour if dragging
+    background: isDragging ? bg2 : bg1,
+
+    // styles we need to apply on draggables
+    ...draggableStyle
+  });
+
+  const getListStyle = isDraggingOver => ({
+    background: isDraggingOver ? bg3 : bg4,
+    padding: grid,
+    width: 250
+  });
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>

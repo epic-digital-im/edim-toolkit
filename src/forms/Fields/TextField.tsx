@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { ReactChild, ReactNode } from 'react';
 import { useField } from "formik";
-import { Input } from '@chakra-ui/react';
+import { Input, ComponentWithAs, FormControlProps, InputProps } from '@chakra-ui/react';
 import { ParsePropUpdater } from "../../parse/PropUpdater";
-import { useColorPalette } from "../../hooks";
+import { useColorPalette } from "@app/theme";
 
 import {
   FormControl,
@@ -33,12 +33,18 @@ export const TextParse: React.FC<TextParseProps> = (props) => {
   )
 }
 
-export const TextField = ({ label, ...props }: any) => {
+interface TextFieldProps {
+  formControl?: ComponentWithAs<"div", FormControlProps>;
+  label: string;
+  props: ComponentWithAs<"input", InputProps>;
+}
+
+export const TextField: React.FC<TextFieldProps> = ({ label, formControl, ...props }) => {
   const { textColor, inputBgColor, inputBorderColor } = useColorPalette();
   const [field, meta, helpers] = useField(props);
 
   return (
-    <FormControl>
+    <FormControl {...formControl}>
       <FormLabel
         color={textColor}
         fontWeight="bold"

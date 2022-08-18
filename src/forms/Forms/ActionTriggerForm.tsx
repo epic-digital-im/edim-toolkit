@@ -10,7 +10,7 @@ import { Formik, Form, FormikHelpers } from "formik";
 
 import * as Yup from 'yup';
 import TextField from "../Fields/TextField2";
-import WeekaySelect from "../Fields/WeekaySelectField";
+import WeekaySelect from "../Fields/WeekdaySelectField";
 
 import { SubmitButton, BackButton } from './FormButtons';
 

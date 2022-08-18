@@ -270,7 +270,7 @@ FileInputBase64PreviewComponent.propTypes = {
   defaultFiles: PropTypes.array
 }
 
-const ImageFileInputField = ({ label, ...props }: any) => {
+export const ImageFileInputField = ({ label, ...props }: any) => {
   const [field, meta, helpers] = useField(props);
   const textColor = useColorModeValue("gray.700", "white");
 

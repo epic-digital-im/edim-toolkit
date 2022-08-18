@@ -41,10 +41,12 @@ export { default as AttributeNameSelector } from './Selectors/AttributeNameSelec
 export { default as ClassSearchSelect } from './Selectors/ClassSearchSelect';
 export { default as CustomerSelector } from './Selectors/CustomerSelector';
 export { default as DateRangeSelector } from './Selectors/DateRangeSelector';
-
 export { default as GooglePlaceSelector } from './Selectors/GooglePlaceSelector';
 export { default as Selector } from './Selectors/Selector';
+export { default as WeekdaySelector } from './Selectors/WeekdaySelector';
 
 export { default as ItemContent } from './Menu/ItemContent';
 
 export * from './Separator/Separator';
+
+export { default as NavItem } from './NavBars/NavItem';

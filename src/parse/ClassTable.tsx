@@ -3,7 +3,7 @@ import React, { useState, useRef, useMemo, useEffect } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import { ParseLiveQuery } from '../hoc/ParseLiveQuery';
 import ClassSearchSelect from '../components/Selectors/ClassSearchSelect';
-import WeekdaySelect from '../components/Selectors/WeekDaySelector';
+import WeekdaySelect from '../components/Selectors/WeekdaySelector';
 import Selector from '../components/Selectors/Selector';
 import { weekdayList, CanStates, Weekdays, ClassNames } from "@app/shared/types";
 import { Attribute } from "@app/shared/parse-types";

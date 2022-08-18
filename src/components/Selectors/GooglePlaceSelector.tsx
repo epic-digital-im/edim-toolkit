@@ -1,3 +1,4 @@
+import React from 'react';
 import Parse from 'parse/dist/parse.min.js';
 import CreateSelect from 'react-select';
 import { useState, useMemo } from "react";
@@ -7,6 +8,7 @@ import { Place } from '@app/shared/types';
 
 
 interface GooglePlacesSelectProps {
+  googleMapsApiKey: string;
   onChange?: (place: Place) => void, fieldPrefix?: string, label?: string
   initialValue?: Place;
   disabled?: boolean;
@@ -16,7 +18,7 @@ interface GooglePlacesSelectProps {
   style?: any;
 }
 
-const GooglePlaces = ({ onChange, initialValue, style, disabled, isLoading, isClearable, isMulti }: GooglePlacesSelectProps) => {
+const GooglePlaces = ({ googleMapsApiKey, onChange, initialValue, style, disabled, isLoading, isClearable, isMulti }: GooglePlacesSelectProps) => {
   const [value, setValue] = useState<any>(initialValue);
   const [error, setError] = useState<any>();
 
@@ -26,7 +28,7 @@ const GooglePlaces = ({ onChange, initialValue, style, disabled, isLoading, isCl
     getPlacePredictions,
     isPlacePredictionsLoading,
   } = useGoogle({
-    apiKey: config.googleMapsApiKey,
+    apiKey: googleMapsApiKey,
   });
 
   const getPlaceId = (place_id: string) => {

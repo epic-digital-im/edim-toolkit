@@ -4,7 +4,7 @@ import React, { useState, useRef, useMemo, useEffect } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import ParseLiveQuery from '../../hoc/ParseLiveQuery';
 import ClassSearchSelect from '../SearchSelect/ClassSearchSelect';
-import WeekdaySelect from '../WeekDaySelector';
+import WeekdaySelect from '../WeekdaySelector';
 import Selector from '../Selector';
 
 import {

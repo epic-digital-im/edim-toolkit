@@ -12,4 +12,4 @@ export * from './Fields/TextAreaField';
 export * from './Fields/TextField';
 export * from './Fields/ToggleField';
 export * from './Fields/UserTypeSelectField';
-export * from './Fields/WeekaySelectField';
+export * from './Fields/WeekdaySelectField';

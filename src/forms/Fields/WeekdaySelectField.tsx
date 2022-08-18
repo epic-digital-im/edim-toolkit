@@ -1,5 +1,5 @@
 import { useField } from "formik";
-import { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 import {
   FormControl,
@@ -13,7 +13,7 @@ import {
 
 import { weekdayList } from "@app/shared/types";
 
-const WeekaySelectField = ({ label, ...props }: any) => {
+export const WeekdaySelectField = ({ label, ...props }: any) => {
   const [field, meta, helpers] = useField(props);
 
   const textColor = useColorModeValue("gray.700", "white");
@@ -58,4 +58,4 @@ const WeekaySelectField = ({ label, ...props }: any) => {
   );
 };
 
-export default WeekaySelectField;
+export default WeekdaySelectField;

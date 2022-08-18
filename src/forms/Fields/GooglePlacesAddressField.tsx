@@ -1,3 +1,4 @@
+import React from 'react';
 import Parse from 'parse/dist/parse.min.js';
 import { useState } from "react";
 import { Input, Button, Box, FormControl, FormLabel, Grid, GridItem, useColorModeValue } from "@chakra-ui/react";
@@ -12,7 +13,7 @@ import {
   FaHome
 } from "react-icons/fa";
 
-export const GooglePlacesAddressField = ({ onChange, fieldPrefix }: { onChange?: (place: Place) => void, fieldPrefix?: string, label?: string }) => {
+export const GooglePlacesAddressField = ({ googleMapsApiKey, onChange, fieldPrefix }: { onChange?: (place: Place) => void, fieldPrefix?: string, label?: string, googleMapsApiKey: string }) => {
   const googleSErvice = new GoogleService();
   const textColor = useColorModeValue("gray.700", "white");
   const prefix = fieldPrefix ? fieldPrefix + '.' : '';
@@ -32,7 +33,7 @@ export const GooglePlacesAddressField = ({ onChange, fieldPrefix }: { onChange?:
     getPlacePredictions,
     isPlacePredictionsLoading,
   } = useGoogle({
-    apiKey: config.googleMapsApiKey,
+    apiKey: googleMapsApiKey,
   });
 
   const [addressSelected, setAddressSelected] = useState(false);

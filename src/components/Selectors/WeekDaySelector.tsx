@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Select, { SingleValue } from 'react-select';
 import { weekdayList } from '@app/shared/types';
 
-interface WeekDaySelectorProps {
+interface WeekdaySelectorProps {
   label?: string;
   initialValue?: {
     value: any;
@@ -15,7 +15,7 @@ interface WeekDaySelectorProps {
   style?: any;
 }
 
-const WeekDaySelector = (props: WeekDaySelectorProps) => {
+export const WeekdaySelector = (props: WeekdaySelectorProps) => {
   const { isLoading, isDisabled, initialValue, onSelect, isClearable, style } = props;
 
   const [value, setValue] = useState<{
@@ -78,4 +78,4 @@ const WeekDaySelector = (props: WeekDaySelectorProps) => {
   )
 }
 
-export default WeekDaySelector;
+export default WeekdaySelector;

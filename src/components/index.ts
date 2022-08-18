@@ -12,3 +12,5 @@ export { default as Configurator } from './Configurator/Configurator';
 export { default as MainPanel } from "./Layout/MainPanel";
 export { default as PanelContainer } from "./Layout/PanelContainer";
 export { default as PanelContent } from "./Layout/PanelContent";
+export { default as DeleteButton } from "./Buttons/DeleteButton";
+export { default as ConfirmDialog } from "./ConfirmDialog";

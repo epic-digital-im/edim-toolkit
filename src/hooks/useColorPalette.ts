@@ -24,6 +24,7 @@ const useColorPalette = () => {
     "rgba(255, 255, 255, 0.31)"
   );
   const emailColor = useColorModeValue("gray.400", "gray.300");
+  const valColor = useColorModeValue("gray.600", "white");
 
   return {
     colorMode,
@@ -40,7 +41,8 @@ const useColorPalette = () => {
     inputBgColor,
     inputBgColorLight,
     inputBgColorDark,
-    inputBorderColor
+    inputBorderColor,
+    valColor,
   }
 }
 

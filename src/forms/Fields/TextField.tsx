@@ -1,4 +1,4 @@
-import React, { ReactChild, ReactNode } from 'react';
+import React from 'react';
 import { useField } from "formik";
 import { Input, ComponentWithAs, FormControlProps, InputProps } from '@chakra-ui/react';
 import { ParsePropUpdater } from "../../parse/PropUpdater";
@@ -15,7 +15,7 @@ interface TextParseProps {
 }
 
 export const TextParse: React.FC<TextParseProps> = (props) => {
-  const { textColor, inputBgColor, inputBorderColor } = useColorPalette();
+  const { colorMode, textColor, inputBgColor, inputBorderColor } = useColorPalette();
   return (
     <ParsePropUpdater {...props}>
       {({ onChange, value }) => {
@@ -25,7 +25,7 @@ export const TextParse: React.FC<TextParseProps> = (props) => {
             onChange={onChange}
             color={textColor}
             backgroundColor={inputBgColor}
-            borderColor={inputBorderColor}
+            borderColor={colorMode === 'dark' ? inputBorderColor : null}
           />
         )
       }}
@@ -40,8 +40,12 @@ interface TextFieldProps {
 }
 
 export const TextField: React.FC<TextFieldProps> = ({ label, formControl, ...props }) => {
-  const { textColor, inputBgColor, inputBorderColor } = useColorPalette();
+  const { colorMode, textColor, inputBgColor, inputBorderColor } = useColorPalette();
   const [field, meta, helpers] = useField(props);
+
+  const borderColor = (colorMode === 'dark')
+    ? meta.touched && meta.error ? "red.500" : inputBorderColor
+    : meta.touched && meta.error ? "red.500" : null
 
   return (
     <FormControl {...formControl}>
@@ -54,7 +58,7 @@ export const TextField: React.FC<TextFieldProps> = ({ label, formControl, ...pro
       </FormLabel>
       <Input
         fontSize="xs"
-        borderColor={meta.touched && meta.error ? "red.500" : inputBorderColor}
+        borderColor={borderColor}
         color={textColor}
         backgroundColor={inputBgColor}
         {...field}

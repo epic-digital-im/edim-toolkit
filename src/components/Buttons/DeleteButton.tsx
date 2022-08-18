@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Flex, Text, Button, IconButton, Icon, useDisclosure, useToast } from '@chakra-ui/react';
 import { FaTrashAlt } from "react-icons/fa";
-
-import ConfirmDialog from '../ConfirmDialog';
+import ConfirmDialog from '../Dialogs/ConfirmDialog';
 
 interface DeleteButtonProps {
   object: Parse.Object<any>;

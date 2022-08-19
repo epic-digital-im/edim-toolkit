@@ -19,11 +19,11 @@ interface FormButtonProps {
 }
 
 export const SubmitButton = ({ disabled, loading, label, size, fontSize, ...rest }: FormButtonProps) => {
-  const { textColor, bgPrevButton, buttonBg } = useColorPalette();
+  const { buttonTextPrimary, buttonBgPrimary } = useColorPalette();
   return (
     <Button
       variant="no-hover"
-      bg={buttonBg}
+      bg={buttonBgPrimary}
       color={'white'}
       alignSelf="flex-end"
       type="submit"
@@ -34,8 +34,8 @@ export const SubmitButton = ({ disabled, loading, label, size, fontSize, ...rest
       disabled={disabled || loading}
       isLoading={loading}
     >
-      <Text fontSize={fontSize || 'md'} color={textColor} fontWeight="bold" lineHeight={1}>
-        {label}
+      <Text fontSize={fontSize || 'md'} color={buttonTextPrimary} fontWeight="bold" lineHeight={1}>
+        {label || 'Save'}
       </Text>
     </Button>
   )

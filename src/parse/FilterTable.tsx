@@ -193,7 +193,7 @@ export const FilterTable = (props: FitlerTableProps) => {
 
   // We need to keep the table from resetting the pageIndex when we
   // Update data. So we can keep track of that flag with a ref.
-  const skipResetRef = useRef(false)
+  const skipResetRef = useRef(true)
 
   const skipReset = skipResetRef.current;
 
@@ -546,7 +546,7 @@ export const FilterTable = (props: FitlerTableProps) => {
           </Box>
           <Flex justify="space-between" align="center" w="100%" px="22px"></Flex>
           {isLoading ? (
-            <Flex alignItems={'center'} justifyContent={'center'} height={'100px'} width={'100%'}>
+            <Flex alignItems={'center'} justifyContent={'center'} height={'500px'} width={'100%'}>
               <Spinner
                 thickness='4px'
                 speed='0.65s'
@@ -615,7 +615,7 @@ export const FilterTable = (props: FitlerTableProps) => {
                   mb="24px"
                   display={'block'}
                   position={'relative'}
-                  height={'calc(100vh - 375px)'}
+                  height={'calc(100vh - 300px)'}
                   overflowY={'auto'}
                   id="scroll-pane"
                   borderWidth={"1px"}
@@ -772,6 +772,7 @@ export const FilterTable = (props: FitlerTableProps) => {
                                   paddingTop={2}
                                   paddingBottom={2}
                                   overflow={'visible'}
+                                  px={2}
                                 >
                                   {cell.render("Cell", { editable: true })}
                                 </Flex>

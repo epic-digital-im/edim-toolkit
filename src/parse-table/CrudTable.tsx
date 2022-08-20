@@ -1,7 +1,7 @@
 import Parse from 'parse/dist/parse.min.js';
 import moment from 'moment-timezone';
 import React, { useState, useRef, useMemo, useEffect } from "react";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ParseLiveQuery from '../../hoc/ParseLiveQuery';
 import ClassSearchSelect from '../SearchSelect/ClassSearchSelect';
 import WeekdaySelect from '../WeekdaySelector';
@@ -922,7 +922,7 @@ interface CrudTableProps {
   queryKey: string;
   isAdmin?: boolean | undefined;
   isPropertyDetail?: boolean | undefined;
-  fetchAll?: boolean | undefined;
+  findAll?: boolean | undefined;
   inactive?: boolean | undefined;
   hidePaging?: boolean | undefined;
   hideSearch?: boolean | undefined;
@@ -934,7 +934,7 @@ const CrudTable: React.FC<CrudTableProps> = (props) => {
     renderHeader,
     query,
     queryKey,
-    fetchAll,
+    findAll,
     initialState,
     ...tableProps
   } = props;
@@ -944,10 +944,10 @@ const CrudTable: React.FC<CrudTableProps> = (props) => {
   const sub = useRef<Parse.LiveQuerySubscription | undefined>();
 
   const tableQuery = query || new Parse.Query(objectClass);
-  const loadData = async (): Promise<Parse.Object<Parse.Attributes>[]> => fetchAll ? tableQuery.findAll() : tableQuery.find();
+  const loadData = async (): Promise<Parse.Object<Parse.Attributes>[]> => findAll ? tableQuery.findAll() : tableQuery.find();
   const key = queryKey || objectClass;
 
-  const ParseQuery = useQuery(key, () => loadData(), {
+  const ParseQuery = useQuery([key], () => loadData(), {
     staleTime: Infinity,
     refetchOnWindowFocus: false,
   });

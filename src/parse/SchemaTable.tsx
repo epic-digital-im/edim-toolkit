@@ -3,19 +3,22 @@ import React, { useEffect, useState, useMemo } from 'react';
 
 import {
   ClassTable,
-  EditableCell,
-  EditableNumberCell,
-  EditableDateCell,
-  EditableBooleanCell,
-  EditableRelationCell,
-  EditableAttributeCell,
 } from "./ClassTable";
+
+import {
+  EditableDateCell,
+  EditableCell,
+  EditableAttributeCell,
+  EditableNumberCell,
+  EditableRelationCell,
+  EditableBooleanCell,
+} from './ClassTableFields';
 
 import { HamburgerIcon, SettingsIcon } from '@chakra-ui/icons';
 
 import { IoEyeSharp, IoEyeOffSharp } from 'react-icons/io5'
 
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import {
   Modal,
   ModalHeader,
@@ -288,7 +291,7 @@ export const SchemaTable = () => {
         objectClass={selectedSchema.className}
         title={selectedSchema.className}
         showFilters
-        fetchAll
+        findAll
         columnsData={columns}
         onColumnOrderChange={setColumnOrder}
         renderFilters={() => (

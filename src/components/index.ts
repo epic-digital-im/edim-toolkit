@@ -6,6 +6,7 @@ export * from './Buttons/DeleteButton';
 export * from './Buttons/SubmitButton';
 export * from './Buttons/BackButton';
 export * from './Buttons/AvatarButton';
+export * from './Buttons/DiscussionButton';
 
 export { default as EventCalendarCard } from './Calendars/EventCalendar';
 
@@ -21,6 +22,8 @@ export { default as ColorPickerDialog } from './Dialogs/ColorPickerDialog';
 export { default as FormDialog } from './Dialogs/FormDialog';
 
 export { default as DraggableList } from './Draggable/DraggableList';
+export { default as Discussion } from './Discussion/Discussion';
+export { default as DiscussionDialog } from './Dialogs/DiscussionDialog';
 
 export { default as Editor } from './Editor/Editor';
 export { default as FixedPlugin } from './FixedPlugin/FixedPlugin';

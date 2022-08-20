@@ -3,9 +3,7 @@ import Parse from 'parse/dist/parse.min.js';
 import CreateSelect from 'react-select';
 import { useState, useMemo } from "react";
 import useGoogle from "react-google-autocomplete/lib/usePlacesAutocompleteService";
-// import config from '../../config'
 import { Place } from '@app/shared/types';
-
 
 interface GooglePlacesSelectProps {
   googleMapsApiKey: string;
@@ -35,6 +33,7 @@ const GooglePlaces = ({ googleMapsApiKey, onChange, initialValue, style, disable
     if (place_id) {
       Parse.Cloud.run('getGooglePlaceById', { place_id }).then((result) => {
         if (onChange) {
+          console.log(result);
           onChange(result);
         }
       });
@@ -54,7 +53,6 @@ const GooglePlaces = ({ googleMapsApiKey, onChange, initialValue, style, disable
   const handleInputChange = (event: any) => {
     getPlacePredictions({ input: event.target.value });
   }
-
 
   const customStyles = {
     container: (provided, state) => ({

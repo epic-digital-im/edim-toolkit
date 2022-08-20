@@ -49,7 +49,8 @@ const Selector = (props: SelectorProps) => {
 
   const customStyles = {
     container: (provided) => ({
-      ...provided
+      ...provided,
+      width: style?.width
     }),
     control: (provided) => ({
       ...provided,

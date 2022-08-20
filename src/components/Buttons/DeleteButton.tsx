@@ -11,7 +11,7 @@ interface DeleteButtonProps {
   type?: 'button' | 'icon';
 }
 
-export const DeleteButton: React.FC<DeleteButtonProps> = ({ object, onDelete, label, refetch, type }) => {
+export const DeleteButton: React.FC<DeleteButtonProps> = ({ object, onDelete, label, refetch, type, ...rest }) => {
   const toast = useToast();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [isDeleting, setIsDeleting] = useState(false);
@@ -49,9 +49,10 @@ export const DeleteButton: React.FC<DeleteButtonProps> = ({ object, onDelete, la
           isDisabled={isDeleting}
           isLoading={isDeleting}
           color="red.500"
+          {...rest}
         />
       ) : (
-        <Button p="0px" bg="transparent" onClick={onOpen}>
+        <Button p="0px" bg="transparent" onClick={onOpen} {...rest}>
           <Flex color="red.500" cursor="pointer" align="center" p="12px">
             <Icon as={FaTrashAlt} me="4px" />
             <Text fontSize="sm" fontWeight="semibold">

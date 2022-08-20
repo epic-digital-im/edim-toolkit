@@ -3,7 +3,7 @@ import { useColorModeValue } from '@chakra-ui/react';
 import React, { useEffect, useState, useMemo } from 'react';
 import Select, { SingleValue, ActionMeta } from 'react-select';
 import CreateSelect from 'react-select/creatable';
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { ClassNames } from '@app/shared/types';
 import toJson from '../../utils/toJson';
 import getters from '@app/shared/utils/getters';

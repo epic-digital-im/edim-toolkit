@@ -16,18 +16,16 @@ interface EditorTextFieldProps {
   onChange: (value: number) => void;
 }
 
+export { default as EditorInput } from '../../components/Editor/Editor';
+
 export const EditorTextInput: React.FC<EditorTextFieldProps> = (props) => {
-  const { onChange, placeholder } = props;
+  const { onChange } = props;
   const [value, setValue] = useState(props.value);
   const [focused, setFocused] = useState<boolean>(false);
 
   useEffect(() => {
     setValue(props.value);
   }, [props.value]);
-
-  const handleClose = () => {
-    setFocused(false)
-  }
 
   const handleChange = (value: number | null) => {
     setValue(value);
@@ -37,7 +35,6 @@ export const EditorTextInput: React.FC<EditorTextFieldProps> = (props) => {
   return (
     <Editor
       onChange={handleChange}
-      placeholder={placeholder}
       value={value}
     />
   )
@@ -75,9 +72,8 @@ export const EditorTextField = ({ label, ...props }: any) => {
       >
         {label}
       </FormLabel>
-      <EditorTextInput
-        {...props}
-        {...field}
+      <Editor
+        value={field.value}
         onChange={helpers.setValue}
       />
       {meta.touched && meta.error ? (

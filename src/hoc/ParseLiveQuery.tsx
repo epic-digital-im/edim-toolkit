@@ -1,5 +1,5 @@
 import Parse from 'parse/dist/parse.min.js';
-import { useQuery, useQueryClient, UseQueryOptions, UseQueryResult } from 'react-query';
+import { useQuery, useQueryClient, UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
 import React, { useRef, useEffect } from "react";
 
 export interface ParseLiveQueryProps {
@@ -10,7 +10,7 @@ export interface ParseLiveQueryProps {
   children: (data: UseQueryResult<any>) => JSX.Element | null;
   include?: string[];
   filters?: any;
-  enableLive?: boolean;
+  isLive?: boolean;
 }
 
 export const ParseLiveQuery = ({
@@ -21,7 +21,7 @@ export const ParseLiveQuery = ({
   children,
   include,
   filters,
-  enableLive
+  isLive
 }: ParseLiveQueryProps) => {
   const o = options || {};
   const queryClient = useQueryClient()
@@ -34,7 +34,6 @@ export const ParseLiveQuery = ({
   if (include) {
     for (const includeItem of include) {
       ParseQuery.include(includeItem);
-      queryKey += `-${includeItem}`;
     }
   }
 
@@ -43,14 +42,21 @@ export const ParseLiveQuery = ({
     return ParseQuery.get(objectId)
   }
 
+  const queryOptions = {
+    ...o
+  }
+
+  if (isLive) {
+    queryOptions.staleTime = Infinity;
+    queryOptions.refetchOnWindowFocus = false;
+  }
+
+  const qk = [queryKey, { include }];
+
   const query = useQuery(
-    queryKey,
+    qk,
     () => fetchObject(),
-    {
-      staleTime: Infinity,
-      refetchOnWindowFocus: false,
-      ...o,
-    },
+    queryOptions,
   )
 
   useEffect(() => {
@@ -59,22 +65,22 @@ export const ParseLiveQuery = ({
         const subscription = await ParseQuery.subscribe();
         subscription.on('create', (item) => {
           console.log('create', item);
-          queryClient.setQueriesData(queryKey, item);
+          queryClient.setQueriesData(qk, item);
         });
         subscription.on('update', (item) => {
           console.log('update', item.id);
-          queryClient.setQueriesData(queryKey, item)
+          queryClient.setQueriesData(qk, item)
         });
         subscription.on('delete', (item) => {
           console.log('delete', item.id);
-          queryClient.removeQueries(queryKey);
+          queryClient.removeQueries(qk);
         });
         sub.current = subscription;
       } else {
         console.log(sub.current.id)
       }
     }
-    if (enableLive) {
+    if (isLive) {
       subscribe();
     }
     return () => {
@@ -99,23 +105,42 @@ interface ParseCollectionLiveQueryProps {
   include?: string[];
   filter?: Filter[];
   ascending?: string,
+  descending?: string,
+  isLive?: boolean;
+  queryKey?: any[];
+  query?: Parse.Query<Parse.Object<any>>;
+  findAll?: boolean;
 }
 
-export const ParseCollectionLiveQuery = ({
-  objectClass,
-  options,
-  children,
-  include,
-  filter,
-  ascending,
-}: ParseCollectionLiveQueryProps) => {
+export const ParseCollectionLiveQuery = (props: ParseCollectionLiveQueryProps) => {
+  const {
+    objectClass,
+    options,
+    children,
+    include,
+    filter,
+    ascending,
+    descending,
+    isLive,
+    query,
+    findAll,
+  } = props;
+
+  if (props.queryKey && !Array.isArray(props.queryKey)) {
+    throw new Error(`queryKey must be an array: ${props.queryKey}`);
+  }
+
   const o = options || {};
   const queryClient = useQueryClient()
   const sub = useRef<Parse.LiveQuerySubscription | undefined>();
-  const ParseQuery = new Parse.Query(objectClass);
+  const ParseQuery = query || new Parse.Query(objectClass);
 
   if (ascending) {
     ParseQuery.ascending(ascending);
+  }
+
+  if (descending) {
+    ParseQuery.descending(descending);
   }
 
   if (filter) {
@@ -131,38 +156,44 @@ export const ParseCollectionLiveQuery = ({
   }
 
   const fetchObject = async () => {
-    if (ascending) {
+    if (!findAll || ascending) {
       return ParseQuery.find()
     } else {
       return ParseQuery.findAll()
     }
   }
 
-  const query = useQuery(
-    [
-      objectClass,
-      {
-        ascending,
-        filter,
-        include,
-      }
-    ],
-    () => fetchObject(),
+  const queryKey = props.queryKey || [
+    objectClass,
     {
-      staleTime: Infinity,
-      refetchOnWindowFocus: false,
-      ...o,
-    },
-  )
+      descending,
+      ascending,
+      filter,
+      include,
+    }
+  ]
+
+  const queryOptions = {
+    ...o
+  }
+
+  if (isLive) {
+    queryOptions.staleTime = Infinity;
+    queryOptions.refetchOnWindowFocus = false;
+  }
+
+  const q = useQuery(
+    queryKey,
+    () => fetchObject(),
+    queryOptions,
+  );
 
   useEffect(() => {
     const subscribe = async () => {
       if (!sub.current) {
         const subscription = await ParseQuery.subscribe();
         subscription.on('create', (item) => {
-          console.log('create', item);
-          queryClient.setQueriesData(queryKey, item);
-          queryClient.setQueriesData(objectClass, (oldData) => {
+          queryClient.setQueriesData(queryKey, (oldData) => {
             if (Array.isArray(oldData)) {
               return [...oldData, item];
             }
@@ -170,10 +201,7 @@ export const ParseCollectionLiveQuery = ({
           });
         });
         subscription.on('update', (item) => {
-          console.log('update', item.id);
-          queryClient.setQueriesData(queryKey, item)
-          queryClient.setQueriesData(objectClass, (oldData) => {
-            console.log(Array.isArray(oldData), oldData.length);
+          queryClient.setQueriesData(queryKey, (oldData) => {
             const update = (oldItem: any) => oldItem.id === item.id ? item : oldItem;
             if (Array.isArray(oldData)) {
               return oldData.map(update);
@@ -182,9 +210,7 @@ export const ParseCollectionLiveQuery = ({
           })
         });
         subscription.on('delete', (item) => {
-          console.log('delete', item.id);
-          queryClient.removeQueries(queryKey);
-          queryClient.setQueriesData(objectClass, (oldData) => {
+          queryClient.setQueriesData(queryKey, (oldData) => {
             const update = (oldItem: any) => oldItem.id !== item.id;
             if (Array.isArray(oldData)) {
               return oldData.filter(update);
@@ -197,10 +223,12 @@ export const ParseCollectionLiveQuery = ({
         console.log(sub.current.id);
       }
     }
-    // subscribe();
+    if (isLive) {
+      subscribe();
+    }
     return () => {
       sub.current?.unsubscribe();
     }
   }, [])
-  return children(query);
+  return children(q);
 }

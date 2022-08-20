@@ -9,7 +9,6 @@ import { useColorPalette } from "@app/theme";
 import {
   FormControl,
   FormLabel,
-  useColorModeValue,
 } from "@chakra-ui/react";
 
 interface DatePickerFieldProps {

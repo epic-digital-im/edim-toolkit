@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button } from "@chakra-ui/react";
 import ReactQuill from "react-quill";
 
@@ -57,20 +57,31 @@ const CustomToolbar = () => (
   </Box>
 );
 
-const Editor = ({ value, onChange, placeholder }) => {
-  const [state, setState] = useState({ editorHtml: value || "" });
+const Editor = ({ value, onChange, placeholder, props }) => {
+  const [state, setState] = useState(value || "");
 
   const handleChange = (html) => {
-    setState({ editorHtml: html });
+    setState(html);
     if (onChange) onChange(html);
   }
+
+  useEffect(() => {
+    if (value !== state) {
+      setState(value);
+    }
+    return () => { }
+  }, [value])
+
+
   return (
-    <div className="text-editor">
+    <div className="text-editor" style={{ width: '100%' }}>
       <CustomToolbar />
       <ReactQuill
         onChange={handleChange}
         placeholder={placeholder}
         modules={Editor.modules}
+        defaultValue={state}
+        {...props}
       />
     </div>
   );

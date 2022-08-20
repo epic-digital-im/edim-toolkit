@@ -13,3 +13,4 @@ export * from './Fields/TextField';
 export * from './Fields/ToggleField';
 export * from './Fields/UserTypeSelectField';
 export * from './Fields/WeekdaySelectField';
+export * from './Fields/GooglePlaceField';

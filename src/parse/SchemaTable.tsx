@@ -19,6 +19,7 @@ import { HamburgerIcon, SettingsIcon } from '@chakra-ui/icons';
 import { IoEyeSharp, IoEyeOffSharp } from 'react-icons/io5'
 
 import { useQuery } from '@tanstack/react-query';
+
 import {
   Modal,
   ModalHeader,
@@ -35,8 +36,9 @@ import {
 
 import Selector from '../components/Selectors/Selector';
 import DraggableList from '@edim/toolkit/src/components/Draggable/DraggableList'
-import { SchemaConfig, PM_AttributeAttributes } from '@app/shared/parse-types';
+import { SchemaConfig, AttributeAttributes } from '@app/shared/parse-types';
 import getters from '@app/shared/utils/getters';
+import { DeleteButton } from '../components/Buttons/DeleteButton';
 
 const CellRenderMap = {
   "Date": EditableDateCell,
@@ -220,7 +222,7 @@ export const SchemaTable = () => {
 
   const columns = useMemo(() => {
     if (!selectedSchema) return [];
-    return Object.keys(selectedSchema.fields)
+    const cols = Object.keys(selectedSchema.fields)
       .filter((field) => {
         const visibility = classSchemaConfig?.get('columnVisibility') || [];
         return visibility[field] !== false;
@@ -236,8 +238,8 @@ export const SchemaTable = () => {
           CellRender = EditableAttributeCell({
             attributeName: field,
             objectClass: f.targetClass,
-            valueGetter: (row: PM_AttributeAttributes) => row.objectId,
-            labelGetter: (row: PM_AttributeAttributes) => row.value,
+            valueGetter: (row: AttributeAttributes) => row.objectId,
+            labelGetter: (row: AttributeAttributes) => row.value,
           });
         } else if (f.type === 'Pointer') {
           CellRender = EditableRelationCell({
@@ -264,6 +266,21 @@ export const SchemaTable = () => {
         }
         return [...acc, val];
       }, [])
+
+    cols.push({
+      Header: 'Actions',
+      accessor: 'actions',
+      width: 100,
+      Cell: ({ row, column }) => {
+        return (
+          <Flex direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
+            <DeleteButton object={row.original._object} />
+          </Flex>
+        )
+      }
+    });
+
+    return cols;
   }, [selectedSchema, classSchemaConfig]);
 
   // useEffect(() => {

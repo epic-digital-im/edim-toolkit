@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useField } from "formik";
 import { Input, ComponentWithAs, FormControlProps, InputProps } from '@chakra-ui/react';
 import { ParsePropUpdater } from "../../parse/PropUpdater";
@@ -9,20 +9,37 @@ import {
   FormLabel,
 } from "@chakra-ui/react";
 
-interface TextParseProps {
+interface TextPropUpdaterProps {
   object: Parse.Object<any>;
   property: string;
 }
 
-export const TextParse: React.FC<TextParseProps> = (props) => {
+export const TextPropUpdater: React.FC<TextPropUpdaterProps> = (props) => {
   const { colorMode, textColor, inputBgColor, inputBorderColor } = useColorPalette();
   return (
     <ParsePropUpdater {...props}>
       {({ onChange, value }) => {
+        const [local, setLocal] = useState(value);
+
+        const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+          setLocal(e.target.value);
+        }
+
+        const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+          if (value !== local) {
+            onChange(local);
+          }
+        }
+
+        useEffect(() => {
+          setLocal(value);
+        }, [value]);
+
         return (
           <Input
-            value={value}
-            onChange={onChange}
+            value={local}
+            onChange={handleChange}
+            onBlur={handleBlur}
             color={textColor}
             backgroundColor={inputBgColor}
             borderColor={colorMode === 'dark' ? inputBorderColor : null}

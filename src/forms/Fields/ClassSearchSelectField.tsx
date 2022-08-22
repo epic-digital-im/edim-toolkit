@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useField } from "formik";
 
 import {
@@ -11,14 +11,31 @@ import ClassSearchSelect from '../../components/Selectors/ClassSearchSelect';
 
 import { useColorPalette } from "@app/theme";
 
-export const ClassSearchSelectField = ({ label, handleSelect, ...props }: any) => {
+export const ClassSearchSelectField = ({ label, handleSelect, object, isMulti, initialValue, ...props }: any) => {
   const { textColor } = useColorPalette();
+  const [intialValue, setIntialValue] = useState(initialValue || []);
   const [field, meta, helpers] = useField(props);
 
   const handleSelected = (value: any) => {
     helpers.setValue(value);
     if (handleSelect) handleSelect(value, helpers);
   }
+
+  useEffect(() => {
+    if (!isMulti || !object) return;
+    const t = object?.get(field.name) as Parse.Relation<any>;
+    if (t && t.query) {
+      t.query().find().then((res) => {
+        if (res && res.length > 0) {
+          const options = res.map((r: Parse.Object<any>) => r.toJSON());
+          setIntialValue(options);
+          helpers.setValue(res);
+        } else {
+          setIntialValue([]);
+        }
+      });
+    }
+  }, [object]);
 
   return (
     <Box position={'relative'}>
@@ -37,6 +54,8 @@ export const ClassSearchSelectField = ({ label, handleSelect, ...props }: any) =
         size="lg"
         onSelect={handleSelected}
         error={meta.touched && meta.error}
+        isMulti={isMulti}
+        initialValue={intialValue}
         {...props}
       />
       {meta.touched && meta.error ? (

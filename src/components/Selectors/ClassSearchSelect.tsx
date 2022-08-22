@@ -119,6 +119,9 @@ const ClassSearchSelect = (props: ClassSearchSelectProps) => {
     }
     await object.save();
     ClassQuery.refetch();
+    if (props.onCreate) {
+      await props.onCreate(object);
+    }
     return object;
   }
 
@@ -172,6 +175,16 @@ const ClassSearchSelect = (props: ClassSearchSelectProps) => {
     } else if (isMulti && action === 'remove-value') {
       if (onRemove) onRemove(removedValue.value)
       setValue(newValue);
+      // if (isMulti && Array.isArray(newValue)) {
+      //   onSelect(newValue.map(val => data?.find((item: any) => item.id === val.value)));
+      // } else {
+      //   const selected = data?.find((item: any) => {
+      //     return item.id === newValue.value;
+      //   });
+      //   if (selected) {
+      //     onSelect(selected);
+      //   }
+      // }
     } else {
       if (newValue) {
         if (newValue.value === 'OTHER') {

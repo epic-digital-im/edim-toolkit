@@ -81,6 +81,7 @@ const Editor = ({ value, onChange, placeholder, props }) => {
         placeholder={placeholder}
         modules={Editor.modules}
         defaultValue={state}
+        theme="snow"
         {...props}
       />
     </div>

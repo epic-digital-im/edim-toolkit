@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useField } from "formik";
 
 import {
@@ -7,6 +7,8 @@ import {
   useColorModeValue,
   Select,
 } from "@chakra-ui/react";
+
+import { ParsePropUpdater } from "../../parse/PropUpdater";
 
 interface SelectFieldProps {
   label: string;
@@ -62,5 +64,47 @@ export const SelectField: React.FC<SelectFieldProps> = ({ label, options, valueG
     </FormControl>
   );
 };
+
+interface SelectPropUpdaterProps {
+  object: Parse.Object<any>;
+  property: string;
+  options: { value: any; label: string }[];
+  valueGetter?: (value: any) => any;
+}
+
+export const SelectPropUpdater: React.FC<SelectPropUpdaterProps> = ({ valueGetter, options, ...props }) => {
+  return (
+    <ParsePropUpdater {...props}>
+      {({ onChange, value }) => {
+        const [local, setLocal] = useState(value);
+
+        const handleChange = (event) => {
+          const v = event.target.value;
+          if (value !== v) {
+            onChange(valueGetter ? valueGetter(value) : value);
+            setLocal(v);
+          }
+        }
+
+        useEffect(() => {
+          setLocal(valueGetter ? valueGetter(value) : value);
+        }, [value])
+
+        return (
+          <Select
+            onChange={handleChange}
+            onBlur={handleChange}
+            value={local}
+          >
+            <option value={null}>{"SELECT"}</option>
+            {options.map((option: any, index: number) => (
+              <option key={`${option.value}_${index}`} value={option.value}>{option.label}</option>
+            ))}
+          </Select>
+        )
+      }}
+    </ParsePropUpdater>
+  )
+}
 
 export default SelectField;

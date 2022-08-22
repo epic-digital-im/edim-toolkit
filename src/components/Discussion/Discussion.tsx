@@ -7,6 +7,7 @@ import {
   Button,
   Flex,
   Text,
+  useToast,
   useColorModeValue,
 } from "@chakra-ui/react";
 
@@ -17,7 +18,8 @@ import {
   ParseCollectionLiveQuery,
   LoadingOverlay,
   DeleteButton,
-  EditorInput
+  EditorInput,
+  ObjectAvatar,
 } from "@edim/toolkit";
 
 import { ClassNames } from '@app/shared/types'
@@ -33,6 +35,7 @@ interface DiscussionProps {
 }
 
 export const Discussion = ({ object, property, onCreate, isDialog }: DiscussionProps) => {
+  const toast = useToast();
   const currentUser = Parse.User.current();
   const [value, setValue] = useState('');
   const textColor = useColorModeValue("gray.700", "white");
@@ -49,7 +52,7 @@ export const Discussion = ({ object, property, onCreate, isDialog }: DiscussionP
     filters.push({
       method: 'equalTo',
       value: property,
-      prop: 'subjectProp',
+      prop: 'context',
     });
   }
 
@@ -71,17 +74,33 @@ export const Discussion = ({ object, property, onCreate, isDialog }: DiscussionP
           setValue(value);
         }
 
-        const handleCreateComment = () => {
-          const CommentClass = Parse.Object.extend(ClassNames.Comment);
-          const comment = new CommentClass();
-          comment.set('comment', value);
-          comment.set('subjectId', object.id);
-          comment.set('subjectClass', object.className);
-          comment.set('subjectProp', property);
-          comment.save().then(() => {
+        const handleCreateComment = async () => {
+          try {
+            const CommentClass = Parse.Object.extend(ClassNames.Comment);
+            const comment = new CommentClass();
+            comment.set('comment', value);
+            comment.set('subjectId', object.id);
+            comment.set('subjectClass', object.className);
+            comment.set('context', property);
+            await comment.save()
             setValue('');
-            onCreate();
-          });
+            if (onCreate) onCreate();
+            toast({
+              title: 'Comment created',
+              description: 'Your comment has been created successfully',
+              status: 'success',
+              duration: 5000,
+              isClosable: true,
+            });
+          } catch (err) {
+            toast({
+              title: 'Error',
+              description: err.message,
+              status: 'error',
+              duration: 5000,
+              isClosable: true,
+            });
+          }
         }
 
         const handleKeyDown = (event) => {
@@ -123,7 +142,13 @@ export const Discussion = ({ object, property, onCreate, isDialog }: DiscussionP
                   return (
                     <Flex mb="30px" width={'100%'} position={'relative'}>
                       <Box>
-                        <Avatar w="50px" h="50px" me="15px" />
+                        <ObjectAvatar
+                          object={comment.get('user')}
+                          w="50px"
+                          h="50px"
+                          me="15px"
+                          linkTo={(user: User) => `/admin/user/${user.id}`}
+                        />
                       </Box>
                       <Flex direction="column">
                         {isOwner && <DeleteButton
@@ -133,16 +158,16 @@ export const Discussion = ({ object, property, onCreate, isDialog }: DiscussionP
                           object={comment}
                           type='icon'
                         />}
-                        <Text fontSize="md" color={textColor} fontWeight="bold">
+                        <Text fontSize="sm" color={textColor} fontWeight="bold">
                           {comment.get('user')?.get('username')}
                         </Text>
-                        <Text fontSize="md" color={textColor}>
+                        <Text fontSize="xs" color={'gray.500'}>
                           {moment(comment.get('createdAt')).fromNow()}
                         </Text>
                         <Text
-                          color="gray.500"
+                          color={textColor}
                           fontWeight="normal"
-                          fontSize="md"
+                          fontSize="lg"
                           mt="6px"
                           mb="14px"
                           dangerouslySetInnerHTML={{ __html: comment.get('comment') }}
@@ -176,7 +201,7 @@ export const Discussion = ({ object, property, onCreate, isDialog }: DiscussionP
 
                 <Flex align="flex-start" width={'100%'}>
                   <Box>
-                    <Avatar src={currentUser.get('avatar')} w="50px" h="50px" me="15px" />
+                    <ObjectAvatar object={currentUser} w="50px" h="50px" me="15px" />
                   </Box>
                   <Flex align="flex-end" direction="column" width={'100%'}>
                     <EditorInput

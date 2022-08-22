@@ -3,7 +3,7 @@ import { Comment } from '@app/shared/parse-types';
 export const updateCommentCount = async (Parse: any, comment: Comment, inc?: boolean) => {
   const subjectClass = comment.get('subjectClass');
   const subjectId = comment.get('subjectId');
-  const subjectProp = comment.get('subjectProp');
+  const context = comment.get('context');
 
   const SubjectClassObject = Parse.Object.extend(subjectClass);
   const SubjectClassQuery = new Parse.Query(SubjectClassObject);
@@ -13,16 +13,16 @@ export const updateCommentCount = async (Parse: any, comment: Comment, inc?: boo
 
   if (!commentCount) {
     const count = { count: 0 };
-    if (subjectProp) {
-      count[subjectProp] = 0;
+    if (context) {
+      count[context] = 0;
     }
     subject.set('commentCount', count);
     await subject.save(null, { useMasterKey: true });
   }
 
 
-  const incVal = (subjectProp)
-    ? `commentCount.${subjectProp}`
+  const incVal = (context)
+    ? `commentCount.${context}`
     : 'commentCount.count';
 
   if (inc) {

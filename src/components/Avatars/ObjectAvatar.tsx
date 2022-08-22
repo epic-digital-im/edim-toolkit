@@ -17,7 +17,7 @@ export const ObjectAvatar: React.FC<ObjectAvatarProps> = ({ object, linkTo, ...p
     <Wrapper to={linkTo ? linkTo(object) : undefined}>
       <Avatar
         src={avatarUrl}
-        background={bgColor}
+        background={avatarUrl ? bgColor : null}
         {...props}
       />
     </Wrapper>

@@ -1,4 +1,5 @@
-import React, { Component, cloneElement } from 'react';
+import Parse from 'parse/dist/parse.min.js';
+import React, { Component, cloneElement, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useField } from "formik";
 
@@ -7,7 +8,11 @@ import {
   FormLabel,
   Button,
   useColorModeValue,
+  Flex,
 } from "@chakra-ui/react";
+
+import { ParsePropUpdater } from '../../parse/PropUpdater';
+import { LoadingOverlay } from '../../components/Loaders/LoadingOverlay';
 
 const NonPreviewDefaultComponent = ({ title = "No Preview", size = null, type = null }) => (
   <div style={{
@@ -158,7 +163,9 @@ class FileInputBase64PreviewComponent extends Component {
             })}
             {this.state.image_objs_array.length === 0 && this.props.defaultFiles.map((img_url, index) => {
               return (
-                <img alt={"Preview " + index} src={img_url} key={index} style={this.props.imageStyle} />
+                <a href={img_url} target="_blank">
+                  <img alt={"Preview " + index} src={img_url} key={index} style={this.props.imageStyle} />
+                </a>
               );
             })}
           </div>
@@ -241,9 +248,7 @@ FileInputBase64PreviewComponent.defaultProps = {
     color: 'rgba(0, 0, 0, 0.298039)',
     display: 'block'
   },
-  parentStyle: {
-    marginTop: 14
-  },
+  parentStyle: {},
   buttonComponent: <button type="button">Attach</button>,
   nonPreviewComponent: <NonPreviewDefaultComponent />,
   textFieldComponent: <input type="text" />,
@@ -304,7 +309,7 @@ export const ImageFileInputField = ({ label, ...props }: any) => {
           marginBottom: 5,
           marginRight: 5,
           width: "auto",
-          height: "150px",
+          height: "50px",
           boxShadow: "rgba(0, 0, 0, 0.188235) 0px 10px 30px, rgba(0, 0, 0, 0.227451) 0px 6px 10px" //zDepth 3
         }}
         labelStyle={{
@@ -340,5 +345,96 @@ export const ImageFileInputField = ({ label, ...props }: any) => {
     </Box>
   );
 };
+
+interface SelectPropUpdaterProps {
+  object: Parse.Object<any>;
+  property: string;
+  options: { value: any; label: string }[];
+  valueGetter?: (value: any) => any;
+}
+
+export const FilePropUpdater: React.FC<SelectPropUpdaterProps> = ({ valueGetter, options, ...props }) => {
+  return (
+    <ParsePropUpdater {...props}>
+      {({ onChange, value, isLoading, isError }) => {
+        const [localLoading, setLocalLoading] = useState(false);
+        const [local, setLocal] = useState(value);
+
+        const defaultFiles = value?.map((file: Parse.File) => {
+          return file.url()
+        }) || [];
+
+        const handleChange = async (files: File[]) => {
+          setLocalLoading(true);
+          try {
+            const fileList = [];
+            for (let i = 0; i < files.length; i++) {
+              const file = files[i];
+              console.log(file);
+              const parseFile = new Parse.File(file.name, file.file);
+              await parseFile.save()
+              fileList.push(parseFile);
+            }
+            setLocal(fileList);
+            onChange(fileList);
+            setLocalLoading(false);
+            console.log(fileList);
+          } catch (error) {
+            console.log(error);
+            setLocalLoading(false);
+          }
+        }
+
+        useEffect(() => {
+          setLocal(valueGetter ? valueGetter(value) : value);
+        }, [value])
+
+        return (
+          <Flex>
+            <LoadingOverlay isLoading={isLoading || localLoading} />
+            <FileInputBase64PreviewComponent
+              callbackFunction={handleChange}
+              useTapEventPlugin={false}
+              multiple={true}
+              imagePreview={true}
+              textBoxVisible={false}
+              accept={"image/*"}
+              imageContainerStyle={{
+                display: "flex",
+                flexDirection: "row",
+                width: "100%",
+                flexWrap: "wrap"
+              }}
+              imageStyle={{
+                marginTop: 5,
+                marginBottom: 5,
+                marginRight: 5,
+                width: "auto",
+                height: "50px",
+                boxShadow: "rgba(0, 0, 0, 0.188235) 0px 10px 30px, rgba(0, 0, 0, 0.227451) 0px 6px 10px" //zDepth 3
+              }}
+              labelStyle={{
+                fontSize: 16,
+                color: 'rgba(0, 0, 0, 0.298039)',
+                display: 'block'
+              }}
+              parentStyle={{}}
+              buttonComponent={<Button size={'sm'} type="button">Add Files</Button>}
+              nonPreviewComponent={<NonPreviewDefaultComponent />}
+              textFieldComponent={<input type="text" />}
+              defaultFiles={defaultFiles}
+            // borderColor={meta.touched && meta.error ? "red.500" : "gray.300"}
+            // placeholder={label}
+            // borderRadius="15px"
+            // fontSize="sm"
+            // size="lg"
+            // {...props}
+            />
+          </Flex>
+        )
+      }}
+    </ParsePropUpdater>
+  )
+}
 
 export default ImageFileInputField;

@@ -144,6 +144,7 @@ export const ParseFilePropUpdater = (props: ParsePropUpdaterProps): ReactNode =>
   return children({
     onChange: handleUpdate,
     value,
+    isLoading,
   })
 }
 

@@ -574,7 +574,7 @@ export const FilterTable = (props: FitlerTableProps) => {
                   templateRows={{ md: "repeat(1, 1fr)" }}>
                   {page.map((row: any, index: number) => {
                     prepareRow(row);
-                    const objectId = row.original.id;
+                    const objectId = row.original._object.id;
                     const initialState = tableData.find((p: any) => {
                       return p.id === objectId
                     });
@@ -602,7 +602,7 @@ export const FilterTable = (props: FitlerTableProps) => {
                       })
                     }
                     return (
-                      <GridItem key={row.original.id}>
+                      <GridItem key={`${row.original._object.id}`}>
                         {renderRowCard(row, index, initialState, handleEdit, handleDelete)}
                       </GridItem>
                     );
@@ -731,7 +731,7 @@ export const FilterTable = (props: FitlerTableProps) => {
                       {page.map((row, rowIndex) => {
                         prepareRow(row);
                         const { key } = row.getRowProps();
-                        const rowKey = `${key}_${row.original.id}`;
+                        const rowKey = `${key}_${row.original._object.id}`;
                         return (
                           <Flex
                             key={`${rowIndex}_${rowKey}`}

@@ -5,14 +5,14 @@ import DiscussionDialog from '../Dialogs/DiscussionDialog';
 
 interface DiscussionDialogButtonProps {
   object: Parse.Object<any>;
-  property?: string;
+  context?: string;
   onDiscussionDialog?: () => void;
   label?: string;
   refetch?: () => void;
   type?: 'button' | 'icon';
 }
 
-export const DiscussionDialogButton: React.FC<DiscussionDialogButtonProps> = ({ object, property, onDiscussionDialog, label, refetch, type, ...rest }) => {
+export const DiscussionDialogButton: React.FC<DiscussionDialogButtonProps> = ({ object, context, onDiscussionDialog, label, refetch, type, ...rest }) => {
   const toast = useToast();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [isDeleting, setIsDeleting] = useState(false);
@@ -47,8 +47,8 @@ export const DiscussionDialogButton: React.FC<DiscussionDialogButtonProps> = ({ 
   }
 
   const counts = object.get('commentCount') || {};
-  const commentCount = (property)
-    ? counts[property] || 0
+  const commentCount = (context)
+    ? counts[context] || 0
     : counts['count'] || 0;
   const hasComments = commentCount > 0;
 
@@ -81,7 +81,7 @@ export const DiscussionDialogButton: React.FC<DiscussionDialogButtonProps> = ({ 
       )}
       <DiscussionDialog
         object={object}
-        property={property}
+        context={context}
         isOpen={isOpen}
         onClose={handleClose(refetch)}
         onConfirm={handleDiscussionDialog(refetch)}

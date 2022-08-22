@@ -25,16 +25,19 @@ import {
 import { ClassNames } from '@app/shared/types'
 
 import { HSeparator } from "../Separator/Separator";
+
 import React, { useState } from "react";
+
+import { NavLink } from 'react-router-dom';
 
 interface DiscussionProps {
   object: Parse.Object<any>;
   isDialog?: boolean
-  property: string;
+  context: string;
   onCreate?: () => void;
 }
 
-export const Discussion = ({ object, property, onCreate, isDialog }: DiscussionProps) => {
+export const Discussion = ({ object, context, onCreate, isDialog }: DiscussionProps) => {
   const toast = useToast();
   const currentUser = Parse.User.current();
   const [value, setValue] = useState('');
@@ -48,17 +51,17 @@ export const Discussion = ({ object, property, onCreate, isDialog }: DiscussionP
     },
   ];
 
-  if (property) {
+  if (context) {
     filters.push({
       method: 'equalTo',
-      value: property,
+      value: context,
       prop: 'context',
     });
   }
 
   const counts = object.get('commentCount') || {};
-  const commentCount = (property)
-    ? counts[property] || 0
+  const commentCount = (context)
+    ? counts[context] || 0
     : counts['count'] || 0;
 
   return (
@@ -81,7 +84,7 @@ export const Discussion = ({ object, property, onCreate, isDialog }: DiscussionP
             comment.set('comment', value);
             comment.set('subjectId', object.id);
             comment.set('subjectClass', object.className);
-            comment.set('context', property);
+            comment.set('context', context);
             await comment.save()
             setValue('');
             if (onCreate) onCreate();
@@ -159,7 +162,9 @@ export const Discussion = ({ object, property, onCreate, isDialog }: DiscussionP
                           type='icon'
                         />}
                         <Text fontSize="sm" color={textColor} fontWeight="bold">
-                          {comment.get('user')?.get('username')}
+                          <NavLink to={`/admin/user/${comment.get('user')?.id}`}>
+                            {comment.get('user')?.get('username')}
+                          </NavLink>
                         </Text>
                         <Text fontSize="xs" color={'gray.500'}>
                           {moment(comment.get('createdAt')).fromNow()}

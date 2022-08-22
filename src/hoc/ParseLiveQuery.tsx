@@ -156,6 +156,7 @@ export const ParseCollectionLiveQuery = (props: ParseCollectionLiveQueryProps) =
   }
 
   const fetchObject = async () => {
+    console.log(ParseQuery);
     if (!findAll || ascending) {
       return ParseQuery.find()
     } else {

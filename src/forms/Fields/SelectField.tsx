@@ -80,8 +80,8 @@ export const SelectPropUpdater: React.FC<SelectPropUpdaterProps> = ({ valueGette
 
         const handleChange = (event) => {
           const v = event.target.value;
-          if (value !== v) {
-            onChange(valueGetter ? valueGetter(value) : value);
+          if (local !== v) {
+            onChange(valueGetter ? valueGetter(v) : v);
             setLocal(v);
           }
         }

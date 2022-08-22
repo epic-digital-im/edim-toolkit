@@ -22,7 +22,7 @@ interface ConfirmDialogProps extends AlertDialogProps {
   onConfirm: () => void;
   objectClass?: ClassNames;
   object: Parse.Object<any>;
-  property?: string;
+  context?: string;
   title?: string;
   body?: string;
   cancelLabel?: string;
@@ -41,7 +41,7 @@ const DiscussionDialog = ({
   onChange,
   color,
   object,
-  property,
+  context,
   ...rest
 }: DiscussionDialogProps) => {
   const cancelRef = useRef();
@@ -66,7 +66,7 @@ const DiscussionDialog = ({
             <Flex width={'100%'} justifyContent={'center'}>
               <Discussion
                 object={object}
-                property={property}
+                context={context}
                 onCreate={console.log}
                 isDialog
               />

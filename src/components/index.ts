@@ -1,7 +1,6 @@
 export { default as EventCalendar } from './Calendars/EventCalendar';
 
 export * from './Avatars/ObjectAvatar';
-
 export * from './Buttons/DeleteButton';
 export * from './Buttons/SubmitButton';
 export * from './Buttons/BackButton';

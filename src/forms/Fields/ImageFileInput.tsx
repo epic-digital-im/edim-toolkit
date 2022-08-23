@@ -2,6 +2,7 @@ import Parse from 'parse/dist/parse.min.js';
 import React, { Component, cloneElement, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useField } from "formik";
+import exifr from 'exifr'
 
 import {
   Box,
@@ -118,30 +119,34 @@ class FileInputBase64PreviewComponent extends Component {
   handleFileChange(e) {
     let inp_files = e.target.files;
     let op_all_files = [];
+    let _this = this;
     for (let i = 0; i < inp_files.length; i++) {
       let to_file = inp_files[i];
-      let reader_obj = new FileReader();
-      reader_obj.readAsDataURL(to_file);
-      reader_obj.onload = () => {
-        let to_file_obj = {
-          name: to_file.name,
-          type: to_file.type,
-          size: Math.round(to_file.size / 1000),
-          base64: reader_obj.result,
-          file: to_file
-        };
-        op_all_files.push(to_file_obj);
-        if (op_all_files.length === inp_files.length) {
-          if (this.props.multiple) {
-            this.setState({ image_objs_array: op_all_files });
-            this.props.callbackFunction(op_all_files);
-          }
-          else {
-            this.setState({ image_objs_array: op_all_files });
-            this.props.callbackFunction(op_all_files[0]);
+      exifr.parse(to_file).then(function (exif) {
+        let reader_obj = new FileReader();
+        reader_obj.readAsDataURL(to_file);
+        reader_obj.onload = () => {
+          let to_file_obj = {
+            name: to_file.name,
+            type: to_file.type,
+            size: Math.round(to_file.size / 1000),
+            base64: reader_obj.result,
+            file: to_file,
+            exif,
+          };
+          op_all_files.push(to_file_obj);
+          if (op_all_files.length === inp_files.length) {
+            if (_this.props.multiple) {
+              _this.setState({ image_objs_array: op_all_files });
+              _this.props.callbackFunction(op_all_files);
+            }
+            else {
+              _this.setState({ image_objs_array: op_all_files });
+              _this.props.callbackFunction(op_all_files[0]);
+            }
           }
         }
-      }
+      });
     }
   }
 
@@ -370,15 +375,29 @@ export const FilePropUpdater: React.FC<SelectPropUpdaterProps> = ({ valueGetter,
             const fileList = [];
             for (let i = 0; i < files.length; i++) {
               const file = files[i];
-              console.log(file);
-              const parseFile = new Parse.File(file.name, file.file);
+              const exif = file.exif;
+              const CreateDate = exif && exif.CreateDate?.toString();
+              const OffsetTime = exif && exif.OffsetTime;
+              const latitude = exif && exif.latitude?.toString()
+              const longitude = exif && exif.longitude?.toString();
+
+              const parseFile = new Parse.File(
+                file.name,
+                file.file,
+                file.type,
+                {
+                  CreateDate,
+                  OffsetTime,
+                  latitude,
+                  longitude
+                },
+              );
               await parseFile.save()
               fileList.push(parseFile);
             }
             setLocal(fileList);
             onChange(fileList);
             setLocalLoading(false);
-            console.log(fileList);
           } catch (error) {
             console.log(error);
             setLocalLoading(false);

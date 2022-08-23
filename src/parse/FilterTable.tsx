@@ -733,10 +733,11 @@ export const FilterTable = (props: FitlerTableProps) => {
                       {page.map((row, rowIndex) => {
                         prepareRow(row);
                         const { key } = row.getRowProps();
-                        const rowKey = `${key}_${row.original._object.id}`;
+                        const objectId = (row.original._object) ? row.original._object.id : row.original.id;
+                        const rowKey = `${rowIndex}_${key}_${objectId}`;
                         return (
                           <Flex
-                            key={`${rowIndex}_${rowKey}`}
+                            key={rowKey}
                             backgroundColor={rowIndex % 2 ? rowBg1 : rowBg2}
                             display="flex"
                             flexDirection={"row"}

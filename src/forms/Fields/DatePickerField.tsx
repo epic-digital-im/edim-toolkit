@@ -13,17 +13,19 @@ import {
 
 interface DatePickerFieldProps {
   name: string;
-  value: Date;
+  value: Date | string;
   onChange: (value: Date | null) => void;
 }
 
 export const SingleDatePickerInput: React.FC<DatePickerFieldProps> = (props) => {
   const { onChange, name } = props;
-  const [value, setValue] = useState(props.value ? moment(props.value) : null);
+  const dateValue = props.value?.iso || props.value;
+  const initialDate = dateValue ? moment(dateValue) : null
+  const [value, setValue] = useState(initialDate);
   const [focused, setFocused] = useState<boolean>(false);
 
   useEffect(() => {
-    setValue(props.value ? moment(props.value) : null);
+    setValue(initialDate);
   }, [props.value]);
 
   const handleClose = () => {

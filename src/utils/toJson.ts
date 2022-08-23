@@ -1,4 +1,4 @@
-const toJson = (obj: any) => {
+export const toJson = (obj: any) => {
   return obj && obj.toJSON ? obj.toJSON() : {};
 }
 

@@ -11,7 +11,11 @@ import {
   useToast,
   Text,
   Link,
+  FormLabel,
+  Box,
 } from "@chakra-ui/react";
+
+import { useColorPalette } from '@app/theme';
 
 interface FuncArgs {
   onChange: (value: any) => void,
@@ -68,7 +72,6 @@ export const ParsePropUpdater = (props: ParsePropUpdaterProps): ReactNode => {
   }
 
   const handleUndo = () => {
-    console.log(prevValue);
     if (prevValue) {
       handleUpdate(prevValue, true);
     }
@@ -149,6 +152,7 @@ export const ParseFilePropUpdater = (props: ParsePropUpdaterProps): ReactNode =>
 }
 
 interface ParsePropUpdaterProps {
+  label?: string;
   object: Parse.Object<any>;
   property: string;
   objectClass: ClassNames;
@@ -160,9 +164,10 @@ interface ParsePropUpdaterProps {
 }
 
 export const RelationPropUpdater = (props: ParsePropUpdaterProps): ReactNode => {
+  const { textColor } = useColorPalette();
   const toast = useToast();
-  const getter = getters(props.objectClass);
-  const { object, property, isClearable, objectClass, valueGetter, labelGetter } = props;
+  const { valueGetter, labelGetter } = getters(props.objectClass);
+  const { label, object, property, objectClass, ...rest } = props;
   const [initialData, setInitialData] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const valueRef = React.useRef<any>();
@@ -219,7 +224,6 @@ export const RelationPropUpdater = (props: ParsePropUpdaterProps): ReactNode => 
   }
 
   const handleUpdate = async (value: any) => {
-    console.log('handleUpdate', value);
     valueRef.current = value;
     setIsLoading(true);
     if (value[0] !== undefined) {
@@ -230,11 +234,6 @@ export const RelationPropUpdater = (props: ParsePropUpdaterProps): ReactNode => 
     setIsLoading(false);
     toast({
       title: `Item updated`,
-      // title: (
-      //   <Text fontSize="sm">
-      //     {`${property} updated`} - <Link onClick={() => handleUndo('update')}>Undo</Link>
-      //   </Text>
-      // ),
       status: "success",
       duration: 5000,
       isClosable: true,
@@ -242,7 +241,6 @@ export const RelationPropUpdater = (props: ParsePropUpdaterProps): ReactNode => 
   }
 
   const handleClear = async () => {
-    console.log('handleClear');
     setIsLoading(true);
     const relations = await object.relation(property).query().find();
     relations.forEach((relation: Parse.Object<any>) => {
@@ -254,23 +252,16 @@ export const RelationPropUpdater = (props: ParsePropUpdaterProps): ReactNode => 
   }
 
   const handleRemove = async (objectId: string) => {
-    console.log('handleRemove', objectId);
     setIsLoading(true);
     const options = await object.relation(property).query().find();
     const removed = options.filter((o: Attribute) => o.id === objectId);
     valueRef.current = removed;
     object.relation(property).remove(removed);
-    console.log(valueRef.current);
     await object.save();
     await updateInitialData();
     setIsLoading(false);
     toast({
       title: `Item removed`,
-      // title: (
-      //   <Text fontSize="sm">
-      //     {`${property} removed`} - <Link onClick={() => handleUndo('remove')}>Undo</Link>
-      //   </Text>
-      // ),
       status: "success",
       duration: 5000,
       isClosable: true,
@@ -278,7 +269,6 @@ export const RelationPropUpdater = (props: ParsePropUpdaterProps): ReactNode => 
   }
 
   const handleCreate = async (relation: Parse.Object<any>) => {
-    console.log('handleCreate', relation);
     setIsLoading(true);
     object.relation(property).add(relation);
     await object.save();
@@ -286,27 +276,28 @@ export const RelationPropUpdater = (props: ParsePropUpdaterProps): ReactNode => 
     setIsLoading(false);
     toast({
       title: `Item created`,
-      // title: (
-      //   <Text fontSize="sm">
-      //     {`${property} removed`} - <Link onClick={() => handleUndo('remove')}>Undo</Link>
-      //   </Text>
-      // ),
       status: "success",
       duration: 5000,
       isClosable: true,
     });
   }
 
-  console.log(initialData);
-
   return (
-    <div style={{ width: '90%', zIndex: 1000 }}>
+    <Box position={'relative'} width={'100%'} zIndex={1000}>
+      {label && (
+        <FormLabel
+          color={textColor}
+          fontWeight="bold"
+          fontSize="xs"
+        >
+          {label}
+        </FormLabel>
+      )}
       <ClassSearchSelect
-        isClearable={isClearable}
         isLoading={isLoading}
         disabled={isLoading}
-        style={{ width: '100%' }}
         objectClass={objectClass}
+        queryName={objectClass}
         initialValue={initialData}
         valueGetter={valueGetter}
         labelGetter={labelGetter}
@@ -314,10 +305,8 @@ export const RelationPropUpdater = (props: ParsePropUpdaterProps): ReactNode => 
         onCreate={handleCreate}
         onRemove={handleRemove}
         onClear={handleClear}
-        isCreateable
-        queryName={objectClass}
-        isMulti
+        {...rest}
       />
-    </div>
+    </Box>
   )
 }

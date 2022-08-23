@@ -47,6 +47,8 @@ import {
   useRowSelect,
 } from "react-table";
 
+import { useColorPalette } from '@app/theme';
+
 interface FitlerTableProps {
   history: any;
   columnsData: any[];
@@ -232,8 +234,7 @@ const FitlerTable = (props: FitlerTableProps) => {
   //   return tableData.map((item: Parse.Object<Parse.Attributes>) => toJson(item));
   // }, [isLoading, query]);
 
-  const textColor = useColorModeValue("gray.500", "white");
-  const bgColor = useColorModeValue("gray.200", "gray.900");
+  const { textColor, bgColor } = useColorPalette();
 
   // When our cell renderer calls updateMyData, we'll use
   // the rowIndex, columnId and new value to update the

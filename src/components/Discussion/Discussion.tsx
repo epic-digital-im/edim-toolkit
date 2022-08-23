@@ -30,6 +30,8 @@ import React, { useState } from "react";
 
 import { NavLink } from 'react-router-dom';
 
+import { useColorPalette } from '@app/theme';
+
 interface DiscussionProps {
   object: Parse.Object<any>;
   isDialog?: boolean
@@ -41,7 +43,7 @@ export const Discussion = ({ object, context, onCreate, isDialog }: DiscussionPr
   const toast = useToast();
   const currentUser = Parse.User.current();
   const [value, setValue] = useState('');
-  const textColor = useColorModeValue("gray.700", "white");
+  const { textColor } = useColorPalette();
 
   const filters = [
     {

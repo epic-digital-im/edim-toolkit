@@ -4,14 +4,13 @@ import { CustomerAttributes, PropertyAttributes, RunnerAttributes, _UserAttribut
 import {
   Flex,
   Text,
-  useColorModeValue,
   Icon,
 } from "@chakra-ui/react";
 
 import { FaMapMarkerAlt } from "react-icons/fa";
-
+import { useColorPalette } from '@app/theme';
 const FormattedAddress = ({ addressLine1, addressLine2, city, state, zip, country }: Partial<CustomerAttributes | PropertyAttributes | RunnerAttributes>) => {
-  const textColor = useColorModeValue("gray.500", "white");
+  const { textColor } = useColorPalette();
   if (
     !addressLine1 ||
     !city ||

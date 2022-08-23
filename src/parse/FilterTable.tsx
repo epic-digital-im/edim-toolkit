@@ -50,6 +50,8 @@ import {
   useColumnOrder,
 } from "react-table";
 
+import { useColorPalette } from '@app/theme';
+
 import FormDialog from '../components/Dialogs/FormDialog';
 
 export interface FitlerTableProps {
@@ -241,7 +243,7 @@ export const FilterTable = (props: FitlerTableProps) => {
   //   return tableData.map((item: Parse.Object<Parse.Attributes>) => toJson(item));
   // }, [isLoading, query]);
 
-  const textColor = useColorModeValue("gray.500", "white");
+  const { textColor } = useColorPalette();
   const bgColor = useColorModeValue("gray.100", "gray.800");
   const bgColor2 = useColorModeValue("white", "gray.700");
   const inputBgColor = useColorModeValue("white", "gray.700");

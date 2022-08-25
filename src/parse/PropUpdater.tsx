@@ -174,8 +174,11 @@ export const RelationPropUpdater = (props: ParsePropUpdaterProps): ReactNode => 
   const [error, setError] = useState();
 
   useEffect(() => {
+    const relation = object?.get(property);
+    console.log(relation);
+    if (!relation) return;
     setIsLoading(true);
-    object?.get(property).query().find()
+    relation.query().find()
       .then((result: any) => {
         setIsLoading(false);
         setError(undefined);

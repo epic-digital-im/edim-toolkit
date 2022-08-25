@@ -287,7 +287,7 @@ const ClassSearchSelect = (props: ClassSearchSelectProps) => {
       styles={customStyles}
       isClearable={isClearable}
       isMulti={isMulti}
-      placeholder={placeholder || `Select ${objectClass}`}
+      placeholder={placeholder || ''}
     />
   )
 }

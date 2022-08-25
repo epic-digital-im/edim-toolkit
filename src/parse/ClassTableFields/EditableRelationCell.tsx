@@ -45,6 +45,7 @@ export const EditableRelationCell = ({
                 onSelect={onChange}
                 onClear={handleClear}
                 isCreateable
+                placeholder=""
               />
             )
           }}

@@ -35,6 +35,8 @@ export interface ClassTableProps {
   hideSearch?: boolean | undefined;
   onColumnOrderChange?: (newOrder: string[]) => void;
   isLive?: boolean | undefined;
+  include?: string | undefined;
+  filter?: any | undefined;
 }
 
 export const ClassTable: React.FC<ClassTableProps> = (props) => {
@@ -46,6 +48,8 @@ export const ClassTable: React.FC<ClassTableProps> = (props) => {
     findAll,
     initialState,
     isLive,
+    include,
+    filter,
     ...tableProps
   } = props;
 
@@ -58,6 +62,8 @@ export const ClassTable: React.FC<ClassTableProps> = (props) => {
       queryKey={queryKey}
       findAll={findAll}
       isLive={isLive}
+      include={include}
+      filter={filter}
     >
       {({ data, isLoading, refetch, isError }) => {
 
@@ -65,23 +71,26 @@ export const ClassTable: React.FC<ClassTableProps> = (props) => {
           if (isLoading) return [];
           const d = data || [];
           const tableData = d.map((item) => {
-            const raw = item.toJSON();
+            let raw = item.toJSON();
+            raw = Object.keys(raw).reduce((acc, key) => {
+              const v = raw[key];
+              if (v && v.value) {
+                acc[key] = v.value;
+              } else if (v && v.iso) {
+                acc[key] = v.iso;
+              } else {
+                acc[key] = v;
+              }
+              return acc;
+            }, {});
+
             return {
               ...raw,
               _object: item,
             }
           });
-          if (dupes && objectClass === ClassNames.Property) {
-            return tableData.filter((d) => {
-              const matches = tableData.filter((dd) => dd.place_id === d.place_id);
-              return matches && matches.length > 1;
-            }).sort((a, b) => {
-              return a.place_id > b.place_id ? 1 : -1;
-            })
-          }
           return tableData;
         }, [queryKey, data, dupes]);
-
 
         return (
           <Card p="0">

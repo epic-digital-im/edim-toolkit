@@ -28,7 +28,7 @@ export const EditableColorPicker = ({
   row: { original },
   column, // This is a custom function that we supplied to our table instance
 }) => {
-  const { id, editable, discussion } = column;
+  const { id, editable, discussion, discussionTitle } = column;
   const toast = useToast();
   const [value, setValue] = useState(initialValue);
   const [prevValue, setPrevValue] = useState(initialValue);
@@ -101,6 +101,7 @@ export const EditableColorPicker = ({
         type='icon'
         object={original._object}
         property={id}
+        title={discussionTitle && discussionTitle(original._object)}
       />}
     </>
   )

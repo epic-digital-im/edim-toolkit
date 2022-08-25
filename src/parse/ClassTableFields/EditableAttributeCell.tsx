@@ -24,7 +24,7 @@ export const EditableAttributeCell = ({
   isClearable,
 }: EditableAttributeCellProps) => ({
   row: { original },
-  column: { id, discussion },
+  column: { id, discussion, discussionTitle, },
 }) => {
     const initialValue = original._object.get(id);
     const [initialData, setInitialData] = useState();
@@ -152,11 +152,14 @@ export const EditableAttributeCell = ({
             ]}
           />
         </div>
-        {discussion && <DiscussionButton
-          type='icon'
-          object={original._object}
-          property={id}
-        />}
+        {discussion && (
+          <DiscussionButton
+            type='icon'
+            object={original._object}
+            property={id}
+            title={discussionTitle && discussionTitle(original._object)}
+          />
+        )}
       </>
     )
   }

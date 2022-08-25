@@ -33,13 +33,14 @@ import { NavLink } from 'react-router-dom';
 import { useColorPalette } from '@app/theme';
 
 interface DiscussionProps {
+  title?: string;
   object: Parse.Object<any>;
   isDialog?: boolean
   context: string;
   onCreate?: () => void;
 }
 
-export const Discussion = ({ object, context, onCreate, isDialog }: DiscussionProps) => {
+export const Discussion = ({ title, object, context, onCreate, isDialog }: DiscussionProps) => {
   const toast = useToast();
   const currentUser = Parse.User.current();
   const [value, setValue] = useState('');
@@ -131,15 +132,17 @@ export const Discussion = ({ object, context, onCreate, isDialog }: DiscussionPr
         return (
           <Card>
             {!isDialog && (
-              <><CardHeader>
-                <Flex justify="space-between" w="100%">
-                  <Text color={textColor} fontSize="lg" fontWeight="bold">
-                    {`General Discussion (${commentCount})`}
-                  </Text>
-                </Flex>
-              </CardHeader>
+              <>
+                <CardHeader>
+                  <Flex justify="space-between" w="100%">
+                    <Text color={textColor} fontSize="lg" fontWeight="bold">
+                      {title || `General Discussion (${commentCount})`}
+                    </Text>
+                  </Flex>
+                </CardHeader>
                 <HSeparator my="16px" />
-              </>)}
+              </>
+            )}
             <CardBody>
               <Flex direction="column" align="center" width={'100%'}>
                 {data.map((comment) => {

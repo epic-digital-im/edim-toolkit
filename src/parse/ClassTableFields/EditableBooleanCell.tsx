@@ -5,7 +5,7 @@ import DiscussionButton from '../../components/Buttons/DiscussionButton';
 export const EditableBooleanCell = ({
   value: initialValue,
   row: { original },
-  column: { id, editable, discussion },
+  column: { id, editable, discussion, discussionTitle, },
 }) => {
   const toast = useToast();
   const [value, setValue] = useState(Boolean(initialValue));
@@ -63,6 +63,7 @@ export const EditableBooleanCell = ({
         type='icon'
         object={original._object}
         property={id}
+        title={discussionTitle && discussionTitle(original._object)}
       />}
     </>
   )

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { weekdayList, Weekdays } from "@app/shared/types";
 import WeekdaySelect from '../../components/Selectors/WeekdaySelector';
+import DiscussionButton from '../../components/Buttons/DiscussionButton';
 
 export const EditableWeekdayCell = ({
   value: initialValue,
   row: { original },
-  column: { id, editable, }, // This is a custom function that we supplied to our table instance
+  column: { id, editable, discussion, discussionTitle }, // This is a custom function that we supplied to our table instance
 }) => {
   // We need to keep and update the state of the cell normally
   const [value, setValue] = useState(initialValue)
@@ -43,6 +44,12 @@ export const EditableWeekdayCell = ({
         }}
         onSelect={handleUpdateTask}
       />
+      {discussion && <DiscussionButton
+        type='icon'
+        object={original._object}
+        property={id}
+        title={discussionTitle && discussionTitle(original._object)}
+      />}
     </div>
   )
 }

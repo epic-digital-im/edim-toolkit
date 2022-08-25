@@ -10,9 +10,10 @@ interface DiscussionDialogButtonProps {
   label?: string;
   refetch?: () => void;
   type?: 'button' | 'icon';
+  title?: string;
 }
 
-export const DiscussionDialogButton: React.FC<DiscussionDialogButtonProps> = ({ object, context, onDiscussionDialog, label, refetch, type, ...rest }) => {
+export const DiscussionDialogButton: React.FC<DiscussionDialogButtonProps> = ({ title, object, context, onDiscussionDialog, label, refetch, type, ...rest }) => {
   const toast = useToast();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [isDeleting, setIsDeleting] = useState(false);
@@ -80,6 +81,7 @@ export const DiscussionDialogButton: React.FC<DiscussionDialogButtonProps> = ({ 
         </Button>
       )}
       <DiscussionDialog
+        title={title}
         object={object}
         context={context}
         isOpen={isOpen}

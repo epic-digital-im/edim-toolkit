@@ -58,8 +58,8 @@ const DiscussionDialog = ({
     >
       <AlertDialogOverlay>
         <AlertDialogContent>
-          <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-            {`${object.className} Discussion`}
+          <AlertDialogHeader fontSize='md' fontWeight='bold' pr={'40px'} pb={0}>
+            {title || `${object.className} Discussion`}
           </AlertDialogHeader>
           <AlertDialogCloseButton />
           <AlertDialogBody>

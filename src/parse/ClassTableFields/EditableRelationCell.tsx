@@ -19,7 +19,7 @@ export const EditableRelationCell = ({
   isClearable,
 }: EditableRelationCellProps) => ({
   row: { original },
-  column: { id, discussion },
+  column: { id, discussion, discussionTitle },
 }) => {
     // const initialValue = original._object.get(id);
     // const initialData = initialValue?.toJSON();
@@ -54,6 +54,7 @@ export const EditableRelationCell = ({
           type='icon'
           object={original._object}
           property={id}
+          title={discussionTitle && discussionTitle(original._object)}
         />}
       </Flex>
     )

@@ -9,7 +9,7 @@ export const EditableCell = ({
   row: { original },
   column, // This is a custom function that we supplied to our table instance
 }) => {
-  const { id, editable, textAlign, discussion } = column;
+  const { id, editable, textAlign, discussion, discussionTitle } = column;
   const [local, setLocal] = useState(initialValue);
 
   const handleChange = (e: { target: { value: string } }) => {
@@ -54,6 +54,7 @@ export const EditableCell = ({
               type='icon'
               object={original._object}
               property={id}
+              title={discussionTitle && discussionTitle(original._object)}
             />}
           </>
         )

@@ -31,7 +31,8 @@ import {
   useDisclosure,
   Flex,
   Input,
-  IconButton
+  IconButton,
+  Button
 } from '@chakra-ui/react';
 
 import Selector from '../components/Selectors/Selector';
@@ -159,9 +160,15 @@ const SchemaSettingsModal: React.FC<SchemaSettingsModalProps> = ({ schema, confi
   )
 }
 
-export const SchemaTable = () => {
+interface SchemaTableProps {
+  objectClass: string;
+}
+
+export const SchemaTable: React.FC<SchemaTableProps> = ({ objectClass }) => {
   const [selectedSchema, setSelectedSchema] = useState<any>();
   const { isOpen, onOpen, onClose } = useDisclosure()
+
+  console.log(objectClass);
 
   const getClassSchemas = async () => {
     const classSchema = await Parse.Cloud.run('getClassSchemas');
@@ -210,7 +217,9 @@ export const SchemaTable = () => {
 
   useEffect(() => {
     if (ClassSchemaRequest.data) {
-      const selected = ClassSchemaRequest.data[0];
+      const selected = (objectClass)
+        ? ClassSchemaRequest.data.find((schema) => schema.className === objectClass)
+        : ClassSchemaRequest.data[0];
       setSelectedSchema(selected);
     }
   }, [ClassSchemaRequest.data]);
@@ -274,6 +283,9 @@ export const SchemaTable = () => {
       Cell: ({ row, column }) => {
         return (
           <Flex direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
+            <Button onClick={console.log}>
+              View Dtail
+            </Button>
             <DeleteButton object={row.original._object} />
           </Flex>
         )
@@ -313,13 +325,15 @@ export const SchemaTable = () => {
         onColumnOrderChange={setColumnOrder}
         renderFilters={() => (
           <>
-            <Selector
-              style={{ width: '250px' }}
-              label="Schema"
-              options={schemaOptions}
-              initialValue={selectedSchema && { label: selectedSchema.className, value: selectedSchema.className }}
-              onSelect={handleSchemaChange}
-            />
+            {!objectClass && (
+              <Selector
+                style={{ width: '250px' }}
+                label="Schema"
+                options={schemaOptions}
+                initialValue={selectedSchema && { label: selectedSchema.className, value: selectedSchema.className }}
+                onSelect={handleSchemaChange}
+              />
+            )}
             <IconButton
               aria-label='Open Table Options'
               icon={<SettingsIcon />}

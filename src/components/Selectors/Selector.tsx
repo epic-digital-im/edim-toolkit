@@ -41,7 +41,7 @@ const Selector = (props: SelectorProps) => {
     value: string;
     label: string;
   }>) => {
-    if (newValue && newValue.value) {
+    if (newValue && newValue.value !== undefined) {
       setValue(newValue);
       if (onSelect) onSelect(newValue.value);
     }

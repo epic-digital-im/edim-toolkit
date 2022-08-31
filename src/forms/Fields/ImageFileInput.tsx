@@ -15,6 +15,8 @@ import {
 import { ParsePropUpdater } from '../../parse/PropUpdater';
 import { LoadingOverlay } from '../../components/Loaders/LoadingOverlay';
 
+import { useColorPalette } from '@app/theme';
+
 const NonPreviewDefaultComponent = ({ title = "No Preview", size = null, type = null }) => (
   <div style={{
     backgroundColor: '#FFFFFF',
@@ -280,63 +282,74 @@ FileInputBase64PreviewComponent.propTypes = {
   defaultFiles: PropTypes.array
 }
 
-export const ImageFileInputField = ({ label, ...props }: any) => {
+export const ImageFileInputField = ({ label, buttonLabel, defaultFiles, ...props }: any) => {
+  const { colorMode, inputBorderColor } = useColorPalette();
   const [field, meta, helpers] = useField(props);
   const textColor = useColorModeValue("gray.700", "white");
 
   const handleInputChange = (value: any[]) => {
     helpers.setValue(value);
   }
+
+  const borderColor = (colorMode === 'dark')
+    ? meta.error ? "red.500" : inputBorderColor
+    : meta.error ? "red.500" : null
+
   return (
     <Box position={'relative'} mb={'36px'}>
       <FormLabel
-        color={textColor}
+        color={borderColor}
         fontWeight="bold"
         fontSize="xs"
       >
         {label}
       </FormLabel>
-      <FileInputBase64PreviewComponent
-        callbackFunction={handleInputChange}
-        useTapEventPlugin={false}
-        multiple={true}
-        imagePreview={true}
-        textBoxVisible={false}
-        accept={"image/*"}
-        imageContainerStyle={{
-          display: "flex",
-          flexDirection: "row",
-          width: "100%",
-          flexWrap: "wrap"
-        }}
-        imageStyle={{
-          marginTop: 5,
-          marginBottom: 5,
-          marginRight: 5,
-          width: "auto",
-          height: "50px",
-          boxShadow: "rgba(0, 0, 0, 0.188235) 0px 10px 30px, rgba(0, 0, 0, 0.227451) 0px 6px 10px" //zDepth 3
-        }}
-        labelStyle={{
-          fontSize: 16,
-          color: 'rgba(0, 0, 0, 0.298039)',
-          display: 'block'
-        }}
-        parentStyle={{
-          marginTop: 14
-        }}
-        buttonComponent={<Button type="button">Browse</Button>}
-        nonPreviewComponent={<NonPreviewDefaultComponent />}
-        textFieldComponent={<input type="text" {...field} />}
-        defaultFiles={[]}
-      // borderColor={meta.touched && meta.error ? "red.500" : "gray.300"}
-      // placeholder={label}
-      // borderRadius="15px"
-      // fontSize="sm"
-      // size="lg"
-      // {...props}
-      />
-      {meta.touched && meta.error ? (
+      <Box borderColor={borderColor} borderWidth={'1px'} borderRadius={'15px'} p={3}>
+        <FileInputBase64PreviewComponent
+          callbackFunction={handleInputChange}
+          useTapEventPlugin={false}
+          multiple={true}
+          imagePreview={true}
+          textBoxVisible={false}
+          accept={"image/*"}
+          imageContainerStyle={{
+            display: "flex",
+            flexDirection: "row",
+            width: "100%",
+            flexWrap: "wrap",
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingBottom: '1rem',
+          }}
+          imageStyle={{
+            marginTop: 5,
+            marginBottom: 5,
+            marginRight: 5,
+            width: "auto",
+            height: "50px",
+            boxShadow: "rgba(0, 0, 0, 0.188235) 0px 10px 30px, rgba(0, 0, 0, 0.227451) 0px 6px 10px" //zDepth 3
+          }}
+          labelStyle={{
+            fontSize: 16,
+            color: 'rgba(0, 0, 0, 0.298039)',
+            display: 'block'
+          }}
+          parentStyle={{
+            textAlign: 'center'
+          }}
+          buttonComponent={<Button type="button">{buttonLabel || 'Browse'}</Button>}
+          nonPreviewComponent={<NonPreviewDefaultComponent />}
+          textFieldComponent={<input type="text" {...field} />}
+          defaultFiles={defaultFiles || []}
+        // borderColor={meta.touched && meta.error ? "red.500" : "gray.300"}
+        // placeholder={label}
+        // borderRadius="15px"
+        // fontSize="sm"
+        // size="lg"
+        // {...props}
+        />
+      </Box>
+      {meta.error ? (
         <FormLabel
           width={'100%'}
           textAlign={"center"}
@@ -351,14 +364,14 @@ export const ImageFileInputField = ({ label, ...props }: any) => {
   );
 };
 
-interface SelectPropUpdaterProps {
+interface FilePropUpdaterProps {
   object: Parse.Object<any>;
   property: string;
   options: { value: any; label: string }[];
   valueGetter?: (value: any) => any;
 }
 
-export const FilePropUpdater: React.FC<SelectPropUpdaterProps> = ({ valueGetter, options, ...props }) => {
+export const FilePropUpdater: React.FC<FilePropUpdaterProps> = ({ valueGetter, options, ...props }) => {
   return (
     <ParsePropUpdater {...props}>
       {({ onChange, value, isLoading, isError }) => {
@@ -453,6 +466,54 @@ export const FilePropUpdater: React.FC<SelectPropUpdaterProps> = ({ valueGetter,
         )
       }}
     </ParsePropUpdater>
+  )
+}
+
+interface FileUplaodInputProps {
+  onChange: (files: Parse.File[]) => void;
+  initialValue?: Parse.File[];
+}
+
+export const FileUplaodInput: React.FC<FileUplaodInputProps> = ({ onChange, initialValue }) => {
+  return (
+    <FileInputBase64PreviewComponent
+      callbackFunction={onChange}
+      useTapEventPlugin={false}
+      multiple={true}
+      imagePreview={true}
+      textBoxVisible={false}
+      accept={"image/*"}
+      imageContainerStyle={{
+        display: "flex",
+        flexDirection: "row",
+        width: "100%",
+        flexWrap: "wrap"
+      }}
+      imageStyle={{
+        marginTop: 5,
+        marginBottom: 5,
+        marginRight: 5,
+        width: "auto",
+        height: "50px",
+        boxShadow: "rgba(0, 0, 0, 0.188235) 0px 10px 30px, rgba(0, 0, 0, 0.227451) 0px 6px 10px" //zDepth 3
+      }}
+      labelStyle={{
+        fontSize: 16,
+        color: 'rgba(0, 0, 0, 0.298039)',
+        display: 'block'
+      }}
+      parentStyle={{}}
+      buttonComponent={<Button size={'sm'} type="button">Add Files</Button>}
+      nonPreviewComponent={<NonPreviewDefaultComponent />}
+      textFieldComponent={<input type="text" />}
+      defaultFiles={initialValue}
+    // borderColor={meta.touched && meta.error ? "red.500" : "gray.300"}
+    // placeholder={label}
+    // borderRadius="15px"
+    // fontSize="sm"
+    // size="lg"
+    // {...props}
+    />
   )
 }
 

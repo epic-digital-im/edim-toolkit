@@ -128,6 +128,7 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
   const o = options || {};
   const queryClient = useQueryClient()
   const sub = useRef<Parse.LiveQuerySubscription | undefined>();
+  console.log(query, objectClass)
   const ParseQuery = query || new Parse.Query(objectClass);
 
   if (ascending) {
@@ -152,6 +153,7 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
 
   const fetchCollection = async () => {
     if (!findAll || ascending) {
+      console.log(ParseQuery)
       return ParseQuery.find()
     } else {
       return ParseQuery.findAll()

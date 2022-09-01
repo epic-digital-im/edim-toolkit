@@ -26,7 +26,7 @@ export interface ClassTableProps {
   renderFilters?: () => React.ReactNode | undefined;
   renderMap?: () => React.ReactNode | undefined;
   query?: Parse.Query | undefined;
-  queryKey: string;
+  queryKey?: any[] | undefined;
   isAdmin?: boolean | undefined;
   isPropertyDetail?: boolean | undefined;
   findAll?: boolean | undefined;

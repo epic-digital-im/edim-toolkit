@@ -37,6 +37,7 @@ export interface ClassTableProps {
   isLive?: boolean | undefined;
   include?: string | undefined;
   filter?: any | undefined;
+  exportData?: () => void;
 }
 
 export const ClassTable: React.FC<ClassTableProps> = (props) => {
@@ -50,6 +51,7 @@ export const ClassTable: React.FC<ClassTableProps> = (props) => {
     isLive,
     include,
     filter,
+    exportData,
     ...tableProps
   } = props;
 
@@ -106,6 +108,7 @@ export const ClassTable: React.FC<ClassTableProps> = (props) => {
                 isLoading={isLoading}
                 refetch={refetch}
                 objectType={objectClass}
+                exportData={exportData}
               />
             </CardBody>
           </Card>

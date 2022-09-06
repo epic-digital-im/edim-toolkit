@@ -34,7 +34,7 @@ import {
   TiArrowUnsorted,
 } from "react-icons/ti";
 
-import { FiList, FiCreditCard, FiMap, FiRefreshCw } from "react-icons/fi";
+import { FiList, FiCreditCard, FiDownload, FiMap, FiRefreshCw } from "react-icons/fi";
 
 import { AddIcon } from "@chakra-ui/icons";
 
@@ -77,6 +77,7 @@ export interface FitlerTableProps {
   getMapItems?: (items: any[]) => any[];
   renderMap?: () => React.ReactNode | undefined;
   onColumnOrderChange?: (columnOrder: string[]) => void;
+  exportData?: () => void;
 }
 
 export const IndeterminateCheckbox = forwardRef(
@@ -182,6 +183,7 @@ export const FilterTable = (props: FitlerTableProps) => {
     renderMap,
     onColumnOrderChange,
     canReorder,
+    exportData,
   } = props;
 
   const toast = useToast();
@@ -507,6 +509,13 @@ export const FilterTable = (props: FitlerTableProps) => {
                       backgroundColor={inputBgColor}
                       color={textColor}
                       onChange={(e) => setGlobalFilter(e.target.value)}
+                      mx={'0.5rem'}
+                    />}
+                    {exportData && <IconButton
+                      size={"md"}
+                      icon={<Icon as={FiDownload} />}
+                      onClick={exportData}
+                      aria-label={"Export"}
                       mx={'0.5rem'}
                     />}
                     {renderRowCard && <IconButton

@@ -1,7 +1,5 @@
 import Parse from 'parse/dist/parse.min.js';
-import React, { useRef, useMemo, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { ClassNames } from "@app/shared/types";
+import React, { useMemo } from "react";
 
 import Card from "../components/Card/Card";
 import CardBody from "../components/Card/CardBody";
@@ -10,7 +8,6 @@ import CardHeader from "../components/Card/CardHeader";
 import { FilterTable } from './FilterTable';
 
 import { ParseCollectionLiveQuery } from '../hoc/ParseLiveQuery';
-import { LoadingOverlay } from '../components/Loaders/LoadingOverlay';
 
 export interface ClassTableProps {
   history: any;

@@ -141,7 +141,7 @@ export const ParseStripeDateCellRenderer = (props: any) => {
   const val = original._object.get(id);
   if (!val) return null;
   const date = new Date(original._object.get(id) * 1000);
-  return <Text>{date && date.toLocaleString()}</Text>
+  return <Text>{date && date.toLocaleString('en-US', { timeZone: 'America/Phoenix' })}</Text>
 };
 
 export const ParseDateCellRenderer = (props: any) => {
@@ -152,5 +152,5 @@ export const ParseDateCellRenderer = (props: any) => {
   const val = original._object.get(id);
   if (!val) return null;
   const date = new Date(original._object.get(id));
-  return <Text>{date && date.toLocaleString()}</Text>
+  return <Text>{date && date.toLocaleString('en-US', { timeZone: 'America/Phoenix' })}</Text>
 };

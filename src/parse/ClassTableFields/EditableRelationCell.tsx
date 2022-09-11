@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { ClassNames } from "@app/shared/types";
 import { Flex } from "@chakra-ui/react";
 import { ParsePropUpdater } from "../PropUpdater";
@@ -24,38 +24,41 @@ export const EditableRelationCell = ({
     // const initialValue = original._object.get(id);
     // const initialData = initialValue?.toJSON();
 
-    return (
-      <Flex width={'100%'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'}>
-        <ParsePropUpdater object={original._object} property={id}>
-          {({ onChange, value, isLoading }) => {
-            const handleClear = () => {
-              onChange(null);
-            }
-            return (
-              <ClassSearchSelect
-                isClearable={isClearable}
-                isLoading={isLoading}
-                disabled={isLoading}
-                style={{ width: '100%' }}
-                objectClass={objectClass}
-                queryName={objectClass}
-                initialValue={value?.toJSON()}
-                valueGetter={valueGetter}
-                labelGetter={labelGetter}
-                onSelect={onChange}
-                onClear={handleClear}
-                isCreateable
-                placeholder=""
-              />
-            )
-          }}
-        </ParsePropUpdater>
-        {discussion && <DiscussionButton
-          type='icon'
-          object={original._object}
-          property={id}
-          title={discussionTitle && discussionTitle(original._object)}
-        />}
-      </Flex>
-    )
+    return useMemo(() => {
+      console.log('render');
+      return (
+        <Flex width={'100%'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'}>
+          <ParsePropUpdater object={original._object} property={id}>
+            {({ onChange, value, isLoading }) => {
+              const handleClear = () => {
+                onChange(null);
+              }
+              return (
+                <ClassSearchSelect
+                  isClearable={isClearable}
+                  isLoading={isLoading}
+                  disabled={isLoading}
+                  style={{ width: '100%' }}
+                  objectClass={objectClass}
+                  queryName={objectClass}
+                  initialValue={value?.toJSON()}
+                  valueGetter={valueGetter}
+                  labelGetter={labelGetter}
+                  onSelect={onChange}
+                  onClear={handleClear}
+                  isCreateable
+                  placeholder=""
+                />
+              )
+            }}
+          </ParsePropUpdater>
+          {discussion && <DiscussionButton
+            type='icon'
+            object={original._object}
+            property={id}
+            title={discussionTitle && discussionTitle(original._object)}
+          />}
+        </Flex>
+      )
+    }, [original._object, id]);
   }

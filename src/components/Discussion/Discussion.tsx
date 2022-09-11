@@ -26,7 +26,7 @@ import { ClassNames } from '@app/shared/types'
 
 import { HSeparator } from "../Separator/Separator";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { NavLink } from 'react-router-dom';
 
@@ -72,13 +72,19 @@ export const Discussion = ({ title, object, context, onCreate, isDialog }: Discu
       objectClass={ClassNames.Comment}
       include={['user']}
       filter={filters}
-      isLive
+      isLongPolling
     >
       {({ data, isLoading, isError }) => {
+        const [localData, setLocalData] = useState(data);
         const [isShiftDown, setIsShiftDown] = useState(false);
+
         const onChange = (value) => {
           setValue(value);
         }
+
+        useEffect(() => {
+          setLocalData(data);
+        }, [data])
 
         const handleCreateComment = async () => {
           try {
@@ -91,6 +97,7 @@ export const Discussion = ({ title, object, context, onCreate, isDialog }: Discu
             await comment.save()
             setValue('');
             if (onCreate) onCreate();
+            setLocalData([...localData, comment]);
             toast({
               title: 'Comment created',
               description: 'Your comment has been created successfully',
@@ -145,7 +152,7 @@ export const Discussion = ({ title, object, context, onCreate, isDialog }: Discu
             )}
             <CardBody>
               <Flex direction="column" align="center" width={'100%'}>
-                {data.map((comment) => {
+                {localData.map((comment) => {
                   const isOwner = comment.get('user')?.id === currentUser.id;
                   return (
                     <Flex mb="30px" width={'100%'} position={'relative'}>

@@ -103,6 +103,7 @@ export interface LiveCollectionQueryOptions {
   ascending?: string,
   descending?: string,
   isLive?: boolean;
+  isLongPolling?: boolean;
   queryKey?: any[];
   query?: Parse.Query<Parse.Object<any>>;
   findAll?: boolean;
@@ -117,9 +118,12 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
     ascending,
     descending,
     isLive,
+    isLongPolling,
     query,
     findAll,
   } = props;
+
+  console.log(objectClass, isLive);
 
   if (props.queryKey && !Array.isArray(props.queryKey)) {
     throw new Error(`queryKey must be an array: ${props.queryKey}`);
@@ -128,7 +132,6 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
   const o = options || {};
   const queryClient = useQueryClient()
   const sub = useRef<Parse.LiveQuerySubscription | undefined>();
-  console.log(query, objectClass)
   const ParseQuery = query || new Parse.Query(objectClass);
 
   if (ascending) {
@@ -153,7 +156,6 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
 
   const fetchCollection = async () => {
     if (!findAll || ascending) {
-      console.log(ParseQuery)
       return ParseQuery.find()
     } else {
       return ParseQuery.findAll()
@@ -174,9 +176,13 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
     ...o
   }
 
-  if (isLive) {
+  if (isLive || isLongPolling) {
     queryOptions.staleTime = Infinity;
     queryOptions.refetchOnWindowFocus = false;
+  }
+
+  if (isLongPolling) {
+    queryOptions.refetchInterval = 5000;
   }
 
   const q = useQuery(
@@ -188,34 +194,40 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
   useEffect(() => {
     const subscribe = async () => {
       if (!sub.current) {
-        const subscription = await ParseQuery.subscribe();
-        subscription.on('create', (item) => {
-          queryClient.setQueriesData(queryKey, (oldData) => {
-            if (Array.isArray(oldData)) {
-              return [...oldData, item];
-            }
-            return [item];
+        try {
+          const subscription = await ParseQuery.subscribe();
+          subscription.on('create', (item) => {
+            queryClient.setQueriesData(queryKey, (oldData) => {
+              if (Array.isArray(oldData)) {
+                return [...oldData, item];
+              }
+              return [item];
+            });
           });
-        });
-        subscription.on('update', (item) => {
-          queryClient.setQueriesData(queryKey, (oldData) => {
-            const update = (oldItem: any) => oldItem.id === item.id ? item : oldItem;
-            if (Array.isArray(oldData)) {
-              return oldData.map(update);
-            }
-            return item;
-          })
-        });
-        subscription.on('delete', (item) => {
-          queryClient.setQueriesData(queryKey, (oldData) => {
-            const update = (oldItem: any) => oldItem.id !== item.id;
-            if (Array.isArray(oldData)) {
-              return oldData.filter(update);
-            }
-            return [];
+          subscription.on('update', (item) => {
+            queryClient.setQueriesData(queryKey, (oldData) => {
+              const update = (oldItem: any) => oldItem.id === item.id ? item : oldItem;
+              if (Array.isArray(oldData)) {
+                return oldData.map(update);
+              }
+              return item;
+            })
           });
-        });
-        sub.current = subscription;
+          subscription.on('delete', (item) => {
+            queryClient.setQueriesData(queryKey, (oldData) => {
+              const update = (oldItem: any) => oldItem.id !== item.id;
+              if (Array.isArray(oldData)) {
+                return oldData.filter(update);
+              }
+              return [];
+            });
+          });
+          subscription.on('open', console.log);
+          subscription.on('close', console.log);
+          sub.current = subscription;
+        } catch (err) {
+          console.log(err);
+        }
       } else {
         console.log(sub.current.id);
       }

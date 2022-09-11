@@ -190,8 +190,10 @@ export const FilterTable = (props: FitlerTableProps) => {
   const [initialValues, setInitialValues] = useState<any>();
   const [data, setData] = useState<Parse.Object<Parse.Attributes>[]>([]);
   const [originalData] = useState(data);
+  const firstInit = useRef(false);
 
   useEffect(() => {
+    console.log('setting data', tableData.length);
     setData(tableData);
   }, [tableData, isLoading, queryKey]);
 

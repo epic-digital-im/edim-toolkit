@@ -63,6 +63,10 @@ export const ClassTable: React.FC<ClassTableProps> = (props) => {
       isLive={isLive}
       include={include}
       filter={filter}
+      options={{
+        staleTime: Infinity,
+        refetchOnWindowFocus: false,
+      }}
     >
       {({ data, isLoading, refetch, isError }) => {
 

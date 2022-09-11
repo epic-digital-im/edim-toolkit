@@ -18,8 +18,9 @@ import {
 import { useColorPalette } from '@app/theme';
 
 interface FuncArgs {
-  onChange: (value: any) => void,
-  value: any,
+  onChange: (value: any) => void;
+  value: any;
+  isLoading: boolean;
 }
 
 type FunctionChild = (args: FuncArgs) => React.ReactNode;
@@ -27,20 +28,32 @@ type FunctionChild = (args: FuncArgs) => React.ReactNode;
 interface ParsePropUpdaterProps {
   object: Parse.Object<any>;
   property: string;
+  subProperty?: string;
   children: FunctionChild;
 }
 
 export const ParsePropUpdater = (props: ParsePropUpdaterProps): ReactNode => {
-  const { object, property, children } = props;
+  const { object, property, subProperty, children } = props;
   const toast = useToast();
-  const [value, setValue] = useState<Date | undefined>(object.get(property));
+
+  const propertyValue = object.get(property);
+  const subPropertyValue = propertyValue ? propertyValue[subProperty] : null;
+
+  const [value, setValue] = useState<any | undefined>((subProperty) ? subPropertyValue : propertyValue);
   const [prevValue, setPrevValue] = useState<any | undefined>(value);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleUpdate = (v: Date, isUndo?: boolean) => {
+  const handleUpdate = async (v: any, isUndo?: boolean) => {
     setIsLoading(true);
     setValue(v);
-    object.set(property, v);
+    if (subProperty) {
+      await object.fetch();
+      const newPropertyValue = { ...object.get(property) };
+      newPropertyValue[subProperty] = v;
+      object.set(property, newPropertyValue);
+    } else {
+      object.set(property, v);
+    }
     object.save().then(() => {
       setIsLoading(false);
       toast({
@@ -58,8 +71,10 @@ export const ParsePropUpdater = (props: ParsePropUpdaterProps): ReactNode => {
         status: isUndo ? "info" : "success",
         duration: 5000,
         isClosable: true,
+        onCloseComplete: () => {
+          setPrevValue(v);
+        }
       });
-      setPrevValue(v);
     }).catch((e) => {
       setIsLoading(false);
       toast({
@@ -80,6 +95,7 @@ export const ParsePropUpdater = (props: ParsePropUpdaterProps): ReactNode => {
   return children({
     onChange: handleUpdate,
     value,
+    isLoading,
   })
 }
 
@@ -103,7 +119,6 @@ export const ParseFilePropUpdater = (props: ParsePropUpdaterProps): ReactNode =>
         object.set(property, PrevValueRef.current);
         setValue(PrevValueRef.current);
       } else {
-        PrevValueRef.current = object.get(property);
         const newFile = new Parse.File(`${object.id}_avatar.jpg`, f);
         await newFile.save();
         setValue(newFile);
@@ -126,6 +141,9 @@ export const ParseFilePropUpdater = (props: ParsePropUpdaterProps): ReactNode =>
         status: isUndo ? "info" : "success",
         duration: 5000,
         isClosable: true,
+        onCloseComplete: () => {
+          PrevValueRef.current = object.get(property);
+        }
       });
     } catch (e) {
       setIsLoading(false);

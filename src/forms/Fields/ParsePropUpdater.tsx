@@ -13,7 +13,7 @@ interface DatePickerFieldProps {
   children: React.ReactElement;
 }
 
-export const ParsePropUpdater: React.FC<DatePickerFieldProps> = (props) => {
+export const ParsePropUpdater2: React.FC<DatePickerFieldProps> = (props) => {
   const { object, property, children } = props;
   const toast = useToast();
   const [value, setValue] = useState<Date | undefined>(object.get(property));
@@ -65,5 +65,3 @@ export const ParsePropUpdater: React.FC<DatePickerFieldProps> = (props) => {
     value,
   })
 }
-
-export default ParsePropUpdater;

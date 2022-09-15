@@ -26,6 +26,7 @@ export const EditableNumberCell = ({
         const onBlur = () => {
           if (local !== value) {
             const val = parseFloat(local);
+            console.log(val);
             if (!isNaN(val)) {
               onChange(val);
             }

@@ -46,6 +46,7 @@ export { default as DateRangeSelector } from './Selectors/DateRangeSelector';
 export { default as GooglePlaceSelector } from './Selectors/GooglePlaceSelector';
 export { default as Selector } from './Selectors/Selector';
 export { default as WeekdaySelector } from './Selectors/WeekdaySelector';
+export { default as RadiusSelector } from './Selectors/RadiusSelector';
 
 export { default as ItemContent } from './Menu/ItemContent';
 

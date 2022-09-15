@@ -4,6 +4,7 @@ import CreateSelect from 'react-select';
 import { useState, useMemo } from "react";
 import useGoogle from "react-google-autocomplete/lib/usePlacesAutocompleteService";
 import { Place } from '@app/shared/types';
+import { useColorModeValue } from '@chakra-ui/react';
 
 interface GooglePlacesSelectProps {
   googleMapsApiKey: string;
@@ -17,6 +18,8 @@ interface GooglePlacesSelectProps {
 }
 
 const GooglePlaces = ({ googleMapsApiKey, onChange, initialValue, style, disabled, isLoading, isClearable, isMulti }: GooglePlacesSelectProps) => {
+  const bgColor = useColorModeValue("white", "#1a202c");
+  const textColor = useColorModeValue("#484848", "#718096");
   const [value, setValue] = useState<any>(initialValue);
   const [error, setError] = useState<any>();
 
@@ -54,20 +57,6 @@ const GooglePlaces = ({ googleMapsApiKey, onChange, initialValue, style, disable
     getPlacePredictions({ input: event.target.value });
   }
 
-  const customStyles = {
-    container: (provided, state) => ({
-      ...provided,
-    }),
-    control: (provided, state) => ({
-      ...provided,
-      width: style?.width,
-      borderColor: (error) ? 'red' : null,
-    }),
-    menu: (provided, state) => ({
-      ...provided,
-    })
-  }
-
   const handleChange = (selectedOption: any, { action }: any) => {
     if (action === 'clear') {
       setValue();
@@ -78,6 +67,42 @@ const GooglePlaces = ({ googleMapsApiKey, onChange, initialValue, style, disable
       setValue(selectedOption);
       getPlaceId(selectedOption?.value);
     }
+  }
+
+  const customStyles = {
+    container: (provided) => ({
+      ...provided,
+      width: '100%',
+      backgroundColor: bgColor,
+      color: textColor,
+    }),
+    control: (provided) => ({
+      ...provided,
+      width: style?.width,
+      borderColor: (error) ? 'red' : null,
+      backgroundColor: bgColor,
+      color: textColor,
+    }),
+    menu: (provided) => ({
+      ...provided,
+      backgroundColor: bgColor,
+      color: textColor,
+    }),
+    option: (provided) => ({
+      ...provided,
+      backgroundColor: bgColor,
+      color: textColor,
+    }),
+    placeholder: (provided) => ({
+      ...provided,
+      backgroundColor: bgColor,
+      color: textColor,
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      backgroundColor: bgColor,
+      color: textColor,
+    })
   }
 
   return (

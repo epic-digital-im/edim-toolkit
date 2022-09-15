@@ -1,20 +1,3 @@
-/*!
-
-=========================================================
-* Purity UI Dashboard PRO - v1.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/purity-ui-dashboard-pro
-* Copyright 2021 Creative Tim (https://www.creative-tim.com/)
-
-* Design by Creative Tim & Coded by Simmmple
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-
 import { Box, Flex, Icon, Text, useColorModeValue } from "@chakra-ui/react";
 import React from "react";
 
@@ -32,8 +15,8 @@ function TransactionRow(props) {
             price[0] === "+"
               ? "green.400"
               : price[0] === "-"
-              ? "red.400"
-              : "gray.400"
+                ? "red.400"
+                : "gray.400"
           }
           border="1px solid"
           display="flex"
@@ -66,8 +49,8 @@ function TransactionRow(props) {
           price[0] === "+"
             ? "green.400"
             : price[0] === "-"
-            ? "red.400"
-            : { textColor }
+              ? "red.400"
+              : { textColor }
         }
       >
         <Text fontSize={{ sm: "md", md: "lg", lg: "md" }} fontWeight="bold">

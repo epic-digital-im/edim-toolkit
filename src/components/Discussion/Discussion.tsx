@@ -20,7 +20,7 @@ import {
   DeleteButton,
   EditorInput,
   ObjectAvatar,
-} from "@edim/toolkit";
+} from "@epicdm/toolkit";
 
 import { ClassNames } from '@app/shared/types'
 

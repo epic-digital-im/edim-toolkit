@@ -33,8 +33,9 @@ export const SingleDatePickerInput: React.FC<DatePickerFieldProps> = (props) => 
   }
 
   const handleChange = (value: moment.Moment | null) => {
-    setValue(value);
-    onChange(value !== null ? value.toDate() : null);
+    const d = value?.startOf('day');
+    setValue(d);
+    onChange(d !== null ? d.toDate() : null);
   };
 
   return (

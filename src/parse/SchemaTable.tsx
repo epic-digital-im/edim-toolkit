@@ -36,7 +36,7 @@ import {
 } from '@chakra-ui/react';
 
 import Selector from '../components/Selectors/Selector';
-import DraggableList from '@edim/toolkit/src/components/Draggable/DraggableList'
+import DraggableList from '@epicdm/toolkit/src/components/Draggable/DraggableList'
 import { SchemaConfig, AttributeAttributes } from '@app/shared/parse-types';
 import getters from '@app/shared/utils/getters';
 import { DeleteButton } from '../components/Buttons/DeleteButton';

@@ -40,6 +40,7 @@ import DraggableList from '@epicdm/toolkit/src/components/Draggable/DraggableLis
 import { SchemaConfig, AttributeAttributes } from '@app/shared/parse-types';
 import getters from '@app/shared/utils/getters';
 import { DeleteButton } from '../components/Buttons/DeleteButton';
+import { useHistory } from 'react-router-dom';
 
 const CellRenderMap = {
   "Date": EditableDateCell,
@@ -165,10 +166,9 @@ interface SchemaTableProps {
 }
 
 export const SchemaTable: React.FC<SchemaTableProps> = ({ objectClass }) => {
+  const history = useHistory();
   const [selectedSchema, setSelectedSchema] = useState<any>();
   const { isOpen, onOpen, onClose } = useDisclosure()
-
-  console.log(objectClass);
 
   const getClassSchemas = async () => {
     const classSchema = await Parse.Cloud.run('getClassSchemas');
@@ -283,8 +283,8 @@ export const SchemaTable: React.FC<SchemaTableProps> = ({ objectClass }) => {
       Cell: ({ row, column }) => {
         return (
           <Flex direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
-            <Button onClick={console.log}>
-              View Dtail
+            <Button onClick={() => history.push(`/admin/${objectClass.toLowerCase()}/${row.original._object.id}`)}>
+              Detail
             </Button>
             <DeleteButton object={row.original._object} />
           </Flex>

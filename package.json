@@ -19,6 +19,7 @@
     "travis-deploy-once": "travis-deploy-once",
     "semantic-release": "semantic-release",
     "start:local": "tsc --watch",
+    "start:client": "tsc --watch",
     "test": "jest"
   },
   "license": "ISC",

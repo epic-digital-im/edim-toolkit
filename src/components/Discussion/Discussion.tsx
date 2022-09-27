@@ -152,7 +152,7 @@ export const Discussion = ({ title, object, context, onCreate, isDialog }: Discu
             )}
             <CardBody>
               <Flex direction="column" align="center" width={'100%'}>
-                {localData.map((comment) => {
+                {localData && localData.map((comment) => {
                   const isOwner = comment.get('user')?.id === currentUser.id;
                   return (
                     <Flex mb="30px" width={'100%'} position={'relative'}>

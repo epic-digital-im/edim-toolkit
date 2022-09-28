@@ -67,20 +67,20 @@ export const useLiveQuery = ({
       if (!sub.current) {
         const subscription = await ParseQuery.subscribe();
         subscription.on('create', (item) => {
-          console.log('create', item);
+          // console.log('create', item);
           queryClient.setQueriesData(qk, item);
         });
         subscription.on('update', (item) => {
-          console.log('update', item.id);
+          // console.log('update', item.id);
           queryClient.setQueriesData(qk, item)
         });
         subscription.on('delete', (item) => {
-          console.log('delete', item.id);
+          // console.log('delete', item.id);
           queryClient.removeQueries(qk);
         });
         sub.current = subscription;
       } else {
-        console.log(sub.current.id)
+        // console.log(sub.current.id)
       }
     }
     if (isLive) {
@@ -122,8 +122,6 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
     query,
     findAll,
   } = props;
-
-  console.log(objectClass, isLive);
 
   if (props.queryKey && !Array.isArray(props.queryKey)) {
     throw new Error(`queryKey must be an array: ${props.queryKey}`);

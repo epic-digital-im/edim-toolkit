@@ -193,7 +193,6 @@ export const FilterTable = (props: FitlerTableProps) => {
   const firstInit = useRef(false);
 
   useEffect(() => {
-    console.log('setting data', tableData.length);
     setData(tableData);
   }, [tableData, isLoading, queryKey]);
 

@@ -25,7 +25,6 @@ export const EditableRelationCell = ({
     // const initialData = initialValue?.toJSON();
 
     return useMemo(() => {
-      console.log('render');
       return (
         <Flex width={'100%'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'}>
           <ParsePropUpdater object={original._object} property={id}>

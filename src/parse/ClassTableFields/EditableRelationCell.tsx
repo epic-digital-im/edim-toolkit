@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { ClassNames } from "@app/shared/types";
 import { Flex } from "@chakra-ui/react";
 import { ParsePropUpdater } from "../PropUpdater";
-import ClassSearchSelect from '../../components/Selectors/ClassSearchSelect';
+import ClassSearchSelect, { Filter } from '../../components/Selectors/ClassSearchSelect';
 import DiscussionButton from '../../components/Buttons/DiscussionButton';
 
 interface EditableRelationCellProps {
@@ -10,6 +10,9 @@ interface EditableRelationCellProps {
   valueGetter: (data: any) => string;
   labelGetter: (data: any) => string;
   isClearable?: boolean;
+  filters?: Filter[];
+  getFilters?: (object: Parse.Object<any>) => Filter[];
+  isMulti?: boolean;
 }
 
 export const EditableRelationCell = ({
@@ -17,6 +20,9 @@ export const EditableRelationCell = ({
   valueGetter,
   labelGetter,
   isClearable,
+  filters,
+  getFilters,
+  isMulti,
 }: EditableRelationCellProps) => ({
   row: { original },
   column: { id, discussion, discussionTitle },
@@ -34,12 +40,15 @@ export const EditableRelationCell = ({
               }
               return (
                 <ClassSearchSelect
+                  filters={filters}
+                  getFilters={getFilters}
                   isClearable={isClearable}
                   isLoading={isLoading}
                   disabled={isLoading}
                   style={{ width: '100%' }}
                   objectClass={objectClass}
                   queryName={objectClass}
+                  object={original._object}
                   initialValue={value?.toJSON()}
                   valueGetter={valueGetter}
                   labelGetter={labelGetter}
@@ -47,6 +56,7 @@ export const EditableRelationCell = ({
                   onClear={handleClear}
                   isCreateable
                   placeholder=""
+                  isMulti={isMulti}
                 />
               )
             }}

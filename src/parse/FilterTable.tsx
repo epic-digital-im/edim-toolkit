@@ -62,6 +62,7 @@ export interface FitlerTableProps {
   title?: string;
   renderRowCard?: (row: any, index: number, initialState: any, onEdit: (item: Parse.Object<Parse.Attributes>) => void, onDelete: (item: Parse.Object<Parse.Attributes>) => void) => React.ReactNode | null;
   renderForm?: (initialValues: any, onClose?: () => void, refetch?: () => void) => React.ReactNode | null;
+  handleCreateNew: () => void;
   renderHeader?: () => React.ReactNode | null;
   renderFilters?: () => React.ReactNode | null;
   isAdmin?: boolean;
@@ -167,6 +168,7 @@ export const FilterTable = (props: FitlerTableProps) => {
     renderRowCard,
     showFilters,
     renderForm,
+    handleCreateNew,
     renderHeader,
     renderFilters,
     title,
@@ -406,6 +408,7 @@ export const FilterTable = (props: FitlerTableProps) => {
   }
 
   const reorderColumn = (column: string, direction: number) => {
+    console.log(visibleColumns)
     const columns = visibleColumns.map(d => d.id);
     const order = [...columns].filter(d => d !== column);
     const itemIndex = columns.indexOf(column);
@@ -540,14 +543,14 @@ export const FilterTable = (props: FitlerTableProps) => {
                       aria-label={"View Map"}
                       mx={'0.5rem'}
                     />}
-                    {isAdmin && renderForm && <Button
+                    {isAdmin && <Button
                       disabled={FormState.isOpen}
                       variant={"solid"}
                       colorScheme={"teal"}
                       size={"sm"}
                       mx={'0.5rem'}
                       leftIcon={<AddIcon />}
-                      onClick={FormState.onOpen}
+                      onClick={renderForm ? FormState.onOpen : handleCreateNew}
                     >
                       {`Add ${objectType}`}
                     </Button>}

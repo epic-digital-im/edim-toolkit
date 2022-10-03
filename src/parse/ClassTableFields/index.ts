@@ -7,5 +7,4 @@ export * from './EditableRelationCell';
 export * from './EditableBooleanCell';
 export * from './EditableWeekdayCell';
 export * from './StatusRenderer';
-export * from './CanStateCellRenderer';
 export * from './ParseCellRenderers';

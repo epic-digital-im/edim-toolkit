@@ -35,7 +35,10 @@ export const AvatarUploadInput: React.FC<AvatarUploadFieldProps> = ({ value, onC
         h="80px"
         me="22px"
         borderRadius="15px"
-        onClick={() => FileRef.current?.click()}
+        onClick={() => {
+          console.log('click');
+          FileRef.current?.click()
+        }}
         cursor="pointer"
       />
       <LoadingOverlay isLoading={isLoading} />

@@ -3,6 +3,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 
 import {
   ClassTable,
+  ClassTableProps,
 } from "./ClassTable";
 
 import {
@@ -58,6 +59,7 @@ const locked = [
   'updatedAt',
   'ACL',
   'objectId',
+  'e_id',
 ];
 
 interface ClassSchema {
@@ -133,6 +135,14 @@ const SchemaPropOptions = ({ prop, config, refetch }) => {
 }
 
 const SchemaSettingsModal: React.FC<SchemaSettingsModalProps> = ({ schema, config, isOpen, onClose, onColumnOrderChange, refetch }) => {
+  const fields: string[] = Object.keys(schema.fields);
+  const columnOrder = config?.get('columnOrder') || [];
+  const items = fields.reduce((acc, val) => {
+    if (acc.indexOf(val) === -1) {
+      acc[columnOrder.indexOf(val)] = val;
+    }
+    return acc;
+  }, columnOrder as string[]);
   return (
     <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -142,7 +152,7 @@ const SchemaSettingsModal: React.FC<SchemaSettingsModalProps> = ({ schema, confi
         <ModalBody>
           {config && (
             <DraggableList
-              items={config?.get('columnOrder') || []}
+              items={items}
               onColumnOrderChange={onColumnOrderChange}
               renderItem={(item) => (
                 <SchemaPropOptions prop={item} config={config} refetch={refetch} />
@@ -161,11 +171,15 @@ const SchemaSettingsModal: React.FC<SchemaSettingsModalProps> = ({ schema, confi
   )
 }
 
-interface SchemaTableProps {
+export interface SchemaTableProps extends ClassTableProps {
   objectClass: string;
+  handleCreateNew: ({ refetch }: { refetch: any }) => () => Promise<any>;
+  columnRenderMap?: { [key: string]: React.FC<any> };
+  query?: any;
+  queryKey?: any[];
 }
 
-export const SchemaTable: React.FC<SchemaTableProps> = ({ objectClass }) => {
+export const SchemaTable: React.FC<SchemaTableProps> = ({ query, queryKey, handleCreateNew, objectClass, columnRenderMap }) => {
   const history = useHistory();
   const [selectedSchema, setSelectedSchema] = useState<any>();
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -240,10 +254,7 @@ export const SchemaTable: React.FC<SchemaTableProps> = ({ objectClass }) => {
         const f = selectedSchema.fields[field];
         let CellRender = CellRenderMap[f.type] || EditableCell;
 
-        // console.log(f.type, CellRenderMap[f.type])
-
         if (f.type === 'Pointer' && f.targetClass.indexOf('Attribute') > -1) {
-          // console.log(f.type, f.targetClass, field, f.targetClass);
           CellRender = EditableAttributeCell({
             attributeName: field,
             objectClass: f.targetClass,
@@ -256,9 +267,20 @@ export const SchemaTable: React.FC<SchemaTableProps> = ({ objectClass }) => {
             ...getters(f.targetClass),
             isClearable: true,
           });
+        } else if (f.type === 'Relation') {
+          CellRender = EditableRelationCell({
+            objectClass: f.targetClass,
+            ...getters(f.targetClass),
+            isClearable: true,
+            isMulti: true,
+          });
         }
 
         const columnWidths = classSchemaConfig?.get('columnWidths') || {};
+
+        if (columnRenderMap && columnRenderMap[field]) {
+          CellRender = columnRenderMap[field];
+        }
 
         return {
           Header: field,
@@ -269,21 +291,25 @@ export const SchemaTable: React.FC<SchemaTableProps> = ({ objectClass }) => {
         };
       }).reduce((acc, val) => {
         const sortOrder = classSchemaConfig?.get('columnOrder') || [];
-        if (sortOrder.length > 0) {
+        if (sortOrder.length > 0 && sortOrder.indexOf(val.accessor) !== -1) {
           acc[sortOrder.indexOf(val.accessor)] = val;
           return acc;
         }
         return [...acc, val];
-      }, [])
+      }, []).filter((col) => !!col);
+
+    console.log(cols)
 
     cols.push({
       Header: 'Actions',
       accessor: 'actions',
-      width: 100,
+      width: 300,
       Cell: ({ row, column }) => {
+        const getter = getters(objectClass);
+        console.log(getter.detailPath)
         return (
           <Flex direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
-            <Button onClick={() => history.push(`/admin/${objectClass.toLowerCase()}/${row.original._object.id}`)}>
+            <Button onClick={() => history.push(`/admin/${getter && getter.detailPath || objectClass.toLowerCase()}/${row.original._object.id}`)}>
               Detail
             </Button>
             <DeleteButton object={row.original._object} />
@@ -295,10 +321,6 @@ export const SchemaTable: React.FC<SchemaTableProps> = ({ objectClass }) => {
     return cols;
   }, [selectedSchema, classSchemaConfig]);
 
-  // useEffect(() => {
-  //   setColumnOrder(columns.map(c => c.accessor));
-  // }, [selectedSchema]);
-
   const schemaOptions = useMemo(() => {
     if (!ClassSchemaRequest.data) return [];
     return ClassSchemaRequest.data.map((schema) => {
@@ -309,20 +331,25 @@ export const SchemaTable: React.FC<SchemaTableProps> = ({ objectClass }) => {
     })
   }, [ClassSchemaRequest]);
 
-  // console.log(schemaOptions);
-
   if (!selectedSchema) return null;
+
+  const splitTitleCase = (str: string) => {
+    return str.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
+  }
 
   return (
     <>
       <ClassTable
         isAdmin
         objectClass={selectedSchema.className}
-        title={selectedSchema.className}
+        title={splitTitleCase(selectedSchema.className)}
+        query={query}
+        queryKey={queryKey}
         showFilters
         findAll
         columnsData={columns}
         onColumnOrderChange={setColumnOrder}
+        handleCreateNew={handleCreateNew}
         renderFilters={() => (
           <>
             {!objectClass && (

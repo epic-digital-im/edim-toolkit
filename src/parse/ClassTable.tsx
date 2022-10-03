@@ -9,6 +9,8 @@ import { FilterTable } from './FilterTable';
 
 import { ParseCollectionLiveQuery } from '../hoc/ParseLiveQuery';
 
+import getters from '@app/shared/utils/getters'
+
 export interface ClassTableProps {
   history: any;
   objectClass: string;
@@ -35,9 +37,11 @@ export interface ClassTableProps {
   include?: string | undefined;
   filter?: any | undefined;
   exportData?: () => void;
+  handleCreateNew?: (props: { refetch: () => void }) => () => Promise<any>;
 }
 
 export const ClassTable: React.FC<ClassTableProps> = (props) => {
+
   const {
     objectClass,
     renderHeader,
@@ -54,6 +58,8 @@ export const ClassTable: React.FC<ClassTableProps> = (props) => {
 
   const { dupes, ...tableState } = initialState || {};
 
+  const getter = getters(objectClass);
+
   return (
     <ParseCollectionLiveQuery
       objectClass={objectClass}
@@ -69,6 +75,13 @@ export const ClassTable: React.FC<ClassTableProps> = (props) => {
       }}
     >
       {({ data, isLoading, refetch, isError }) => {
+
+        const handleCreateNew = async () => {
+          const item = new Parse.Object(objectClass);
+          item.set(getter.prop, 'New Item');
+          await item.save();
+          refetch();
+        }
 
         const tableData = useMemo(() => {
           if (isLoading) return [];
@@ -110,6 +123,7 @@ export const ClassTable: React.FC<ClassTableProps> = (props) => {
                 refetch={refetch}
                 objectType={objectClass}
                 exportData={exportData}
+                handleCreateNew={props.handleCreateNew ? props.handleCreateNew({ refetch }) : handleCreateNew}
               />
             </CardBody>
           </Card>

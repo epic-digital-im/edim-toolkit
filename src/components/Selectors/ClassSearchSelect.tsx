@@ -8,12 +8,19 @@ import { ClassNames } from '@app/shared/types';
 import toJson from '../../utils/toJson';
 import getters from '@app/shared/utils/getters';
 
+export interface Filter {
+  prop: string;
+  method: string;
+  value: any;
+}
+
 interface ClassSearchSelectProps {
   style?: any;
   label?: string;
   initialValue?: any;
   objectClass: ClassNames;
-  filters?: any[];
+  filters?: Filter[];
+  getFilters?: (value: Parse.Object<any>) => Filter[];
   valueGetter: (value: any) => string | undefined;
   labelGetter: (value: any) => string | undefined;
   onSelect: (value: any) => void;
@@ -33,6 +40,7 @@ interface ClassSearchSelectProps {
   name: string;
   placeholder?: string;
   ascending?: string;
+  object?: Parse.Object<any>;
 }
 
 interface Value {
@@ -59,7 +67,6 @@ const ClassSearchSelect = (props: ClassSearchSelectProps) => {
     initialValue,
     isLoading,
     disabled,
-    filters,
     queryName,
     queryOpts,
     additionalOptions,
@@ -69,8 +76,14 @@ const ClassSearchSelect = (props: ClassSearchSelectProps) => {
     isCreateable,
     placeholder,
     ascending,
+    getFilters,
+    object,
   } = props;
 
+  let filters = props.filters;
+  if (getFilters && object) {
+    filters = getFilters(object);
+  }
   const g = getters(objectClass);
   const labelGetter = props.labelGetter || g.labelGetter;
   const valueGetter = props.valueGetter || g.valueGetter;

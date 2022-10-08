@@ -6,6 +6,7 @@ import { Text, Flex, Button, Spinner } from "@chakra-ui/react";
 import { ParseLiveQuery } from '../../hoc/ParseLiveQuery';
 
 const abbrevString = (str: string, maxLength: number) => {
+  if (!str) return '';
   if (str.length <= maxLength) {
     return str;
   }

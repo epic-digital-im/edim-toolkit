@@ -7,6 +7,7 @@ import moment from 'moment-timezone';
 import { useColorPalette } from "@app/theme";
 
 import {
+  Box,
   FormControl,
   FormLabel,
 } from "@chakra-ui/react";
@@ -15,10 +16,11 @@ interface DatePickerFieldProps {
   name: string;
   value: Date | string;
   onChange: (value: Date | null) => void;
+  error?: boolean;
 }
 
 export const SingleDatePickerInput: React.FC<DatePickerFieldProps> = (props) => {
-  const { onChange, name } = props;
+  const { onChange, name, error } = props;
   const dateValue = props.value?.iso || props.value;
   const initialDate = dateValue ? moment(dateValue) : null
   const [value, setValue] = useState(initialDate);
@@ -44,17 +46,19 @@ export const SingleDatePickerInput: React.FC<DatePickerFieldProps> = (props) => 
   };
 
   return (
-    <SingleDatePicker
-      id={`${name}_date`}
-      date={value}
-      onDateChange={handleChange}
-      focused={focused}
-      onFocusChange={({ focused }) => setFocused(focused)}
-      onClose={handleClose}
-      showClearDate
-      isDayBlocked={() => false}
-      isOutsideRange={() => false}
-    />
+    <Box className={error ? 'error' : ''}>
+      <SingleDatePicker
+        id={`${name}_date`}
+        date={value}
+        onDateChange={handleChange}
+        focused={focused}
+        onFocusChange={({ focused }) => setFocused(focused)}
+        onClose={handleClose}
+        showClearDate
+        isDayBlocked={() => false}
+        isOutsideRange={() => false}
+      />
+    </Box>
   )
 }
 
@@ -84,7 +88,7 @@ export const DatePickerField = ({ label, ...props }: any) => {
   return (
     <FormControl>
       <FormLabel
-        color={textColor}
+        color={meta.error ? 'red' : textColor}
         fontWeight="bold"
         fontSize="xs"
       >
@@ -94,8 +98,9 @@ export const DatePickerField = ({ label, ...props }: any) => {
         {...props}
         {...field}
         onChange={helpers.setValue}
+        error={meta.error}
       />
-      {meta.touched && meta.error ? (
+      {meta.error ? (
         <FormLabel
           width={'100%'}
           textAlign={"center"}

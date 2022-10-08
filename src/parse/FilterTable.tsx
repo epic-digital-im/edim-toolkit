@@ -34,7 +34,7 @@ import {
   TiArrowUnsorted,
 } from "react-icons/ti";
 
-import { FiList, FiCreditCard, FiDownload, FiMap, FiRefreshCw } from "react-icons/fi";
+import { FiList, FiCreditCard, FiDownload, FiUploadCloud, FiMap, FiRefreshCw } from "react-icons/fi";
 
 import { AddIcon } from "@chakra-ui/icons";
 
@@ -53,6 +53,8 @@ import {
 import { useColorPalette } from '@app/theme';
 
 import FormDialog from '../components/Dialogs/FormDialog';
+import PickFileButton from '../components/Buttons/PickFileButton';
+import DataImportModal, { ImportDataProps } from "../components/Dialogs/ImportDialog";
 
 export interface FitlerTableProps {
   history: any;
@@ -79,6 +81,14 @@ export interface FitlerTableProps {
   renderMap?: () => React.ReactNode | undefined;
   onColumnOrderChange?: (columnOrder: string[]) => void;
   exportData?: () => void;
+  exportLoading?: boolean;
+  importData?: (data: any[]) => Promise<any>;
+  importLoading?: boolean;
+  initialState?: {
+    pageSize: number,
+    pageIndex: number,
+  };
+  fullHeight?: boolean;
 }
 
 export const IndeterminateCheckbox = forwardRef(
@@ -186,6 +196,11 @@ export const FilterTable = (props: FitlerTableProps) => {
     onColumnOrderChange,
     canReorder,
     exportData,
+    exportLoading,
+    importData,
+    importLoading,
+    initialState,
+    fullHeight,
   } = props;
 
   const toast = useToast();
@@ -238,6 +253,8 @@ export const FilterTable = (props: FitlerTableProps) => {
     setData(originalData)
   }
 
+  const [csvData, setCsvData] = useState<any>();
+  const ImportModalState = useDisclosure();
   const FormState = useDisclosure();
   const intialView = (renderRowCard) ? 'list' : 'table';
   const [viewType, setViewType] = useState(intialView);
@@ -335,7 +352,7 @@ export const FilterTable = (props: FitlerTableProps) => {
     },
   } = useTable(
     {
-      initialState: {
+      initialState: initialState || {
         pageIndex: 0,
         pageSize: 25,
       },
@@ -515,11 +532,16 @@ export const FilterTable = (props: FitlerTableProps) => {
                       onChange={(e) => setGlobalFilter(e.target.value)}
                       mx={'0.5rem'}
                     />}
+                    {importData && <PickFileButton
+                      icon={(importLoading) ? <Spinner /> : <Icon as={FiUploadCloud} />}
+                      type={'csv'}
+                      onChange={importData}
+                    />}
                     {exportData && <IconButton
                       size={"md"}
-                      icon={<Icon as={FiDownload} />}
+                      icon={(exportLoading) ? <Spinner /> : <Icon as={FiDownload} />}
                       onClick={exportData}
-                      aria-label={"Export"}
+                      aria-label={"Export Data"}
                       mx={'0.5rem'}
                     />}
                     {renderRowCard && <IconButton
@@ -630,7 +652,7 @@ export const FilterTable = (props: FitlerTableProps) => {
                   mb="24px"
                   display={'block'}
                   position={'relative'}
-                  height={'calc(100vh - 300px)'}
+                  height={fullHeight ? 'auto' : 'calc(100vh - 300px)'}
                   overflowY={'auto'}
                   id="scroll-pane"
                   borderWidth={"1px"}

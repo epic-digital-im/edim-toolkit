@@ -29,7 +29,7 @@ interface ClassSearchSelectProps {
   onClear?: () => void;
   isLoading?: boolean;
   disabled?: boolean;
-  queryName?: string;
+  queryName?: any[];
   queryOpts?: any;
   additionalOptions?: any[];
   error?: boolean;
@@ -254,6 +254,7 @@ const ClassSearchSelect = (props: ClassSearchSelectProps) => {
       width: '100%',
       backgroundColor: bgColor,
       color: textColor,
+      height: 38,
     }),
     control: (provided) => ({
       ...provided,

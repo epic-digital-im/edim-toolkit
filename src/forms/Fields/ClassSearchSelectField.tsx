@@ -40,25 +40,25 @@ export const ClassSearchSelectField = ({ label, handleSelect, object, isMulti, i
   return (
     <Box position={'relative'}>
       <FormLabel
-        color={textColor}
+        color={meta.error ? "red.500" : textColor}
         fontWeight="bold"
         fontSize="xs"
       >
         {label}
       </FormLabel>
       <ClassSearchSelect
-        borderColor={meta.touched && meta.error ? "red.500" : "gray.300"}
+        borderColor={meta.error ? "red.500" : "gray.300"}
         placeholder={label}
         borderRadius="15px"
         fontSize="sm"
         size="lg"
         onSelect={handleSelected}
-        error={meta.touched && meta.error}
+        error={meta.error}
         isMulti={isMulti}
         initialValue={intialValue}
         {...props}
       />
-      {meta.touched && meta.error ? (
+      {meta.error ? (
         <FormLabel
           width={'100%'}
           textAlign={"center"}

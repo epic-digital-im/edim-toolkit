@@ -100,7 +100,7 @@ export const EditableColorPicker = ({
       {discussion && <DiscussionButton
         type='icon'
         object={original._object}
-        property={id}
+        context={id}
         title={discussionTitle && discussionTitle(original._object)}
       />}
     </>

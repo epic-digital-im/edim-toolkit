@@ -64,7 +64,7 @@ export const EditableRelationCell = ({
           {discussion && <DiscussionButton
             type='icon'
             object={original._object}
-            property={id}
+            context={id}
             title={discussionTitle && discussionTitle(original._object)}
           />}
         </Flex>

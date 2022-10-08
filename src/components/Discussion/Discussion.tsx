@@ -94,6 +94,7 @@ export const Discussion = ({ title, object, context, onCreate, isDialog }: Discu
             comment.set('subjectId', object.id);
             comment.set('subjectClass', object.className);
             comment.set('context', context);
+            console.log(context);
             await comment.save()
             setValue('');
             if (onCreate) onCreate();

@@ -39,7 +39,7 @@ export const EditableWeekdayCell = ({
             {discussion && <DiscussionButton
               type='icon'
               object={original._object}
-              property={id}
+              context={id}
               title={discussionTitle && discussionTitle(original._object)}
             />}
           </div>

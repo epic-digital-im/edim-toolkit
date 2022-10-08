@@ -87,7 +87,7 @@ export const EditableAttributeCell = ({
     }
 
     const handleRemove = async (objectId: string) => {
-      console.log('handleRemove', objectId);
+      // console.log('handleRemove', objectId);
       const object = original._object;
       setIsLoading(true);
       const options = await object.relation(id).query().find();
@@ -98,18 +98,13 @@ export const EditableAttributeCell = ({
     }
 
     const handleCreate = async (value: string) => {
-      console.log('handleCreate', value);
+      // console.log('handleCreate', value);
       const object = original._object;
       setIsLoading(true);
-      const AttributeClass = Parse.Object.extend(objectClass);
-      const attribute = new AttributeClass();
-      attribute.set('name', id);
-      attribute.set('value', value);
-      await attribute.save();
       if (isMulti) {
-        object.relation(id).add(attribute);
+        object.relation(id).add(value);
       } else {
-        object.set(id, attribute);
+        object.set(id, value);
       }
       await object.save();
 
@@ -117,11 +112,11 @@ export const EditableAttributeCell = ({
         const options = await object.relation(id).query().find();
         setInitialData(options.map((r: Parse.Object<any>) => r.toJSON()));
       } else {
-        setInitialData(attribute?.toJSON());
+        setInitialData(value?.toJSON());
       }
 
       setIsLoading(false);
-      return attribute;
+      return value;
     }
 
     return (
@@ -156,7 +151,7 @@ export const EditableAttributeCell = ({
           <DiscussionButton
             type='icon'
             object={original._object}
-            property={id}
+            context={id}
             title={discussionTitle && discussionTitle(original._object)}
           />
         )}

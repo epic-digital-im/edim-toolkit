@@ -5,6 +5,7 @@ import { Attribute } from "@app/shared/parse-types";
 
 import ClassSearchSelect from '../../components/Selectors/ClassSearchSelect';
 import DiscussionButton from '../../components/Buttons/DiscussionButton';
+import ToggleEditWrapper from './ToggleEditWrapper';
 
 export interface EditableAttributeCellProps {
   attributeName: string;
@@ -13,6 +14,7 @@ export interface EditableAttributeCellProps {
   labelGetter: (data: any) => string;
   isMulti?: boolean;
   isClearable?: boolean;
+  editable?: boolean;
 }
 
 export const EditableAttributeCell = ({
@@ -23,8 +25,10 @@ export const EditableAttributeCell = ({
   isMulti,
   isClearable,
 }: EditableAttributeCellProps) => ({
+  rowEditable,
+  setRowEditable,
   row: { original },
-  column: { id, discussion, discussionTitle, },
+  column: { id, discussion, discussionTitle, textAlign, editable },
 }) => {
     const initialValue = original._object.get(id);
     const [initialData, setInitialData] = useState();
@@ -117,6 +121,19 @@ export const EditableAttributeCell = ({
 
       setIsLoading(false);
       return value;
+    }
+
+    if (!rowEditable) {
+      return (
+        <ToggleEditWrapper
+          width={'100%'}
+          textAlign={textAlign || 'center'}
+          value={isMulti ? initialData?.map((data: any) => labelGetter(data)).join(', ') : (initialData) ? labelGetter(initialData) : ''}
+          editable={editable}
+          rowEditable={rowEditable}
+          setRowEditable={setRowEditable}
+        />
+      );
     }
 
     return (

@@ -1,17 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { weekdayList, Weekdays } from "@app/shared/types";
 import WeekdaySelect from '../../components/Selectors/WeekdaySelector';
 import DiscussionButton from '../../components/Buttons/DiscussionButton';
 import { ParsePropUpdater } from "../PropUpdater";
+import ToggleEditWrapper from './ToggleEditWrapper';
 
 export const EditableWeekdayCell = ({
   value: initialValue,
   row: { original },
-  column: { id, editable, discussion, discussionTitle }, // This is a custom function that we supplied to our table instance
+  column: { id, editable, discussion, discussionTitle, textAlign }, // This is a custom function that we supplied to our table instance
+  rowEditable,
+  setRowEditable
 }) => {
 
-  if (!editable) {
-    return weekdayList[initialValue] || null;
+  if (!rowEditable) {
+    return (
+      <ToggleEditWrapper
+        width={'100%'}
+        textAlign={textAlign || 'center'}
+        value={weekdayList[initialValue] || null}
+        rowEditable={rowEditable}
+        setRowEditable={setRowEditable}
+        editable={editable}
+      />
+    );
   }
 
   return (

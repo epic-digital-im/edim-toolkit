@@ -4,6 +4,7 @@ import { Flex } from "@chakra-ui/react";
 import { ParsePropUpdater } from "../PropUpdater";
 import ClassSearchSelect, { Filter } from '../../components/Selectors/ClassSearchSelect';
 import DiscussionButton from '../../components/Buttons/DiscussionButton';
+import ToggleEditWrapper from './ToggleEditWrapper';
 
 interface EditableRelationCellProps {
   objectClass: ClassNames;
@@ -25,10 +26,25 @@ export const EditableRelationCell = ({
   isMulti,
 }: EditableRelationCellProps) => ({
   row: { original },
-  column: { id, discussion, discussionTitle },
+  column: { id, discussion, discussionTitle, editable, textAlign },
+  rowEditable,
+  setRowEditable
 }) => {
     // const initialValue = original._object.get(id);
     // const initialData = initialValue?.toJSON();
+
+    if (!setRowEditable) {
+      return (
+        <ToggleEditWrapper
+          width={'100%'}
+          textAlign={textAlign || 'center'}
+          value={valueGetter(original)}
+          rowEditable={rowEditable}
+          setRowEditable={setRowEditable}
+          editable={editable}
+        />
+      );
+    }
 
     return useMemo(() => {
       return (

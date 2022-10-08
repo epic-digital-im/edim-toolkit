@@ -2,14 +2,17 @@ import React, { useState, useEffect } from "react";
 import { Input } from "@chakra-ui/react";
 import { ParsePropUpdater } from "../PropUpdater";
 import DiscussionButton from '../../components/Buttons/DiscussionButton';
+import ToggleEditWrapper from "./ToggleEditWrapper";
 
 // Create an editable cell renderer
 export const EditableNumberCell = ({
   value: initialValue,
   row: { original },
   column, // This is a custom function that we supplied to our table instance
+  rowEditable,
+  setRowEditable
 }) => {
-  const { id, editable, discussion, discussionTitle } = column;
+  const { id, editable, discussion, discussionTitle, textAlign } = column;
   const [local, setLocal] = useState(initialValue);
 
   const handleChange = (e: { target: { value: string } }) => {
@@ -19,6 +22,19 @@ export const EditableNumberCell = ({
   useEffect(() => {
     setLocal(initialValue)
   }, [initialValue]);
+
+  if (!rowEditable) {
+    return (
+      <ToggleEditWrapper
+        width={'100%'}
+        textAlign={textAlign || 'center'}
+        value={initialValue}
+        rowEditable={rowEditable}
+        setRowEditable={setRowEditable}
+        editable={editable}
+      />
+    )
+  }
 
   return (
     <ParsePropUpdater object={original._object} property={id}>

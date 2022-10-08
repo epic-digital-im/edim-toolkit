@@ -6,6 +6,7 @@ import { ParseFilePropUpdater } from '../../parse/PropUpdater';
 import { LoadingOverlay } from '../../components/Loaders/LoadingOverlay';
 
 interface AvatarUploadFieldProps extends ChakraComponent<"div"> {
+  object: Parse.User;
   value: string;
   onChange: (value: string) => void;
   isLoading?: boolean;

@@ -1,14 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { } from "react";
 import { SingleDatePickerParse } from '../../forms/Fields/DatePickerField';
 import DiscussionButton from '../../components/Buttons/DiscussionButton';
+import ToggleEditWrapper from "./ToggleEditWrapper";
 
-export const EditableDateCell = ({ cell, row: { original }, column }) => {
+export const EditableDateCell = ({ cell, row: { original }, column, rowEditable, setRowEditable, }) => {
   const { id, editable, textAlign, discussion, discussionTitle } = column;
-  if (!editable) {
+
+  if (!rowEditable) {
     const d = original._object.get(id);
     if (!d) return null;
-    return d.toLocaleDateString();
+    return (
+      <ToggleEditWrapper
+        width={'100%'}
+        textAlign={textAlign || 'center'}
+        value={d.toLocaleDateString() || null}
+        rowEditable={rowEditable}
+        setRowEditable={setRowEditable}
+        editable={editable}
+      />
+    )
   }
+
   return (
     <>
       <SingleDatePickerParse

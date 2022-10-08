@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Switch, useToast } from "@chakra-ui/react";
 import DiscussionButton from '../../components/Buttons/DiscussionButton';
+import ToggleEditWrapper from "./ToggleEditWrapper";
 
 export const EditableBooleanCell = ({
   value: initialValue,
   row: { original },
-  column: { id, editable, discussion, discussionTitle, },
+  column: { id, editable, discussion, discussionTitle, textAlign },
+  rowEditable,
+  setRowEditable,
 }) => {
   const toast = useToast();
   const [value, setValue] = useState(Boolean(initialValue));
@@ -48,8 +51,17 @@ export const EditableBooleanCell = ({
     setValue(initialValue)
   }, [initialValue])
 
-  if (!editable) {
-    return value ? 'Yes' : 'No'
+  if (!rowEditable) {
+    return (
+      <ToggleEditWrapper
+        width={'100%'}
+        textAlign={textAlign || 'center'}
+        value={value ? 'Yes' : 'No'}
+        rowEditable={rowEditable}
+        setRowEditable={setRowEditable}
+        editable={editable}
+      />
+    )
   }
 
   return (

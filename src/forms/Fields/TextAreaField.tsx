@@ -35,7 +35,7 @@ export const TextAreaField = ({ label, ...props }: any) => {
   return (
     <FormControl>
       <FormLabel
-        color={textColor}
+        borderColor={meta.error ? "red.500" : textColor}
         fontWeight="bold"
         fontSize="xs"
       >

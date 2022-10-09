@@ -5,6 +5,7 @@ import { Attribute } from "@app/shared/parse-types";
 
 import ClassSearchSelect from '../../components/Selectors/ClassSearchSelect';
 import DiscussionButton from '../../components/Buttons/DiscussionButton';
+import ToggleEditWrapper from './ToggleEditWrapper';
 
 export interface EditableAttributeCellProps {
   attributeName: string;
@@ -13,6 +14,7 @@ export interface EditableAttributeCellProps {
   labelGetter: (data: any) => string;
   isMulti?: boolean;
   isClearable?: boolean;
+  editable?: boolean;
 }
 
 export const EditableAttributeCell = ({
@@ -23,8 +25,10 @@ export const EditableAttributeCell = ({
   isMulti,
   isClearable,
 }: EditableAttributeCellProps) => ({
+  rowEditable,
+  setRowEditable,
   row: { original },
-  column: { id, discussion, discussionTitle, },
+  column: { id, discussion, discussionTitle, textAlign, editable },
 }) => {
     const initialValue = original._object.get(id);
     const [initialData, setInitialData] = useState();
@@ -87,7 +91,7 @@ export const EditableAttributeCell = ({
     }
 
     const handleRemove = async (objectId: string) => {
-      console.log('handleRemove', objectId);
+      // console.log('handleRemove', objectId);
       const object = original._object;
       setIsLoading(true);
       const options = await object.relation(id).query().find();
@@ -101,15 +105,10 @@ export const EditableAttributeCell = ({
       console.log({ operation: 'handleCreate', value, isMulti });
       const object = original._object;
       setIsLoading(true);
-      const AttributeClass = Parse.Object.extend(objectClass);
-      const attribute = new AttributeClass();
-      attribute.set('name', id);
-      attribute.set('value', value);
-      await attribute.save();
       if (isMulti) {
-        object.relation(id).add(attribute);
+        object.relation(id).add(value);
       } else {
-        object.set(id, attribute);
+        object.set(id, value);
       }
       await object.save();
 
@@ -117,11 +116,24 @@ export const EditableAttributeCell = ({
         const options = await object.relation(id).query().find();
         setInitialData(options.map((r: Parse.Object<any>) => r.toJSON()));
       } else {
-        setInitialData(attribute?.toJSON());
+        setInitialData(value?.toJSON());
       }
 
       setIsLoading(false);
-      return attribute;
+      return value;
+    }
+
+    if (!rowEditable) {
+      return (
+        <ToggleEditWrapper
+          width={'100%'}
+          textAlign={textAlign || 'center'}
+          value={isMulti ? initialData?.map((data: any) => labelGetter(data)).join(', ') : (initialData) ? labelGetter(initialData) : ''}
+          editable={editable}
+          rowEditable={rowEditable}
+          setRowEditable={setRowEditable}
+        />
+      );
     }
 
     return (
@@ -156,7 +168,7 @@ export const EditableAttributeCell = ({
           <DiscussionButton
             type='icon'
             object={original._object}
-            property={id}
+            context={id}
             title={discussionTitle && discussionTitle(original._object)}
           />
         )}

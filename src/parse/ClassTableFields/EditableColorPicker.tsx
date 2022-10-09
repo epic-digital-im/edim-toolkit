@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Input, useToast } from "@chakra-ui/react";
+import { Box, Text, Input, useToast } from "@chakra-ui/react";
 import DiscussionButton from '../../components/Buttons/DiscussionButton';
+import ToggleEditWrapper from "./ToggleEditWrapper";
 
 function useDebounce(value: any, delay: number) {
   // State and setters for debounced value
@@ -24,11 +25,13 @@ function useDebounce(value: any, delay: number) {
 }
 
 export const EditableColorPicker = ({
+  rowEditable,
+  setRowEditable,
   value: initialValue,
   row: { original },
   column, // This is a custom function that we supplied to our table instance
 }) => {
-  const { id, editable, discussion, discussionTitle } = column;
+  const { id, editable, discussion, discussionTitle, textAlign } = column;
   const toast = useToast();
   const [value, setValue] = useState(initialValue);
   const [prevValue, setPrevValue] = useState(initialValue);
@@ -77,8 +80,17 @@ export const EditableColorPicker = ({
     setValue(initialValue)
   }, [initialValue])
 
-  if (!editable) {
-    return initialValue || null;
+  if (!rowEditable) {
+    return (
+      <ToggleEditWrapper
+        width={'100%'}
+        textAlign={textAlign || 'center'}
+        value={initialValue || null}
+        rowEditable={rowEditable}
+        setRowEditable={setRowEditable}
+        editable={editable}
+      />
+    );
   }
 
   return (
@@ -100,7 +112,7 @@ export const EditableColorPicker = ({
       {discussion && <DiscussionButton
         type='icon'
         object={original._object}
-        property={id}
+        context={id}
         title={discussionTitle && discussionTitle(original._object)}
       />}
     </>

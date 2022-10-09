@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Select, { SingleValue } from 'react-select';
+import Select, { SelectComponentsConfig, SingleValue } from 'react-select';
 import { useColorModeValue } from '@chakra-ui/react';
 
 interface Value {
@@ -7,7 +7,7 @@ interface Value {
   label: string;
 }
 
-interface SelectorProps {
+interface SelectorProps extends SelectComponentsConfig {
   label?: string;
   initialValue?: {
     value: any;
@@ -22,7 +22,8 @@ interface SelectorProps {
 }
 
 const Selector = (props: SelectorProps) => {
-  const { isLoading, isDisabled, initialValue, onSelect, options, style, error } = props;
+  const { isLoading, isDisabled, initialValue, onSelect, options, style, error, ...rest } = props;
+  console.log(rest);
   const bgColor = useColorModeValue("white", "#1a202c");
   const textColor = useColorModeValue("#484848", "white");
 
@@ -44,6 +45,9 @@ const Selector = (props: SelectorProps) => {
     if (newValue && newValue.value !== undefined) {
       setValue(newValue);
       if (onSelect) onSelect(newValue.value);
+    } else {
+      setValue(undefined);
+      if (onSelect) onSelect(undefined);
     }
   };
 
@@ -84,6 +88,7 @@ const Selector = (props: SelectorProps) => {
 
   return (
     <Select
+      {...rest}
       isDisabled={isDisabled}
       isLoading={isLoading}
       value={value}

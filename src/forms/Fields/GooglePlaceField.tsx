@@ -42,15 +42,14 @@ interface GooglePlaceSelectorFieldProps {
   label: string;
   props: ComponentWithAs<"input", InputProps>;
   name: string;
+  style: React.CSSProperties;
 }
 
 export const GooglePlaceSelectorField: React.FC<GooglePlaceSelectorFieldProps> = ({ label, formControl, googleMapsApiKey, ...props }) => {
-  const { colorMode, textColor, inputBorderColor } = useColorPalette();
-  const [field, meta, helpers] = useField(props);
+  const { textColor } = useColorPalette();
+  const [, meta, helpers] = useField(props);
 
-  const borderColor = (colorMode === 'dark')
-    ? meta.touched && meta.error ? "red.500" : inputBorderColor
-    : meta.touched && meta.error ? "red.500" : null
+  const invalidColor = meta.touched && meta.error ? "red.500" : textColor;
 
 
   const handleChange = (place: any) => {
@@ -64,7 +63,7 @@ export const GooglePlaceSelectorField: React.FC<GooglePlaceSelectorFieldProps> =
   return (
     <FormControl {...formControl}>
       <FormLabel
-        color={textColor}
+        color={invalidColor}
         fontWeight="bold"
         fontSize="xs"
       >

@@ -267,10 +267,13 @@ export const SchemaTable: React.FC<SchemaTableProps> = ({ query, queryKey, handl
             ...getters(f.targetClass),
             isClearable: true,
           });
-        } else if (f.type === 'Relation') {
-          CellRender = EditableRelationCell({
+        } else if (f.type === 'Relation' && f.targetClass.indexOf('Attribute') > -1) {
+          console.log(f);
+          CellRender = EditableAttributeCell({
+            attributeName: field,
             objectClass: f.targetClass,
-            ...getters(f.targetClass),
+            valueGetter: (row: AttributeAttributes) => row.objectId,
+            labelGetter: (row: AttributeAttributes) => row.value,
             isClearable: true,
             isMulti: true,
           });

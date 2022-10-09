@@ -98,7 +98,7 @@ export const EditableAttributeCell = ({
     }
 
     const handleCreate = async (value: string) => {
-      console.log('handleCreate', value);
+      console.log({ operation: 'handleCreate', value, isMulti });
       const object = original._object;
       setIsLoading(true);
       const AttributeClass = Parse.Object.extend(objectClass);

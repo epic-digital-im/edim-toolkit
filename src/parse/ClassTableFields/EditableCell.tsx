@@ -26,11 +26,12 @@ export const EditableCell = (props) => {
   }, [initialValue]);
 
   if (!rowEditable) {
+    const value = (typeof initialValue === 'object') ? JSON.stringify(initialValue) : initialValue;
     return (
       <ToggleEditWrapper
         width={'100%'}
         textAlign={textAlign || 'center'}
-        value={initialValue}
+        value={value}
         rowEditable={rowEditable}
         setRowEditable={setRowEditable}
         editable={editable}

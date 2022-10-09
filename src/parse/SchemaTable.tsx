@@ -15,33 +15,24 @@ import {
   EditableBooleanCell,
 } from './ClassTableFields';
 
-import { HamburgerIcon, SettingsIcon } from '@chakra-ui/icons';
-
-import { IoEyeSharp, IoEyeOffSharp } from 'react-icons/io5'
+import { SettingsIcon } from '@chakra-ui/icons';
 
 import { useQuery } from '@tanstack/react-query';
 
 import {
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalContent,
-  ModalOverlay,
-  ModalCloseButton,
-  ModalProps,
   useDisclosure,
   Flex,
-  Input,
   IconButton,
-  Button
+  Button,
 } from '@chakra-ui/react';
 
 import Selector from '../components/Selectors/Selector';
-import DraggableList from '@epicdm/toolkit/src/components/Draggable/DraggableList'
-import { SchemaConfig, AttributeAttributes } from '@app/shared/parse-types';
+import { AttributeAttributes } from '@app/shared/parse-types';
 import getters from '@app/shared/utils/getters';
 import { DeleteButton } from '../components/Buttons/DeleteButton';
 import { useHistory } from 'react-router-dom';
+import { SchemaSettingsModal } from './SchemaConfig';
+import { ClassNames } from '@app/shared/types';
 
 const CellRenderMap = {
   "Date": EditableDateCell,
@@ -54,129 +45,12 @@ const CellRenderMap = {
   "Relation": EditableRelationCell,
 }
 
-const locked = [
-  'createdAt',
-  'updatedAt',
-  'ACL',
-  'objectId',
-  'e_id',
-];
-
-interface ClassSchema {
-  className: string;
-  fields: { [key: string]: { type: string; } };
-}
-
-interface SchemaSettingsModalProps extends Partial<ModalProps> {
-  schema: ClassSchema;
-  config: SchemaConfig;
-  onColumnOrderChange: (columnOrder: string[]) => void;
-  refetch?: () => void;
-}
-
-const SchemaPropOptions = ({ prop, config, refetch }) => {
-  const columnWidths = config?.get('columnWidths') || {};
-  const columnVisibility = config?.get('columnVisibility') || {};
-  const [width, setWidth] = useState(columnWidths[prop] || 200);
-  const [visibility, setVisibility] = useState(columnVisibility[prop] !== false);
-
-  const handleUpdate = (event) => {
-    const { value } = event.target;
-    const val = parseInt(value, 10);
-    setWidth((!isNaN(val)) ? val : 200);
-  }
-
-  const handleBlur = () => {
-    config.set('columnWidths', {
-      ...columnWidths,
-      [prop]: width,
-    })
-    config.save()
-      .then(() => {
-        if (refetch) refetch();
-      }).catch((err) => {
-        console.log(err);
-      });;
-  }
-
-  const toggleVisible = () => {
-    const newVisibility = !visibility;
-    config.set('columnVisibility', {
-      ...columnVisibility,
-      [prop]: newVisibility,
-    });
-    setVisibility(newVisibility);
-    config.save()
-      .then(() => {
-        if (refetch) refetch();
-      }).catch((err) => {
-        console.log(err);
-      });
-  }
-
-  return (
-    <Flex direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
-      <HamburgerIcon mr={3} />
-      {prop}
-      <Input
-        value={width}
-        width={'100px'}
-        onChange={handleUpdate}
-        onBlur={handleBlur}
-        type="number"
-      />
-      <IconButton
-        aria-label='Toggle visibility'
-        icon={visibility ? <IoEyeSharp /> : <IoEyeOffSharp />}
-        onClick={toggleVisible}
-      />
-    </Flex>
-  )
-}
-
-const SchemaSettingsModal: React.FC<SchemaSettingsModalProps> = ({ schema, config, isOpen, onClose, onColumnOrderChange, refetch }) => {
-  const fields: string[] = Object.keys(schema.fields);
-  const columnOrder = config?.get('columnOrder') || [];
-  const items = fields.reduce((acc, val) => {
-    if (acc.indexOf(val) === -1) {
-      acc[columnOrder.indexOf(val)] = val;
-    }
-    return acc;
-  }, columnOrder as string[]);
-  return (
-    <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>{`${schema.className} Table Options`}</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          {config && (
-            <DraggableList
-              items={items}
-              onColumnOrderChange={onColumnOrderChange}
-              renderItem={(item) => (
-                <SchemaPropOptions prop={item} config={config} refetch={refetch} />
-              )}
-            />
-          )}
-        </ModalBody>
-        {/* <ModalFooter>
-          <Button colorScheme='blue' mr={3} onClick={onClose}>
-            Close
-          </Button>
-          <Button variant='ghost'>Secondary Action</Button>
-        </ModalFooter> */}
-      </ModalContent>
-    </Modal>
-  )
-}
-
 export interface SchemaTableProps extends ClassTableProps {
-  objectClass: string;
+  objectClass: ClassNames;
   handleCreateNew: ({ refetch }: { refetch: any }) => () => Promise<any>;
   columnRenderMap?: { [key: string]: React.FC<any> };
-  query?: any;
-  queryKey?: any[];
+  query?: Parse.Query;
+  queryKey?: any;
 }
 
 export const SchemaTable: React.FC<SchemaTableProps> = ({ query, queryKey, handleCreateNew, objectClass, columnRenderMap }) => {
@@ -247,10 +121,12 @@ export const SchemaTable: React.FC<SchemaTableProps> = ({ query, queryKey, handl
     if (!selectedSchema) return [];
     const cols = Object.keys(selectedSchema.fields)
       .filter((field) => {
-        const visibility = classSchemaConfig?.get('columnVisibility') || [];
+        const visibility = classSchemaConfig?.get('columnVisibility') || {};
         return visibility[field] !== false;
       })
       .map((field) => {
+        const columnEditable = classSchemaConfig?.get('columnEditable') || {};
+        const editable = columnEditable[field] === true;
         const f = selectedSchema.fields[field];
         let CellRender = CellRenderMap[f.type] || EditableCell;
 
@@ -289,8 +165,8 @@ export const SchemaTable: React.FC<SchemaTableProps> = ({ query, queryKey, handl
           Header: field,
           accessor: field,
           width: columnWidths[field] || 200,
-          editable: !locked.includes(field),
           Cell: CellRender,
+          editable,
         };
       }).reduce((acc, val) => {
         const sortOrder = classSchemaConfig?.get('columnOrder') || [];
@@ -301,15 +177,12 @@ export const SchemaTable: React.FC<SchemaTableProps> = ({ query, queryKey, handl
         return [...acc, val];
       }, []).filter((col) => !!col);
 
-    console.log(cols)
-
     cols.push({
       Header: 'Actions',
       accessor: 'actions',
       width: 300,
-      Cell: ({ row, column }) => {
+      Cell: ({ row }) => {
         const getter = getters(objectClass);
-        console.log(getter.detailPath)
         return (
           <Flex direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
             <Button onClick={() => history.push(`/admin/${getter && getter.detailPath || objectClass.toLowerCase()}/${row.original._object.id}`)}>

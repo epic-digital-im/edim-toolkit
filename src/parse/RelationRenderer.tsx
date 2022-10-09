@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactChild } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 interface RelationRendererProps {
@@ -11,7 +11,7 @@ export const RelationRenderer: React.FC<RelationRendererProps> = ({
   object,
   relation,
   render
-}) => {
+}): ReactChild[] => {
   const r = object && object.relation && object.relation(relation);
   const RelationQuery = useQuery(
     [`${object.id}`, { relation }],

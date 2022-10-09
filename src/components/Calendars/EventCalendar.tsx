@@ -8,7 +8,7 @@ function EventCalendar(props) {
   const { calendarData, initialDate, eventClick, ...rest } = props;
   return (
     <FullCalendar
-      plugins={[dayGridPlugin, interactionPlugin]}
+      plugins={[momentPlugin, dayGridPlugin, interactionPlugin]}
       initialView="dayGridMonth"
       initialDate={initialDate}
       contentHeight="600"

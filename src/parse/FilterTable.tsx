@@ -164,9 +164,10 @@ export function SelectColumnFilter(props) {
           justify="space-between"
           align="center"
           color={textColor}
+          pb={2}
           {...column.getSortByToggleProps()}
         >
-          <Text color={textColor} my={2}>{column.render("Header")}</Text>
+          <Text fontSize={{ sm: '12px', md: '14px' }} color={textColor}>{column.render("Header")}</Text>
           <Icon
             w={{ sm: "10px", md: "14px" }}
             h={{ sm: "10px", md: "14px" }}
@@ -761,12 +762,9 @@ export const FilterTable = (props: FitlerTableProps) => {
                                       <Flex
                                         justify="space-between"
                                         align="center"
-                                        fontSize={{ sm: "10px", lg: "12px" }}
-                                        textTransform={"uppercase"}
-                                        color="gray.400"
                                         {...column.getSortByToggleProps()}
                                       >
-                                        <Box textColor={textColor} textAlign={'center'}>{column.render("Header")}</Box>
+                                        <Text fontSize={{ sm: '12px', md: '14px' }} color={textColor}>{column.render("Header")}</Text>
                                         <Icon
                                           w={{ sm: "10px", md: "14px" }}
                                           h={{ sm: "10px", md: "14px" }}

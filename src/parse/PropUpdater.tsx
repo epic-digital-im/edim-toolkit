@@ -3,7 +3,7 @@ import { ClassNames } from "@app/shared/types";
 import { Attribute } from "@app/shared/parse-types";
 import ClassSearchSelect from '../components/Selectors/ClassSearchSelect';
 
-import React, { ReactNode, useState, useEffect, useRef } from 'react';
+import React, { ReactElement, useState, useEffect, useRef } from 'react';
 
 import getters from '@app/shared/utils/getters'
 
@@ -23,7 +23,7 @@ interface FuncArgs {
   isLoading: boolean;
 }
 
-type FunctionChild = (args: FuncArgs) => React.ReactNode;
+type FunctionChild = (args: FuncArgs) => React.ReactElement;
 
 interface ParsePropUpdaterProps {
   object: Parse.Object<any>;
@@ -32,7 +32,7 @@ interface ParsePropUpdaterProps {
   children: FunctionChild;
 }
 
-export const ParsePropUpdater = (props: ParsePropUpdaterProps): ReactNode => {
+export const ParsePropUpdater = (props: ParsePropUpdaterProps): ReactElement => {
   const { object, property, subProperty, children } = props;
   const toast = useToast();
 
@@ -105,7 +105,7 @@ interface ParseFilePropUpdaterProps {
   children: FunctionChild;
 }
 
-export const ParseFilePropUpdater = (props: ParsePropUpdaterProps): ReactNode => {
+export const ParseFilePropUpdater = (props: ParsePropUpdaterProps): ReactElement => {
   const { object, property, children } = props;
   const toast = useToast();
   const [value, setValue] = useState<Parse.File | undefined>(object.get(property));
@@ -181,7 +181,7 @@ interface ParsePropUpdaterProps {
   isClearable?: boolean;
 }
 
-export const RelationPropUpdater = (props: ParsePropUpdaterProps): ReactNode => {
+export const RelationPropUpdater = (props: ParsePropUpdaterProps): ReactElement => {
   const { textColor } = useColorPalette();
   const toast = useToast();
   const { valueGetter, labelGetter } = getters(props.objectClass);

@@ -21,8 +21,8 @@ interface ClassSearchSelectProps {
   objectClass: ClassNames;
   filters?: Filter[];
   getFilters?: (value: Parse.Object<any>) => Filter[];
-  valueGetter: (value: any) => string | undefined;
-  labelGetter: (value: any) => string | undefined;
+  valueGetter?: (value: any) => string | undefined;
+  labelGetter?: (value: any) => string | undefined;
   onSelect: (value: any) => void;
   onCreate?: (value: any) => Promise<any>;
   onRemove?: (value: string) => void;
@@ -37,7 +37,7 @@ interface ClassSearchSelectProps {
   autoSelectFirst?: boolean;
   isMulti?: boolean;
   isCreateable?: boolean;
-  name: string;
+  name?: string;
   placeholder?: string;
   ascending?: string;
   object?: Parse.Object<any>;

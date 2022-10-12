@@ -2,13 +2,18 @@ import React, { useState, useEffect } from "react";
 import { Input } from "@chakra-ui/react";
 import { ParsePropUpdater } from "../PropUpdater";
 import DiscussionButton from '../../components/Buttons/DiscussionButton';
+import ToggleEditWrapper from "./ToggleEditWrapper";
 
 // Create an editable cell renderer
-export const EditableCell = ({
-  value: initialValue,
-  row: { original },
-  column, // This is a custom function that we supplied to our table instance
-}) => {
+export const EditableCell = (props) => {
+  const {
+    rowEditable,
+    setRowEditable,
+    value: initialValue,
+    row: { original },
+    column, // This is a custom function that we supplied to our table instance
+  } = props;
+
   const { id, editable, textAlign, discussion, discussionTitle } = column;
   const [local, setLocal] = useState(initialValue);
 
@@ -19,6 +24,20 @@ export const EditableCell = ({
   useEffect(() => {
     setLocal(initialValue)
   }, [initialValue]);
+
+  if (!rowEditable) {
+    const value = (typeof initialValue === 'object') ? JSON.stringify(initialValue) : initialValue;
+    return (
+      <ToggleEditWrapper
+        width={'100%'}
+        textAlign={textAlign || 'center'}
+        value={value}
+        rowEditable={rowEditable}
+        setRowEditable={setRowEditable}
+        editable={editable}
+      />
+    );
+  }
 
   return (
     <ParsePropUpdater object={original._object} property={id}>
@@ -43,7 +62,7 @@ export const EditableCell = ({
               onChange={handleChange}
               onBlur={onBlur}
               background={'transparent'}
-              textAlign={textAlign}
+              textAlign={textAlign || 'center'}
               padding={'0'}
               pl={3}
               margin={'0'}
@@ -53,7 +72,7 @@ export const EditableCell = ({
             {discussion && <DiscussionButton
               type='icon'
               object={original._object}
-              property={id}
+              context={id}
               title={discussionTitle && discussionTitle(original._object)}
             />}
           </>

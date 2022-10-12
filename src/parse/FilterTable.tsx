@@ -54,7 +54,10 @@ import { useColorPalette } from '@app/theme';
 
 import FormDialog from '../components/Dialogs/FormDialog';
 import PickFileButton from '../components/Buttons/PickFileButton';
-import DataImportModal, { ImportDataProps } from "../components/Dialogs/ImportDialog";
+
+import useKeyPress from '../hooks/useKeyPress';
+
+import Selector from '../components/Selectors/Selector';
 
 export interface FitlerTableProps {
   history: any;
@@ -68,6 +71,7 @@ export interface FitlerTableProps {
   renderHeader?: () => React.ReactNode | null;
   renderFilters?: () => React.ReactNode | null;
   isAdmin?: boolean;
+  isEditor?: boolean;
   isPropertyDetail?: boolean;
   refetch?: () => void;
   tableData: any[];
@@ -127,36 +131,70 @@ export function DefaultColumnFilter({
   )
 }
 
-export function SelectColumnFilter({
-  column: { Header, filterValue, setFilter, preFilteredRows, id },
-}) {
+export function SelectColumnFilter(props) {
+  const { textColor } = useColorPalette();
+  const {
+    column: { Header, filterValue, setFilter, preFilteredRows, id },
+  } = props;
+
+  const column = props.column;
   // Calculate the options for filtering
   // using the preFilteredRows
   try {
     const options = useMemo(() => {
       const options = new Set()
       preFilteredRows.forEach(row => {
-        options.add(row.values[id])
+        if (row.values[id] && row.values[id] !== '') {
+          if (row.values[id] === true) {
+            options.add('Yes')
+          }
+          if (row.values[id] === false) {
+            options.add('No')
+          }
+          options.add(row.values[id])
+        }
       })
       return [...options.values()]
     }, [id, preFilteredRows])
 
     // Render a multi-select box
     return (
-      <Select
-        textAlign={'center'}
-        value={filterValue}
-        onChange={e => {
-          setFilter(e.target.value || undefined)
-        }}
-      >
-        <option value="">{Header}</option>
-        {options.map((option, i) => (
-          <option key={i} value={option}>
-            {option}
-          </option>
-        ))}
-      </Select>
+      <Flex alignItems={'center'} direction={'column'} width={'100%'}>
+        <Flex
+          justify="space-between"
+          align="center"
+          color={textColor}
+          pb={2}
+          {...column.getSortByToggleProps()}
+        >
+          <Text fontSize={{ sm: '12px', md: '14px' }} color={textColor}>{column.render("Header")}</Text>
+          <Icon
+            w={{ sm: "10px", md: "14px" }}
+            h={{ sm: "10px", md: "14px" }}
+            color={"gray.900"}
+            fontWeight={column.isSorted ? "900" : "400"}
+            float="right"
+            as={
+              column.isSorted
+                ? column.isSortedDesc
+                  ? TiArrowSortedDown
+                  : TiArrowSortedUp
+                : TiArrowUnsorted
+            }
+          />
+        </Flex>
+        <Selector
+          style={{ width: '100%' }}
+          textAlign={'center'}
+          value={filterValue}
+          isClearable
+          onSelect={(value: string) => setFilter(value || undefined)}
+          options={options.map(
+            (option: { value: string, label: string }) => ({ value: option, label: option })
+          )
+          }
+        />
+      </Flex>
     )
   } catch (err) {
     console.error(err)
@@ -183,6 +221,7 @@ export const FilterTable = (props: FitlerTableProps) => {
     renderFilters,
     title,
     isAdmin,
+    isEditor,
     isPropertyDetail,
     tableData,
     isLoading,
@@ -258,7 +297,10 @@ export const FilterTable = (props: FitlerTableProps) => {
   const FormState = useDisclosure();
   const intialView = (renderRowCard) ? 'list' : 'table';
   const [viewType, setViewType] = useState(intialView);
+  const [rowEditable, setRowEditable] = useState<{ [key: string]: boolean }>({});
   const columns = useMemo(() => columnsData, [columnsData]);
+
+  useKeyPress("Escape", () => setRowEditable({}));
 
   // const data = useMemo(() => {
   //   if (isLoading) return [];
@@ -292,8 +334,21 @@ export const FilterTable = (props: FitlerTableProps) => {
     )
   }
 
+  const includes = (rows, ids, filterValue) => {
+    return rows.filter(row => {
+      return ids.some(id => {
+        const rowValue = row.values[id]
+        if (!rowValue) return false;
+        return rowValue.includes(filterValue)
+      })
+    })
+  }
+
+  includes.autoRemove = val => !val || !val.length || val === '';
+
   const filterTypes = useMemo(
     () => ({
+      includes,
       // Add a new fuzzyTextFilterFn filter type.
       fuzzyText: fuzzyTextFilterFn,
       // Or, override the default text filter to use
@@ -414,18 +469,7 @@ export const FilterTable = (props: FitlerTableProps) => {
     }
   );
 
-  function shuffle(arr) {
-    arr = [...arr]
-    const shuffled = []
-    while (arr.length) {
-      const rand = Math.floor(Math.random() * arr.length)
-      shuffled.push(arr.splice(rand, 1)[0])
-    }
-    return shuffled
-  }
-
   const reorderColumn = (column: string, direction: number) => {
-    console.log(visibleColumns)
     const columns = visibleColumns.map(d => d.id);
     const order = [...columns].filter(d => d !== column);
     const itemIndex = columns.indexOf(column);
@@ -565,7 +609,7 @@ export const FilterTable = (props: FitlerTableProps) => {
                       aria-label={"View Map"}
                       mx={'0.5rem'}
                     />}
-                    {isAdmin && <Button
+                    {isEditor && renderForm && <Button
                       disabled={FormState.isOpen}
                       variant={"solid"}
                       colorScheme={"teal"}
@@ -709,7 +753,6 @@ export const FilterTable = (props: FitlerTableProps) => {
                                   left={index === 0 ? "0px" : "auto"}
                                   width={width}
                                   zIndex={index === 0 ? 750 : 1}
-                                  height={'50px'}
                                   boxSizing={'border-box'}
                                   backgroundColor={column.bgColor || rowBg1}
                                 >
@@ -719,12 +762,9 @@ export const FilterTable = (props: FitlerTableProps) => {
                                       <Flex
                                         justify="space-between"
                                         align="center"
-                                        fontSize={{ sm: "10px", lg: "12px" }}
-                                        textTransform={"uppercase"}
-                                        color="gray.400"
                                         {...column.getSortByToggleProps()}
                                       >
-                                        <Box textColor={textColor} textAlign={'center'}>{column.render("Header")}</Box>
+                                        <Text fontSize={{ sm: '12px', md: '14px' }} color={textColor}>{column.render("Header")}</Text>
                                         <Icon
                                           w={{ sm: "10px", md: "14px" }}
                                           h={{ sm: "10px", md: "14px" }}
@@ -770,6 +810,7 @@ export const FilterTable = (props: FitlerTableProps) => {
                         const { key } = row.getRowProps();
                         const objectId = (row.original._object) ? row.original._object.id : row.original.id;
                         const rowKey = `${rowIndex}_${key}_${objectId}`;
+                        const isEditable = rowEditable[rowKey];
                         return (
                           <Flex
                             key={rowKey}
@@ -812,7 +853,17 @@ export const FilterTable = (props: FitlerTableProps) => {
                                   overflow={'visible'}
                                   px={2}
                                 >
-                                  {cell.render("Cell", { editable: true })}
+                                  {cell.render("Cell", {
+                                    editable: true,
+                                    rowEditable: Boolean(rowEditable[rowKey]),
+                                    setRowEditable: (shouldClear?: boolean) => {
+                                      if (shouldClear) {
+                                        setRowEditable({});
+                                      } else {
+                                        setRowEditable({ ...rowEditable, [rowKey]: !isEditable })
+                                      }
+                                    },
+                                  })}
                                 </Flex>
                               );
                             })}

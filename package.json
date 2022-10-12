@@ -18,6 +18,7 @@
     "babel-build": "yarn run clean && babel ./src --out-dir dist --extensions '.ts,.tsx'",
     "travis-deploy-once": "travis-deploy-once",
     "semantic-release": "semantic-release",
+    "client:local": "tsc --watch",
     "start:local": "tsc --watch",
     "start:client": "tsc --watch",
     "test": "jest"
@@ -45,7 +46,8 @@
     "papaparse": "^5.3.2",
     "parse": "^3.4.3",
     "react": "^17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "use-double-click": "^1.0.5"
   },
   "devDependencies": {
     "@types/parse": "^2.18.13",

@@ -4,7 +4,7 @@ import { FaTrashAlt } from "react-icons/fa";
 import ConfirmDialog from '../Dialogs/ConfirmDialog';
 
 interface DeleteButtonProps {
-  object: Parse.Object<any>;
+  object?: Parse.Object<any>;
   onDelete?: () => void;
   label?: string;
   refetch?: () => void;
@@ -15,18 +15,22 @@ export const DeleteButton: React.FC<DeleteButtonProps> = ({ object, onDelete, la
   const toast = useToast();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [isDeleting, setIsDeleting] = useState(false);
-
+  console.log(onDelete);
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
-      await object.destroy();
+      if (object) {
+        await object.destroy();
+      }
+      if (onDelete) {
+        await onDelete();
+      }
       toast({
         title: 'Success',
-        description: `${object.className} deleted successfully`,
+        description: `${object?.className} deleted successfully`,
         status: 'success',
         duration: 5000,
-      })
-      if (onDelete) onDelete();
+      });
       if (refetch) refetch();
     } catch (err) {
       toast({
@@ -62,7 +66,7 @@ export const DeleteButton: React.FC<DeleteButtonProps> = ({ object, onDelete, la
         </Button>
       )}
       <ConfirmDialog
-        objectClass={object.className}
+        objectClass={object?.className || 'Confirm Delete'}
         isOpen={isOpen}
         onClose={onClose}
         onConfirm={handleDelete}

@@ -28,7 +28,7 @@ const ToggleEditWrapper: React.FC<ToggleEditWrapperProps> = (props) => {
   });
 
   return (
-    <Box ref={buttonRef} {...rest}>
+    <Box ref={buttonRef} {...rest} cursor={'copy'}>
       {value}
     </Box>
   );

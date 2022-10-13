@@ -174,8 +174,6 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
     ...o
   }
 
-  console.log('queryOptions', queryOptions)
-
   if (isLive || isLongPolling) {
     queryOptions.staleTime = Infinity;
     queryOptions.refetchOnWindowFocus = false;

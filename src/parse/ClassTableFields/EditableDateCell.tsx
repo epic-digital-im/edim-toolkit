@@ -9,11 +9,12 @@ export const EditableDateCell = ({ cell, row: { original }, column, rowEditable,
   if (!rowEditable) {
     const d = original._object.get(id);
     if (!d) return null;
+    console.log(d);
     return (
       <ToggleEditWrapper
         width={'100%'}
         textAlign={textAlign || 'center'}
-        value={d.toLocaleDateString() || null}
+        value={d.toLocaleDateString && d.toLocaleDateString() || d}
         rowEditable={rowEditable}
         setRowEditable={setRowEditable}
         editable={editable}

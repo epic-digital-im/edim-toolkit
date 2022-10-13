@@ -1,6 +1,7 @@
 export * from './Fields/AttributeSelectField';
 export * from './Fields/ClassSearchSelectField';
 export * from './Fields/DatePickerField';
+export * from './Fields/DateRangePickerField';
 export * from './Fields/DateSelectField';
 export * from './Fields/EditorTextField';
 export * from './Fields/GooglePlacesAddressField';

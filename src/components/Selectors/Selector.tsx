@@ -23,7 +23,6 @@ interface SelectorProps extends SelectComponentsConfig {
 
 const Selector = (props: SelectorProps) => {
   const { isLoading, isDisabled, initialValue, onSelect, options, style, error, ...rest } = props;
-  console.log(rest);
   const bgColor = useColorModeValue("white", "#1a202c");
   const textColor = useColorModeValue("#484848", "white");
 

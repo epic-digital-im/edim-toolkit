@@ -34,7 +34,7 @@ export interface ClassTableProps {
   hideSearch?: boolean | undefined;
   onColumnOrderChange?: (newOrder: string[]) => void;
   isLive?: boolean | undefined;
-  include?: string | undefined;
+  include?: string[] | undefined;
   filter?: any | undefined;
   exportData?: () => void;
   handleCreateNew?: (props: { refetch: () => void }) => () => Promise<any>;

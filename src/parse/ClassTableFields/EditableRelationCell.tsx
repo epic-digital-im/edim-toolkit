@@ -30,15 +30,15 @@ export const EditableRelationCell = ({
   rowEditable,
   setRowEditable
 }) => {
-    // const initialValue = original._object.get(id);
-    // const initialData = initialValue?.toJSON();
+    const initialValue = original._object.get(id);
+    const initialData = initialValue?.toJSON();
 
-    if (!setRowEditable) {
+    if (!rowEditable) {
       return (
         <ToggleEditWrapper
           width={'100%'}
           textAlign={textAlign || 'center'}
-          value={valueGetter(original)}
+          value={labelGetter(initialData)}
           rowEditable={rowEditable}
           setRowEditable={setRowEditable}
           editable={editable}

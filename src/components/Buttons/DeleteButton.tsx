@@ -15,7 +15,6 @@ export const DeleteButton: React.FC<DeleteButtonProps> = ({ object, onDelete, la
   const toast = useToast();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [isDeleting, setIsDeleting] = useState(false);
-  console.log(onDelete);
   const handleDelete = async () => {
     setIsDeleting(true);
     try {

@@ -9,7 +9,6 @@ export const EditableDateCell = ({ cell, row: { original }, column, rowEditable,
   if (!rowEditable) {
     const d = original._object.get(id);
     if (!d) return null;
-    console.log(d);
     return (
       <ToggleEditWrapper
         width={'100%'}

@@ -23,14 +23,14 @@ interface DatePickerFieldProps {
 }
 
 export const DateRagePickerInput: React.FC<DatePickerFieldProps> = (props) => {
-  const { onChange, name, error, autoFocusEndDate } = props;
+  const { onChange, name, error } = props;
   const startDateValue = props.startDate?.iso || props.startDate;
   const endDateValue = props.endDate?.iso || props.endDate;
   const initialStartDate = startDateValue ? moment(startDateValue) : null
   const initialEndDate = endDateValue ? moment(endDateValue) : null
   const [startDate, setStartDate] = useState(initialStartDate);
   const [endDate, setaEndDate] = useState(initialEndDate);
-  const [focusedInput, setFocusedInput] = useState(autoFocusEndDate ? END_DATE : START_DATE);
+  const [focusedInput, setFocusedInput] = useState();
 
   useEffect(() => {
     setStartDate(initialStartDate);

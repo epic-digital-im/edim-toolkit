@@ -109,7 +109,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({ name, file, onLoad, 
   }
 
   return (
-    <Flex direction={'column'} alignItems={'center'}>
+    <Flex direction={'column'} alignItems={'center'} m={2}>
       <Flex
         position="relative"
         width={100}
@@ -187,7 +187,7 @@ export const FileInputField = ({ name, label, initialValue, ...props }: any) => 
         fontSize="xs">
         {label}
       </FormLabel>
-      <Flex direction={'row'} py={3}>
+      <Flex direction={'row'} wrap={'wrap'} py={3}>
         {files.map((file: File, i) => (
           <FileUploader
             name={`upload_${i}`}

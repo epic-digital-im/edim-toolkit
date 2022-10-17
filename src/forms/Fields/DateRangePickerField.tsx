@@ -23,7 +23,7 @@ interface DatePickerFieldProps {
 }
 
 export const DateRagePickerInput: React.FC<DatePickerFieldProps> = (props) => {
-  const { onChange, name, error } = props;
+  const { onChange, name, error, ...rest } = props;
   const startDateValue = props.startDate?.iso || props.startDate;
   const endDateValue = props.endDate?.iso || props.endDate;
   const initialStartDate = startDateValue ? moment(startDateValue) : null
@@ -65,6 +65,7 @@ export const DateRagePickerInput: React.FC<DatePickerFieldProps> = (props) => {
         onClose={handleClose}
         isDayBlocked={() => false}
         isOutsideRange={() => false}
+        {...rest}
       />
     </Box>
   )
@@ -90,7 +91,7 @@ export const DateRagePickerParse: React.FC<DateRagePickerParseProps> = (props) =
   )
 }
 
-export const DateRagePickerField = ({ label, ...props }: any) => {
+export const DateRagePickerField = ({ label, orientation, ...props }: any) => {
   const [field, meta, helpers] = useField(props);
   const { textColor } = useColorPalette();
   return (

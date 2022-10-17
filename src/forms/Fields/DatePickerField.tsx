@@ -20,7 +20,7 @@ interface DatePickerFieldProps {
 }
 
 export const SingleDatePickerInput: React.FC<DatePickerFieldProps> = (props) => {
-  const { onChange, name, error } = props;
+  const { onChange, name, error, ...rest } = props;
   const dateValue = props.value?.iso || props.value;
   const initialDate = dateValue ? moment(dateValue) : null
   const [value, setValue] = useState(initialDate);
@@ -57,6 +57,7 @@ export const SingleDatePickerInput: React.FC<DatePickerFieldProps> = (props) => 
         showClearDate
         isDayBlocked={() => false}
         isOutsideRange={() => false}
+        {...rest}
       />
     </Box>
   )

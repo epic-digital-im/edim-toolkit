@@ -16,3 +16,4 @@ export * from './Fields/UserTypeSelectField';
 export * from './Fields/WeekdaySelectField';
 export * from './Fields/GooglePlaceField';
 export * from './Fields/AvatarUploadField';
+export * from './Fields/FileInputField';

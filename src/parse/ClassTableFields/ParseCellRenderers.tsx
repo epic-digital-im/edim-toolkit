@@ -4,6 +4,7 @@ import { ClassNames } from "@app/shared/types";
 import { NavLink } from 'react-router-dom';
 import { Text, Flex, Button, Spinner } from "@chakra-ui/react";
 import { ParseLiveQuery } from '../../hoc/ParseLiveQuery';
+import getters from '@app/shared/utils/getters';
 
 const abbrevString = (str: string, maxLength: number) => {
   if (!str) return '';
@@ -47,12 +48,18 @@ export const RelationButtonRenderer = (props: any) => {
   } = props;
 
   const object = original._object.get(id);
-  const classRoute = object?.className.toLowerCase();
+  const getter = getters(object?.className);
+  const classRoute = getter?.detailPath || object?.className.toLowerCase();
   const objectData = object?.toJSON() || {};
 
   if (!objectData.objectId) return null;
 
   const label = abbrevString(objectData.name, 30);
+
+  const detailLink = (isAdmin)
+    ? `/admin/${classRoute}/${objectData.objectId}`
+    : `/customer/${classRoute}/${objectData.objectId}`
+
 
   return (isPropertyDetail)
     ? (
@@ -60,7 +67,7 @@ export const RelationButtonRenderer = (props: any) => {
     )
     : (
       <div style={{ width: '90%', zIndex: 1000 }}>
-        <NavLink to={isAdmin ? `/admin/${classRoute}/${objectData.objectId}` : `/customer/${classRoute}/${objectData.objectId}`}>
+        <NavLink to={detailLink}>
           <Button width="100%">
             {label}
           </Button>

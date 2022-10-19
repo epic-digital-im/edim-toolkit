@@ -35,7 +35,18 @@ export const ToggleField = ({ label, labelLeft, ...props }: any) => {
           </FormLabel>
         </>
       )}
-
+      {meta.error ? (
+        <FormLabel
+          width={'100%'}
+          textAlign={"center"}
+          color={"red"}
+          fontSize="xs"
+          fontWeight="nxormal"
+          mt={2}
+        >
+          {meta.error}
+        </FormLabel>
+      ) : null}
     </FormControl>
   );
 };

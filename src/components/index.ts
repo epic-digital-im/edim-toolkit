@@ -53,3 +53,5 @@ export { default as ItemContent } from './Menu/ItemContent';
 export * from './Separator/Separator';
 
 export { default as NavItem } from './NavBars/NavItem';
+
+export { default as Tabber } from './Tabs/Tabber';

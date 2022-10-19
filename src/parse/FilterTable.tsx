@@ -69,6 +69,7 @@ export interface FitlerTableProps {
   renderForm?: (initialValues: any, onClose?: () => void, refetch?: () => void) => React.ReactNode | null;
   handleCreateNew: () => void;
   renderHeader?: () => React.ReactNode | null;
+  filtersOwnRow?: boolean;
   renderFilters?: () => React.ReactNode | null;
   isAdmin?: boolean;
   isEditor?: boolean;
@@ -218,6 +219,7 @@ export const FilterTable = (props: FitlerTableProps) => {
     renderForm,
     handleCreateNew,
     renderHeader,
+    filtersOwnRow,
     renderFilters,
     title,
     isAdmin,
@@ -510,119 +512,122 @@ export const FilterTable = (props: FitlerTableProps) => {
           borderStyle={'solid'}>
           <Box bg={bgColor} px={4}>
             {showFilters && (
-              <Flex
-                h={{ sm: 'auto', md: 16 }}
-                alignItems={"center"}
-                justifyContent={showFilters ? "space-between" : "flex-end"}
-                position="relative"
-                zIndex={1000}
-                direction={{ sm: 'column', md: 'row' }}
-              >
-                <Flex direction={'row'} alignItems={"center"}>
-                  {title && <Text color={textColor} fontWeight="bold" fontSize="lg" mr="1.5rem">
-                    {title}
-                  </Text>}
-                  <Stack
-                    direction={{ sm: "row", md: "row" }}
-                    spacing={{ sm: "4px", md: "12px" }}
-                    align="center"
-                    me="12px"
-                    my="24px"
-                    minW={{ sm: "100px", md: "200px" }}
-                  >
-                    {!hidePaging && (<>
-                      <Select
-                        value={pageSize}
-                        onChange={(e) => setPageSize(Number(e.target.value))}
-                        color="gray.500"
-                        size="sm"
-                        borderRadius="12px"
-                        maxW="75px"
-                        cursor="pointer"
+              <>
+                <Flex
+                  h={{ sm: 'auto', md: 16 }}
+                  alignItems={"center"}
+                  justifyContent={showFilters ? "space-between" : "flex-end"}
+                  position="relative"
+                  zIndex={1000}
+                  direction={{ sm: 'column', md: 'row' }}
+                >
+                  <Flex direction={'row'} alignItems={"center"}>
+                    {title && <Text color={textColor} fontWeight="bold" fontSize="lg" mr="1.5rem">
+                      {title}
+                    </Text>}
+                    <Stack
+                      direction={{ sm: "row", md: "row" }}
+                      spacing={{ sm: "4px", md: "12px" }}
+                      align="center"
+                      me="12px"
+                      my="24px"
+                      minW={{ sm: "100px", md: "200px" }}
+                    >
+                      {!hidePaging && (<>
+                        <Select
+                          value={pageSize}
+                          onChange={(e) => setPageSize(Number(e.target.value))}
+                          color="gray.500"
+                          size="sm"
+                          borderRadius="12px"
+                          maxW="75px"
+                          cursor="pointer"
+                          backgroundColor={inputBgColor}
+                          color={textColor}
+                        >
+                          <option>25</option>
+                          <option>50</option>
+                          <option>100</option>
+                          <option>250</option>
+                        </Select>
+                        <Text fontSize="xs" color="gray.400" fontWeight="normal">
+                          entries per page
+                        </Text>
+                      </>)
+                      }
+                      {isAdmin && !filtersOwnRow && renderFilters && renderFilters()}
+                    </Stack>
+                  </Flex>
+                  <Box position={'relative'} zIndex={1}>
+                    <Flex alignItems={"center"}>
+                      {refetch && <IconButton
+                        size={"md"}
+                        icon={<Icon as={FiRefreshCw} />}
+                        onClick={() => refetch()}
+                        aria-label={"Refresh"}
+                        mx={'0.5rem'}
+                      />}
+                      {!hideSearch && <Input
+                        type="text"
+                        placeholder="Search..."
+                        minW="75px"
+                        maxW="175px"
+                        fontSize="sm"
+                        _focus={{ borderColor: "qcmidnight.400" }}
                         backgroundColor={inputBgColor}
                         color={textColor}
+                        onChange={(e) => setGlobalFilter(e.target.value)}
+                        mx={'0.5rem'}
+                      />}
+                      {importData && <PickFileButton
+                        icon={(importLoading) ? <Spinner /> : <Icon as={FiUploadCloud} />}
+                        type={'csv'}
+                        onChange={importData}
+                      />}
+                      {exportData && <IconButton
+                        size={"md"}
+                        icon={(exportLoading) ? <Spinner /> : <Icon as={FiDownload} />}
+                        onClick={exportData}
+                        aria-label={"Export Data"}
+                        mx={'0.5rem'}
+                      />}
+                      {renderRowCard && <IconButton
+                        size={"md"}
+                        icon={<Icon as={FiCreditCard} />}
+                        onClick={() => setViewType("list")}
+                        aria-label={"View List"}
+                        mx={'0.5rem'}
+                      />}
+                      {renderRowCard && <IconButton
+                        size={"md"}
+                        icon={<Icon as={FiList} />}
+                        onClick={() => setViewType("table")}
+                        aria-label={"View Table"}
+                        mx={'0.5rem'}
+                      />}
+                      {renderMap && <IconButton
+                        size={"md"}
+                        icon={<Icon as={FiMap} />}
+                        onClick={() => setViewType("map")}
+                        aria-label={"View Map"}
+                        mx={'0.5rem'}
+                      />}
+                      {isEditor && renderForm && <Button
+                        disabled={FormState.isOpen}
+                        variant={"solid"}
+                        colorScheme={"teal"}
+                        size={"sm"}
+                        mx={'0.5rem'}
+                        leftIcon={<AddIcon />}
+                        onClick={renderForm ? FormState.onOpen : handleCreateNew}
                       >
-                        <option>25</option>
-                        <option>50</option>
-                        <option>100</option>
-                        <option>250</option>
-                      </Select>
-                      <Text fontSize="xs" color="gray.400" fontWeight="normal">
-                        entries per page
-                      </Text>
-                    </>)
-                    }
-                    {isAdmin && renderFilters && renderFilters()}
-                  </Stack>
+                        {`Add ${objectType}`}
+                      </Button>}
+                    </Flex>
+                  </Box>
                 </Flex>
-                <Box position={'relative'} zIndex={1}>
-                  <Flex alignItems={"center"}>
-                    {refetch && <IconButton
-                      size={"md"}
-                      icon={<Icon as={FiRefreshCw} />}
-                      onClick={() => refetch()}
-                      aria-label={"Refresh"}
-                      mx={'0.5rem'}
-                    />}
-                    {!hideSearch && <Input
-                      type="text"
-                      placeholder="Search..."
-                      minW="75px"
-                      maxW="175px"
-                      fontSize="sm"
-                      _focus={{ borderColor: "qcmidnight.400" }}
-                      backgroundColor={inputBgColor}
-                      color={textColor}
-                      onChange={(e) => setGlobalFilter(e.target.value)}
-                      mx={'0.5rem'}
-                    />}
-                    {importData && <PickFileButton
-                      icon={(importLoading) ? <Spinner /> : <Icon as={FiUploadCloud} />}
-                      type={'csv'}
-                      onChange={importData}
-                    />}
-                    {exportData && <IconButton
-                      size={"md"}
-                      icon={(exportLoading) ? <Spinner /> : <Icon as={FiDownload} />}
-                      onClick={exportData}
-                      aria-label={"Export Data"}
-                      mx={'0.5rem'}
-                    />}
-                    {renderRowCard && <IconButton
-                      size={"md"}
-                      icon={<Icon as={FiCreditCard} />}
-                      onClick={() => setViewType("list")}
-                      aria-label={"View List"}
-                      mx={'0.5rem'}
-                    />}
-                    {renderRowCard && <IconButton
-                      size={"md"}
-                      icon={<Icon as={FiList} />}
-                      onClick={() => setViewType("table")}
-                      aria-label={"View Table"}
-                      mx={'0.5rem'}
-                    />}
-                    {renderMap && <IconButton
-                      size={"md"}
-                      icon={<Icon as={FiMap} />}
-                      onClick={() => setViewType("map")}
-                      aria-label={"View Map"}
-                      mx={'0.5rem'}
-                    />}
-                    {isEditor && renderForm && <Button
-                      disabled={FormState.isOpen}
-                      variant={"solid"}
-                      colorScheme={"teal"}
-                      size={"sm"}
-                      mx={'0.5rem'}
-                      leftIcon={<AddIcon />}
-                      onClick={renderForm ? FormState.onOpen : handleCreateNew}
-                    >
-                      {`Add ${objectType}`}
-                    </Button>}
-                  </Flex>
-                </Box>
-              </Flex>
+                {isAdmin && filtersOwnRow && renderFilters && renderFilters()}
+              </>
             )}
           </Box>
           <Flex justify="space-between" align="center" w="100%" px="22px"></Flex>

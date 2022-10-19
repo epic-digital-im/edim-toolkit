@@ -12,10 +12,10 @@ export const StatusRenderer = (StatusList: any[]) => ({
   column: { id, editable, textAlign, discussion, discussionTitle }, // This is a custom function that we supplied to our table instance
 }) => {
   if (!editable) {
-    return
+    return null;
   }
   if (!rowEditable) {
-    const value = (typeof initialValue === 'object') ? JSON.stringify(initialValue) : initialValue;
+    if (initialValue === undefined || initialValue === null) return null;
     return (
       <ToggleEditWrapper
         width={'100%'}

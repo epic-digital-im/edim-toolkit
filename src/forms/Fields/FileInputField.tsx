@@ -63,7 +63,55 @@ interface FileUploaderProps {
   onDelete: (data: { file: File, upload: Parse.File }) => void;
 }
 
-export const FileUploader: React.FC<FileUploaderProps> = ({ name, file, onLoad, onDelete }) => {
+interface ImagePreviewProps {
+  bgImage: string;
+  name: string;
+  isLoading?: boolean;
+  isError?: boolean;
+  handleRemove?: () => void;
+}
+
+export const ImagePreview: React.FC<ImagePreviewProps> = ({ isLoading, isError, handleRemove, bgImage, name }) => {
+  return (
+    <Flex direction={'column'} alignItems={'center'} m={2}>
+      <Flex
+        position="relative"
+        width={100}
+        height={100}
+        alignItems={'center'}
+        justifyContent={'center'}
+        backgroundColor={'gray.200'}
+        borderRadius={'25px'}
+        backgroundImage={bgImage}
+        backgroundSize="cover"
+        backgroundPosition="center"
+        mr={2}
+      >
+        {isLoading && <Spinner />}
+        {isError && (
+          <Flex direction={'column'} alignItems={'center'} justifyContent={'center'}>
+            <InfoIcon color={'red'} />
+            <Text color={'red'} size={'sm'}>Upload Error</Text>
+          </Flex>
+        )}
+        {Boolean(handleRemove) && (<Box position={"absolute"} top={0} right={0}>
+          <CloseButton onClick={handleRemove} />
+        </Box>)}
+      </Flex>
+      <Text
+        width={'100%'}
+        overflow={'hidden'}
+        whiteSpace={'nowrap'}
+        textAlign={'center'}
+        fontSize={'sm'}
+      >
+        {name}
+      </Text>
+    </Flex>
+  )
+}
+
+export const FileUploader: React.FC<FileUploaderProps> = ({ name, file, onDelete }) => {
   const toast = useToast();
   const [field, meta, helpers] = useField(name);
 
@@ -109,45 +157,18 @@ export const FileUploader: React.FC<FileUploaderProps> = ({ name, file, onLoad, 
   }
 
   return (
-    <Flex direction={'column'} alignItems={'center'} m={2}>
-      <Flex
-        position="relative"
-        width={100}
-        height={100}
-        alignItems={'center'}
-        justifyContent={'center'}
-        backgroundColor={'gray.200'}
-        borderRadius={'25px'}
-        backgroundImage={bgImage}
-        backgroundSize="cover"
-        backgroundPosition="center"
-        mr={2}
-      >
-        {UploadRequest.isLoading && <Spinner />}
-        {UploadRequest.isError && (
-          <Flex direction={'column'} alignItems={'center'} justifyContent={'center'}>
-            <InfoIcon color={'red'} />
-            <Text color={'red'} size={'sm'}>Upload Error</Text>
-          </Flex>
-        )}
-        <Box position={"absolute"} top={0} right={0}>
-          <CloseButton onClick={handleRemove} />
-        </Box>
-      </Flex>
-      <Text
-        width={'100%'}
-        overflow={'hidden'}
-        whiteSpace={'nowrap'}
-        textAlign={'center'}
-        fontSize={'sm'}
-      >
-        {elipses(file.name, 10)}
-      </Text>
-    </Flex>
+    <ImagePreview
+      isLoading={UploadRequest.isLoading}
+      isError={UploadRequest.isError}
+      handleRemove={handleRemove}
+      bgImage={bgImage}
+      name={elipses(file.name, 10)}
+    />
   )
 }
 
 export const FileInputField = ({ name, label, initialValue, ...props }: any) => {
+  const [field, meta, helpers] = useField(name);
   const inputRef = useRef<HTMLInputElement>(null);
   const { textColor } = useColorPalette();
   const [files, setFiles] = React.useState<File[]>([]);
@@ -169,6 +190,10 @@ export const FileInputField = ({ name, label, initialValue, ...props }: any) => 
     inputRef.current.click();
   }
 
+  const handleRemoveExisting = (file: Parse.File) => {
+    helpers.setValue(field.value.filter((f: Parse.File) => f.name !== file.name));
+  }
+
   const handleDelete = (data: { upload: Parse.File, file: File }) => {
     const { file } = data;
     const newFiles = files.filter(p => p.name !== file.name);
@@ -188,6 +213,17 @@ export const FileInputField = ({ name, label, initialValue, ...props }: any) => 
         {label}
       </FormLabel>
       <Flex direction={'row'} wrap={'wrap'} py={3}>
+        {field.value?.map((file: Parse.File) => {
+          console.log(file);
+          return (
+            <ImagePreview
+              key={file.name}
+              bgImage={file.url}
+              name={elipses(file.name, 10)}
+              handleRemove={() => handleRemoveExisting(file)}
+            />
+          )
+        })}
         {files.map((file: File, i) => (
           <FileUploader
             name={`upload_${i}`}

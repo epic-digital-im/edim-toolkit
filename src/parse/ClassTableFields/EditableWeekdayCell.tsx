@@ -12,7 +12,6 @@ export const EditableWeekdayCell = ({
   rowEditable,
   setRowEditable
 }) => {
-
   if (!rowEditable) {
     return (
       <ToggleEditWrapper

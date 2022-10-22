@@ -21,6 +21,7 @@ import {
 } from "@chakra-ui/icons";
 
 import { useQuery } from '@tanstack/react-query';
+import { resizedataURL } from '@app/shared/utils/images';
 
 interface FileUplaodInputProps {
   onChange: (files: Parse.File[]) => void;
@@ -42,17 +43,20 @@ const elipses = (str: string, length: number) => {
 }
 
 export const resizeImage = (image: Image, max: number, quality: number) => {
-  return new Promise(async function (resolve, reject) {
+  return new Promise(function (resolve, reject) {
     const FR = new FileReader();
     FR.onload = function (evt) {
-      const data = evt.target.result;
-      const bytes = new Uint8Array(data);
-      resolve(bytes);
+      const data = evt.target.result as string;
+      resizedataURL(data, max, quality).then((resized: string) => {
+        resolve(resized);
+      }).catch((err) => {
+        reject(err);
+      });
     };
     FR.onerror = function (evt) {
       reject(evt);
     };
-    FR.readAsArrayBuffer(image);
+    FR.readAsDataURL(image);
   });
 };
 
@@ -69,11 +73,12 @@ interface ImagePreviewProps {
   isLoading?: boolean;
   isError?: boolean;
   handleRemove?: () => void;
+  linkable?: boolean;
 }
 
-export const ImagePreview: React.FC<ImagePreviewProps> = ({ isLoading, isError, handleRemove, bgImage, name }) => {
+export const ImagePreview: React.FC<ImagePreviewProps> = ({ isLoading, isError, handleRemove, bgImage, name, linkable }) => {
   return (
-    <Flex direction={'column'} alignItems={'center'} m={2}>
+    <Flex direction={'column'} alignItems={'center'} m={2} position={'relative'}>
       <Flex
         position="relative"
         width={100}
@@ -86,6 +91,7 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({ isLoading, isError, 
         backgroundSize="cover"
         backgroundPosition="center"
         mr={2}
+        onClick={linkable ? () => window.open(bgImage, '_blank') : undefined}
       >
         {isLoading && <Spinner />}
         {isError && (
@@ -94,10 +100,10 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({ isLoading, isError, 
             <Text color={'red'} size={'sm'}>Upload Error</Text>
           </Flex>
         )}
-        {Boolean(handleRemove) && (<Box position={"absolute"} top={0} right={0}>
-          <CloseButton onClick={handleRemove} />
-        </Box>)}
       </Flex>
+      {Boolean(handleRemove) && (<Box position={"absolute"} top={0} right={0}>
+        <CloseButton onClick={handleRemove} />
+      </Box>)}
       <Text
         width={'100%'}
         overflow={'hidden'}
@@ -112,12 +118,15 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({ isLoading, isError, 
 }
 
 export const FileUploader: React.FC<FileUploaderProps> = ({ name, file, onDelete }) => {
+  const uploadTime = useRef(Date.now());
   const toast = useToast();
   const [field, meta, helpers] = useField(name);
 
   const handleLoad = async () => {
     try {
-      const upload = new Parse.File(file.name, file);
+      const base64 = await resizeImage(file, 1024, 0.7);
+      const upload = new Parse.File(file.name, { base64 });
+      upload.addMetadata('attached', 'false');
       await upload.save();
       helpers.setValue(upload);
       return upload;
@@ -134,7 +143,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({ name, file, onDelete
   };
 
   const UploadRequest = useQuery<Parse.File>(
-    ['upload', { nameName: file.name, name }],
+    [`upload`, { nameName: file.name, name, uploadTime: uploadTime.current }],
     () => handleLoad(),
     {
       enabled: Boolean(file),
@@ -214,13 +223,13 @@ export const FileInputField = ({ name, label, initialValue, ...props }: any) => 
       </FormLabel>
       <Flex direction={'row'} wrap={'wrap'} py={3}>
         {field.value?.map((file: Parse.File) => {
-          console.log(file);
           return (
             <ImagePreview
               key={file.name}
               bgImage={file.url}
               name={elipses(file.name, 10)}
               handleRemove={() => handleRemoveExisting(file)}
+              linkable
             />
           )
         })}

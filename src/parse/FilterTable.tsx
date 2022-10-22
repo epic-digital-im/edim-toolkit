@@ -85,7 +85,7 @@ export interface FitlerTableProps {
   getMapItems?: (items: any[]) => any[];
   renderMap?: () => React.ReactNode | undefined;
   onColumnOrderChange?: (columnOrder: string[]) => void;
-  exportData?: () => void;
+  exportData?: (data: Parse.Object<Parse.Attributes>[]) => void;
   exportLoading?: boolean;
   importData?: (data: any[]) => Promise<any>;
   importLoading?: boolean;
@@ -587,7 +587,7 @@ export const FilterTable = (props: FitlerTableProps) => {
                       {exportData && <IconButton
                         size={"md"}
                         icon={(exportLoading) ? <Spinner /> : <Icon as={FiDownload} />}
-                        onClick={exportData}
+                        onClick={() => exportData(data)}
                         aria-label={"Export Data"}
                         mx={'0.5rem'}
                       />}

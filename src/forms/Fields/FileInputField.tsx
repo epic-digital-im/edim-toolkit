@@ -21,7 +21,7 @@ import {
 } from "@chakra-ui/icons";
 
 import { useQuery } from '@tanstack/react-query';
-import { resizedataURL } from '@app/shared/utils/images';
+import { resizedataURL } from '../../utils/images';
 
 interface FileUplaodInputProps {
   onChange: (files: Parse.File[]) => void;

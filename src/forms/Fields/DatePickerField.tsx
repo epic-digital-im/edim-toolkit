@@ -2,7 +2,7 @@ import React from 'react';
 import { useField } from "formik";
 import { useEffect, useState } from "react";
 import { SingleDatePicker } from 'react-dates';
-import { ParsePropUpdater } from "../../parse/PropUpdater";
+import { ParsePropUpdater } from "../../SchemaTable/PropUpdater";
 import moment from 'moment-timezone';
 import { useColorPalette } from "@app/theme";
 

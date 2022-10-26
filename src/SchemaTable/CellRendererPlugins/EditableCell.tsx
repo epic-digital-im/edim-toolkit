@@ -3,16 +3,34 @@ import { Input } from "@chakra-ui/react";
 import { ParsePropUpdater } from "../PropUpdater";
 import DiscussionButton from '../../components/Buttons/DiscussionButton';
 import ToggleEditWrapper from "./ToggleEditWrapper";
+import { PluginTypes } from '../types';
 
 // Create an editable cell renderer
-export const EditableNumberCell = ({
-  value: initialValue,
-  row: { original },
-  column, // This is a custom function that we supplied to our table instance
-  rowEditable,
-  setRowEditable
-}) => {
-  const { id, editable, discussion, discussionTitle, textAlign } = column;
+export const EditableCell = (props) => {
+  const {
+    column: {
+      columnDef: {
+        rowEditable,
+        setRowEditable,
+        editable,
+        textAlign,
+        discussion,
+        discussionTitle,
+      }
+    },
+    row,
+    cell: {
+      getValue,
+    },
+    row: { original },
+    column, // This is a custom function that we supplied to our table instance
+  } = props;
+
+  const initialValue = getValue();
+
+  // console.log(props);
+
+  const { id } = column;
   const [local, setLocal] = useState(initialValue);
 
   const handleChange = (e: { target: { value: string } }) => {
@@ -23,17 +41,19 @@ export const EditableNumberCell = ({
     setLocal(initialValue)
   }, [initialValue]);
 
-  if (!rowEditable) {
+  const isEditable = rowEditable(row);
+
+  if (!isEditable) {
+    const value = (typeof initialValue === 'object') ? JSON.stringify(initialValue) : initialValue;
     return (
       <ToggleEditWrapper
         width={'100%'}
         textAlign={textAlign || 'center'}
-        value={initialValue}
-        rowEditable={rowEditable}
-        setRowEditable={setRowEditable}
-        editable={editable}
+        value={value}
+        rowEditable={editable}
+        setRowEditable={(shouldReset: boolean) => setRowEditable(row, shouldReset)}
       />
-    )
+    );
   }
 
   return (
@@ -41,18 +61,18 @@ export const EditableNumberCell = ({
       {({ onChange, value, isLoading }) => {
         const onBlur = () => {
           if (local !== value) {
-            const val = parseFloat(local);
-            console.log(val);
-            if (!isNaN(val)) {
-              onChange(val);
-            }
+            onChange(local);
           }
         }
 
         useEffect(() => {
           setLocal(value)
         }, [value])
-
+        console.log({
+          id,
+          editable,
+          isLoading
+        })
         return (
           <>
             <Input
@@ -63,12 +83,12 @@ export const EditableNumberCell = ({
               onChange={handleChange}
               onBlur={onBlur}
               background={'transparent'}
-              textAlign={'center'}
+              textAlign={textAlign || 'center'}
               padding={'0'}
+              pl={3}
               margin={'0'}
               height={'45px'}
               fontSize={'sm'}
-              type={'text'}
             />
             {discussion && <DiscussionButton
               type='icon'
@@ -81,4 +101,10 @@ export const EditableNumberCell = ({
       }}
     </ParsePropUpdater>
   )
+}
+
+export default {
+  name: 'EditableCell',
+  type: PluginTypes.CellRenderer,
+  component: EditableCell
 }

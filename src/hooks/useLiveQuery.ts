@@ -14,6 +14,7 @@ export interface ParseLiveQueryOptions {
   objectId: string;
   options?: Omit<UseQueryOptions<unknown, unknown, unknown, string>, "queryKey" | "queryFn"> | undefined;
   include?: string[];
+  select?: string[];
   isLive?: boolean;
 }
 
@@ -23,6 +24,7 @@ export const useLiveQuery = ({
   objectId,
   options,
   include,
+  select,
   isLive
 }: ParseLiveQueryOptions): UseQueryResult<any> => {
   const o = options || {};
@@ -33,10 +35,12 @@ export const useLiveQuery = ({
 
   const ParseQuery = new Parse.Query(objectClass);
 
+  if (select) {
+    ParseQuery.select(select);
+  }
+
   if (include) {
-    for (const includeItem of include) {
-      ParseQuery.include(includeItem);
-    }
+    ParseQuery.include(include);
   }
 
   const fetchObject = async () => {
@@ -54,7 +58,7 @@ export const useLiveQuery = ({
     queryOptions.refetchOnWindowFocus = false;
   }
 
-  const qk = [queryKey, { include }];
+  const qk = [queryKey, { include, select }];
 
   const query = useQuery(
     qk,
@@ -100,6 +104,7 @@ export interface LiveCollectionQueryOptions {
   options?: Omit<UseQueryOptions<unknown, unknown, unknown, string>, "queryKey" | "queryFn"> | undefined;
   include?: string[];
   filter?: Filter[];
+  select?: string[];
   ascending?: string,
   descending?: string,
   isLive?: boolean;
@@ -107,6 +112,8 @@ export interface LiveCollectionQueryOptions {
   queryKey?: any[];
   query?: Parse.Query<Parse.Object<any>>;
   findAll?: boolean;
+  limit?: number;
+  skip?: number;
 }
 
 export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
@@ -114,6 +121,7 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
     objectClass,
     options,
     include,
+    select,
     filter,
     ascending,
     descending,
@@ -121,6 +129,8 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
     isLongPolling,
     query,
     findAll,
+    limit,
+    skip,
   } = props;
 
   if (props.queryKey && !Array.isArray(props.queryKey)) {
@@ -131,6 +141,16 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
   const queryClient = useQueryClient()
   const sub = useRef<Parse.LiveQuerySubscription | undefined>();
   const ParseQuery = query || new Parse.Query(objectClass);
+
+  ParseQuery.withCount(true);
+
+  if (limit !== undefined) {
+    ParseQuery.limit(limit);
+  }
+
+  if (skip !== undefined) {
+    ParseQuery.skip(skip);
+  }
 
   if (ascending) {
     ParseQuery.ascending(ascending);
@@ -146,19 +166,21 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
     }
   }
 
+  if (select && select.length > 0) {
+    ParseQuery.select(select);
+  }
+
   if (include) {
-    for (var i = 0; i < include.length; i++) {
-      ParseQuery.include(include[i]);
-    }
+    ParseQuery.include(include);
   }
 
   const fetchCollection = async () => {
-    if (!findAll || ascending) {
-      return ParseQuery.find()
-    } else {
+    if (findAll) {
       return ParseQuery.findAll()
+    } else {
+      return ParseQuery.find()
     }
-  }
+  };
 
   const queryKey = props.queryKey || [
     objectClass,
@@ -167,12 +189,15 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
       ascending,
       filter,
       include,
+      select,
+      limit,
+      skip,
     }
-  ]
+  ];
 
   const queryOptions = {
     ...o
-  }
+  };
 
   if (isLive || isLongPolling) {
     queryOptions.staleTime = Infinity;
@@ -236,8 +261,16 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
     return () => {
       sub.current?.unsubscribe();
     }
-  }, [])
-  return q;
+  }, []);
+
+  const data = q.data?.results || [];
+  const count = q.data?.count;
+
+  return {
+    ...q,
+    data,
+    count,
+  };
 }
 
 export default useLiveQuery;

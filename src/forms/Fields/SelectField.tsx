@@ -8,7 +8,7 @@ import {
   Select,
 } from "@chakra-ui/react";
 
-import { ParsePropUpdater } from "../../parse/PropUpdater";
+import { ParsePropUpdater } from "../../SchemaTable/PropUpdater";
 
 interface SelectFieldProps {
   label: string;

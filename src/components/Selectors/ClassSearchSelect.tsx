@@ -125,6 +125,10 @@ const ClassSearchSelect = (props: ClassSearchSelectProps) => {
     const object = new Parse.Object(objectClass);
     const prop = getters(objectClass).prop || 'value';
     object.set(prop, value);
+    console.log({
+      prop,
+      value,
+    })
     if (filters) {
       filters.forEach(filter => {
         object.set(filter.prop, filter.value);
@@ -224,12 +228,14 @@ const ClassSearchSelect = (props: ClassSearchSelectProps) => {
   };
 
   const handleOnCreateOption = (inputValue: string) => {
-    if (onCreate) onCreate(inputValue).then((item) => {
+    console.log(inputValue);
+    onCreate(inputValue).then((item) => {
       const itemData = item.toJSON();
       const newOption = {
         value: valueGetter(itemData),
         label: labelGetter(itemData)
       };
+      console.log({ newOption });
       if (isMulti) {
         if (Array.isArray(value)) {
           setValue([

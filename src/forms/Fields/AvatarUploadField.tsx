@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { Box, Avatar, ChakraComponent, useDisclosure } from '@chakra-ui/react';
 import { EditIcon } from '@chakra-ui/icons';
 import { useColorPalette } from '@app/theme';
-import { ParseFilePropUpdater } from '../../parse/PropUpdater';
+import { ParseFilePropUpdater } from '../../SchemaTable/PropUpdater';
 import { LoadingOverlay } from '../../components/Loaders/LoadingOverlay';
 
 interface AvatarUploadFieldProps extends ChakraComponent<"div"> {

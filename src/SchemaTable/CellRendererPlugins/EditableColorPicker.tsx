@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Box, Text, Input, useToast } from "@chakra-ui/react";
 import DiscussionButton from '../../components/Buttons/DiscussionButton';
 import ToggleEditWrapper from "./ToggleEditWrapper";
+import { PluginTypes } from '../types';
 
 function useDebounce(value: any, delay: number) {
   // State and setters for debounced value
@@ -117,4 +118,10 @@ export const EditableColorPicker = ({
       />}
     </>
   )
+}
+
+export default {
+  name: 'EditableColorPicker',
+  type: PluginTypes.CellRenderer,
+  component: EditableColorPicker
 }

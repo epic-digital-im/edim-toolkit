@@ -1,7 +1,7 @@
 import React from 'react';
 import { useField } from "formik";
 import { Input, ComponentWithAs, FormControlProps, InputProps } from '@chakra-ui/react';
-import { ParsePropUpdater } from "../../parse/PropUpdater";
+import { ParsePropUpdater } from "../../SchemaTable/PropUpdater";
 import { useColorPalette } from "@app/theme";
 import { ClassNames } from '@app/shared/types';
 

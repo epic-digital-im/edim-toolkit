@@ -1,7 +1,7 @@
 import React from 'react';
 import { useField } from "formik";
 import { useEffect, useState } from "react";
-import { ParsePropUpdater } from "../../parse/PropUpdater";
+import { ParsePropUpdater } from "../../SchemaTable/PropUpdater";
 import Editor from '../../components/Editor/Editor';
 import { useColorPalette } from "@app/theme";
 

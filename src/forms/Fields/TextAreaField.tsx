@@ -1,6 +1,6 @@
 import React from 'react';
 import { useField } from "formik";
-import { ParsePropUpdater } from "../../parse/PropUpdater";
+import { ParsePropUpdater } from "../../SchemaTable/PropUpdater";
 
 import {
   FormControl,

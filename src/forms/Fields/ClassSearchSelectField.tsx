@@ -4,7 +4,6 @@ import { useField } from "formik";
 import {
   Box,
   FormLabel,
-  useColorModeValue,
 } from "@chakra-ui/react";
 
 import ClassSearchSelect from '../../components/Selectors/ClassSearchSelect';

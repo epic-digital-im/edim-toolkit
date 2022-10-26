@@ -3,18 +3,17 @@ import { Input } from "@chakra-ui/react";
 import { ParsePropUpdater } from "../PropUpdater";
 import DiscussionButton from '../../components/Buttons/DiscussionButton';
 import ToggleEditWrapper from "./ToggleEditWrapper";
+import { PluginTypes } from '../types';
 
 // Create an editable cell renderer
-export const EditableCell = (props) => {
-  const {
-    rowEditable,
-    setRowEditable,
-    value: initialValue,
-    row: { original },
-    column, // This is a custom function that we supplied to our table instance
-  } = props;
-
-  const { id, editable, textAlign, discussion, discussionTitle } = column;
+export const EditableNumberCell = ({
+  value: initialValue,
+  row: { original },
+  column, // This is a custom function that we supplied to our table instance
+  rowEditable,
+  setRowEditable
+}) => {
+  const { id, editable, discussion, discussionTitle, textAlign } = column;
   const [local, setLocal] = useState(initialValue);
 
   const handleChange = (e: { target: { value: string } }) => {
@@ -26,17 +25,16 @@ export const EditableCell = (props) => {
   }, [initialValue]);
 
   if (!rowEditable) {
-    const value = (typeof initialValue === 'object') ? JSON.stringify(initialValue) : initialValue;
     return (
       <ToggleEditWrapper
         width={'100%'}
         textAlign={textAlign || 'center'}
-        value={value}
+        value={initialValue}
         rowEditable={rowEditable}
         setRowEditable={setRowEditable}
         editable={editable}
       />
-    );
+    )
   }
 
   return (
@@ -44,7 +42,11 @@ export const EditableCell = (props) => {
       {({ onChange, value, isLoading }) => {
         const onBlur = () => {
           if (local !== value) {
-            onChange(local);
+            const val = parseFloat(local);
+            console.log(val);
+            if (!isNaN(val)) {
+              onChange(val);
+            }
           }
         }
 
@@ -62,12 +64,12 @@ export const EditableCell = (props) => {
               onChange={handleChange}
               onBlur={onBlur}
               background={'transparent'}
-              textAlign={textAlign || 'center'}
+              textAlign={'center'}
               padding={'0'}
-              pl={3}
               margin={'0'}
               height={'45px'}
               fontSize={'sm'}
+              type={'text'}
             />
             {discussion && <DiscussionButton
               type='icon'
@@ -82,3 +84,8 @@ export const EditableCell = (props) => {
   )
 }
 
+export default {
+  name: 'EditableNumberCell',
+  type: PluginTypes.CellRenderer,
+  component: EditableNumberCell
+}

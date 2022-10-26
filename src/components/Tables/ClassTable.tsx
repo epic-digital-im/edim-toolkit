@@ -1,13 +1,13 @@
 import Parse from 'parse/dist/parse.min.js';
 import React, { useMemo } from "react";
 
-import Card from "../components/Card/Card";
-import CardBody from "../components/Card/CardBody";
-import CardHeader from "../components/Card/CardHeader";
+import Card from "../../components/Card/Card";
+import CardBody from "../../components/Card/CardBody";
+import CardHeader from "../../components/Card/CardHeader";
 
 import { FilterTable } from './FilterTable';
 
-import { ParseCollectionLiveQuery } from '../hoc/ParseLiveQuery';
+import { ParseCollectionLiveQuery } from '../../hoc/ParseLiveQuery';
 
 import getters from '@app/shared/utils/getters'
 
@@ -132,3 +132,5 @@ export const ClassTable: React.FC<ClassTableProps> = (props) => {
     </ParseCollectionLiveQuery>
   );
 }
+
+export default ClassTable;

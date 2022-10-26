@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useField } from "formik";
 import { Input, ComponentWithAs, FormControlProps, InputProps } from '@chakra-ui/react';
-import { ParsePropUpdater } from "../../parse/PropUpdater";
+import { ParsePropUpdater } from "../../SchemaTable/PropUpdater";
 import { useColorPalette } from "@app/theme";
 
 import {
@@ -61,8 +61,8 @@ export const TextField: React.FC<TextFieldProps> = ({ label, formControl, ...pro
   const [field, meta, helpers] = useField(props);
 
   const borderColor = (colorMode === 'dark')
-    ? meta.touched && meta.error ? "red.500" : inputBorderColor
-    : meta.touched && meta.error ? "red.500" : null
+    ? meta.error ? "red.500" : inputBorderColor
+    : meta.error ? "red.500" : null
 
   return (
     <FormControl {...formControl}>
@@ -81,7 +81,7 @@ export const TextField: React.FC<TextFieldProps> = ({ label, formControl, ...pro
         {...field}
         {...props}
       />
-      {meta.touched && meta.error ? (
+      {meta.error ? (
         <FormLabel
           width={'100%'}
           textAlign={"center"}

@@ -6,6 +6,7 @@ import { Attribute } from "@app/shared/parse-types";
 import ClassSearchSelect from '../../components/Selectors/ClassSearchSelect';
 import DiscussionButton from '../../components/Buttons/DiscussionButton';
 import ToggleEditWrapper from './ToggleEditWrapper';
+import { PluginTypes } from '../types';
 
 export interface EditableAttributeCellProps {
   attributeName: string;
@@ -175,3 +176,9 @@ export const EditableAttributeCell = ({
       </>
     )
   }
+
+export default {
+  name: 'EditableAttributeCell',
+  type: PluginTypes.CellRenderer,
+  component: EditableAttributeCell
+}

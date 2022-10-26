@@ -22,6 +22,7 @@ export const BackButton = ({ disabled, loading, label, size, fontSize, ...rest }
   const { textColor, bgPrevButton } = useColorPalette();
   return (
     <Button
+      type={'button'}
       bg={bgPrevButton}
       alignSelf="flex-end"
       size={size || 'lg'}
@@ -35,3 +36,5 @@ export const BackButton = ({ disabled, loading, label, size, fontSize, ...rest }
     </Button>
   )
 }
+
+export default BackButton;

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Switch, useToast } from "@chakra-ui/react";
 import DiscussionButton from '../../components/Buttons/DiscussionButton';
 import ToggleEditWrapper from "./ToggleEditWrapper";
+import { PluginTypes } from '../types';
 
 export const EditableBooleanCell = ({
   value: initialValue,
@@ -79,4 +80,10 @@ export const EditableBooleanCell = ({
       />}
     </>
   )
+}
+
+export default {
+  name: 'EditableBooleanCell',
+  type: PluginTypes.CellRenderer,
+  component: EditableBooleanCell
 }

@@ -40,3 +40,5 @@ export const SubmitButton = ({ disabled, loading, label, size, fontSize, ...rest
     </Button>
   )
 }
+
+export default SubmitButton;

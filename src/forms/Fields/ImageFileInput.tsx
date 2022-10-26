@@ -12,7 +12,7 @@ import {
   Flex,
 } from "@chakra-ui/react";
 
-import { ParsePropUpdater } from '../../parse/PropUpdater';
+import { ParsePropUpdater } from '../../SchemaTable/PropUpdater';
 import { LoadingOverlay } from '../../components/Loaders/LoadingOverlay';
 
 import { useColorPalette } from '@app/theme';

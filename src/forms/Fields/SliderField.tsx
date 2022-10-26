@@ -2,7 +2,7 @@ import React from 'react';
 import { useField } from "formik";
 import { useEffect, useState } from "react";
 import { Slider, SliderTrack, SliderFilledTrack, SliderThumb } from '@chakra-ui/react';
-import { ParsePropUpdater } from "../../parse/PropUpdater";
+import { ParsePropUpdater } from "../../SchemaTable/PropUpdater";
 import { useColorPalette } from "@app/theme";
 
 import {

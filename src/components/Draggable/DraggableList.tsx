@@ -65,10 +65,10 @@ const DraggableList = ({ items, onColumnOrderChange, renderItem }) => {
           <div
             {...provided.droppableProps}
             ref={provided.innerRef}
-            style={{ ...getListStyle(snapshot.isDraggingOver), width: '100%' }}
+            style={{ ...getListStyle(snapshot.isDraggingOver), width: '95%', margin: '0 auto' }}
           >
             {itemState && itemState.length > 0 && itemState.map((item, index) => (
-              <Draggable key={item} draggableId={item} index={index}>
+              <Draggable key={item.name} draggableId={item.name} index={index}>
                 {(provided, snapshot) => (
                   <div
                     ref={provided.innerRef}

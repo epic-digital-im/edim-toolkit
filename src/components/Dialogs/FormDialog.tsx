@@ -43,7 +43,7 @@ const FormDialog = ({
             {isEdit ? `Edit ${objectClass}` : `Add ${objectClass}`}
           </AlertDialogHeader>
           <AlertDialogBody pb={'1.5rem'}>
-            {renderForm && renderForm({ initialValues })}
+            {renderForm && renderForm()}
           </AlertDialogBody>
         </AlertDialogContent>
       </AlertDialogOverlay>

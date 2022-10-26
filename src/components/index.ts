@@ -55,3 +55,8 @@ export * from './Separator/Separator';
 export { default as NavItem } from './NavBars/NavItem';
 
 export { default as Tabber } from './Tabs/Tabber';
+
+export * from './Stepper';
+export * from './Tables/ClassTable';
+export * from './Tables/FilterTable';
+export * from './Tables/SimpleTable';

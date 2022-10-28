@@ -1,6 +1,7 @@
 import Papa from "papaparse";
 
 export const exportAsCSV = (filename: string, data: any[], fields?: string[]) => {
+  // const blacklist = ['_object', 'ACL', 'properties'];
   const csv = Papa.unparse({
     fields,
     data,

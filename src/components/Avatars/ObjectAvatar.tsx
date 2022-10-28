@@ -11,7 +11,7 @@ interface ObjectAvatarProps extends ComponentWithAs<"span", AvatarProps> {
 export const ObjectAvatar: React.FC<ObjectAvatarProps> = ({ object, linkTo, ...props }) => {
   const { bgColor } = useColorPalette();
   const avatar = object.get('avatar');
-  const avatarUrl = avatar ? avatar.url() : null;
+  const avatarUrl = (avatar && avatar.url) ? avatar.url() : null;
   const Wrapper = linkTo ? NavLink : 'span';
   return (
     <Wrapper to={linkTo ? linkTo(object) : undefined}>

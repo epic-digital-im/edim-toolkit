@@ -66,7 +66,6 @@ export const TableToolbar: React.FC<TableToolbarProps> = ({
 
   const splitTitleCase = (str: string) => {
     const t = str.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase()).split(' ');
-    console.log(t);
     if (t.length > 2 && t[1].length === 1) {
       return t[2];
     }

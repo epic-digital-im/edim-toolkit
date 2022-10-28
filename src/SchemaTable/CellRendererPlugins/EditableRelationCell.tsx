@@ -8,6 +8,8 @@ import ToggleEditWrapper from './ToggleEditWrapper';
 import { PluginTypes } from '../types';
 import getters from '@app/shared/utils/getters';
 
+import { RelationButtonRenderer } from './ParseCellRenderers';
+
 interface EditableRelationCellProps {
   objectClass: ClassNames;
   valueGetter?: (data: any) => string;
@@ -26,67 +28,78 @@ export const EditableRelationCell = ({
   filters,
   getFilters,
   isMulti,
-}: EditableRelationCellProps) => ({
-  cell: { value },
-  row: { original },
-  column: { id, discussion, discussionTitle, editable, textAlign },
-  rowEditable,
-  setRowEditable
-}) => {
-    if (!rowEditable) {
-      return (
-        <ToggleEditWrapper
-          width={'100%'}
-          textAlign={textAlign || 'center'}
-          value={value}
-          rowEditable={rowEditable}
-          setRowEditable={setRowEditable}
-          editable={editable}
-        />
-      );
-    }
+}: EditableRelationCellProps) => (props) => {
+  const {
+    column: {
+      columnDef: {
+        editable,
+        textAlign,
+        discussion,
+        discussionTitle,
+      }
+    },
+    cell: {
+      getValue,
+    },
+    row: { original },
+    column,
+  } = props;
 
-    return useMemo(() => {
-      return (
-        <Flex width={'100%'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'}>
-          <ParsePropUpdater object={original._object} property={id}>
-            {({ onChange, value, isLoading }) => {
-              const handleClear = () => {
-                onChange(null);
-              }
-              return (
-                <ClassSearchSelect
-                  filters={filters}
-                  getFilters={getFilters}
-                  isClearable={isClearable}
-                  isLoading={isLoading}
-                  disabled={isLoading}
-                  style={{ width: '100%' }}
-                  objectClass={objectClass}
-                  queryName={objectClass}
-                  object={original._object}
-                  initialValue={value?.toJSON()}
-                  valueGetter={valueGetter}
-                  labelGetter={labelGetter}
-                  onSelect={onChange}
-                  onClear={handleClear}
-                  isCreateable
-                  placeholder=""
-                  isMulti={isMulti}
-                />
-              )
-            }}
-          </ParsePropUpdater>
-          {discussion && <DiscussionButton
-            type='icon'
-            object={original._object}
-            context={id}
-            title={discussionTitle && discussionTitle(original._object)}
-          />}
-        </Flex>
-      )
-    }, [original._object, id]);
+  const { id } = column;
+  const initialValue = getValue();
+  const Renderer = RelationButtonRenderer({ objectClass: initialValue?.className });
+  const value = Renderer(props);
+
+  if (!value) {
+    return null;
   }
+
+  return (
+    <ToggleEditWrapper
+      width={'100%'}
+      textAlign={textAlign || 'center'}
+      value={value}
+      editable={editable}
+    >
+      <Flex width={'100%'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'}>
+        <ParsePropUpdater object={original} property={id}>
+          {({ onChange, value, isLoading }) => {
+            const handleClear = () => {
+              onChange(null);
+            }
+            return (
+              <ClassSearchSelect
+                filters={filters}
+                getFilters={getFilters}
+                isClearable={isClearable}
+                isLoading={isLoading}
+                disabled={isLoading}
+                style={{ width: '100%' }}
+                objectClass={objectClass}
+                queryName={objectClass}
+                object={original}
+                initialValue={value?.toJSON()}
+                valueGetter={valueGetter}
+                labelGetter={labelGetter}
+                onSelect={onChange}
+                onClear={handleClear}
+                isCreateable
+                placeholder=""
+                isMulti={isMulti}
+              />
+            )
+          }}
+        </ParsePropUpdater>
+        {discussion && <DiscussionButton
+          type='icon'
+          object={original}
+          context={id}
+          title={discussionTitle && discussionTitle(original)}
+        />}
+      </Flex>
+    </ToggleEditWrapper>
+  )
+}
 
 export default {
   name: 'EditableRelationCell',

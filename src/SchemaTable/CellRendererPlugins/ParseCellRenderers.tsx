@@ -5,6 +5,7 @@ import { NavLink } from 'react-router-dom';
 import { Text, Flex, Button, Spinner } from "@chakra-ui/react";
 import { ParseLiveQuery } from '../../hoc/ParseLiveQuery';
 import { PluginTypes } from '../types';
+import getters from '@app/shared/utils/getters';
 
 const abbrevString = (str: string, maxLength: number) => {
   if (!str) return '';
@@ -39,35 +40,52 @@ export const RelationCell = ({ objectClass, objectId, Cell }: { objectClass: str
   );
 }
 
-export const RelationButtonRenderer = (props: any) => {
+export const RelationButtonRenderer = ({ objectClass }) => (props: any) => {
   const {
+    column: {
+      columnDef: {
+        rowEditable,
+        setRowEditable,
+        editable,
+        textAlign,
+        discussion,
+        discussionTitle,
+        isAdmin,
+      }
+    },
+    row,
+    cell: {
+      getValue,
+    },
     row: { original },
-    column: { id },
-    isAdmin,
-    isPropertyDetail,
+    column,
   } = props;
 
-  const object = original._object.get(id);
-  const classRoute = object?.className.toLowerCase();
-  const objectData = object?.toJSON() || {};
+  const relation = getValue();
+  const getter = getters(objectClass);
+  const objectData = relation // relation?.toJSON();
+  const label = getter.labelGetter(objectData);
+  const classRoute = objectClass?.toLowerCase();
 
-  if (!objectData.objectId) return null;
+  const link = isAdmin
+    ? `/admin/${classRoute}/${original.id}`
+    : `/customer/${classRoute}/${original.id}`;
 
-  const label = abbrevString(objectData.name, 30);
+  if (!label) return null;
 
-  return (isPropertyDetail)
-    ? (
-      <Text>{label}</Text>
-    )
-    : (
-      <div style={{ width: '90%', zIndex: 1000 }}>
-        <NavLink to={isAdmin ? `/admin/${classRoute}/${objectData.objectId}` : `/customer/${classRoute}/${objectData.objectId}`}>
-          <Button width="100%">
-            {label}
-          </Button>
-        </NavLink>
-      </div>
-    )
+  return (
+    <div style={{ width: '90%', zIndex: 1000 }}>
+      <NavLink to={link}>
+        <Button
+          size={'sm'}
+          fontWeight={'normal'}
+          backgroundColor={'transparent'}
+          width="100%">
+          {label}
+        </Button>
+      </NavLink>
+    </div>
+  )
 };
 
 export const ParseButtonRenderer = (props: any) => {

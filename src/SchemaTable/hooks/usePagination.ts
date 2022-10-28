@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-interface UsePaginationState {
+export interface UsePaginationState {
   previousPage: () => void;
   canPreviousPage: boolean;
   gotoPage: (page: number) => void;

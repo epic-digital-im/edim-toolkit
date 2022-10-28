@@ -8,12 +8,25 @@ import RenderPlugins, {
   EditableAttributeCell,
   EditableRelationCell,
   EditableDateCell,
+  RelationButtonRenderer
 } from '../CellRendererPlugins';
 
 import { AttributeAttributes } from '@app/shared/parse-types';
 import { SchemaConfigProp, Plugin, PluginTypes } from '../types';
 import { exportAsCSV } from '../../utils/export';
+import getters from '@app/shared/utils/getters';
 
+const formatDate = (date: Date) => {
+  if (!date) return '';
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = `0${d.getMonth() + 1}`.slice(-2);
+  const _date = `0${d.getDate()}`.slice(-2);
+  const hour = `0${d.getHours()}`.slice(-2);
+  const minute = `0${d.getMinutes()}`.slice(-2);
+  const second = `0${d.getSeconds()}`.slice(-2);
+  return `${month}-${_date}-${year} ${hour}:${minute}:${second}`;
+};
 
 interface UseColumnsState {
   tableColumns: any[];
@@ -28,9 +41,23 @@ interface UseColumnsProps {
   config: SchemaConfig;
   schema: Parse.Schema;
   plugins: Plugin[];
+  isAdmin?: boolean;
 }
 
-export const useColumns = ({ config, schema, plugins }: UseColumnsProps): UseColumnsState => {
+const accessorFn = (item: Parse.Object<Parse.Attributes<any>>, accessor: string, type: string) => {
+  if (!item) return null;
+  // if (accessor === 'objectId') return item.id;
+  const value = item[accessor];
+  const className = value?.targetClass;
+  if (className) {
+    const getter = getters(className);
+    return getter.labelGetter(item);
+  }
+  if (type === 'Date') return formatDate(value);
+  return value;
+}
+
+export const useColumns = ({ config, schema, plugins, isAdmin, }: UseColumnsProps): UseColumnsState => {
   const objectClass = schema?.className as ClassNames;
   const renderers = RenderPlugins.concat(plugins?.find(p => p.type === PluginTypes.CellRenderer) || []);
   const rendererConfig = config?.get(SchemaConfigProp.columnRenderer) || {};
@@ -84,7 +111,6 @@ export const useColumns = ({ config, schema, plugins }: UseColumnsProps): UseCol
         } else if (f.type === 'Pointer') {
           CellRender = EditableRelationCell({
             objectClass: f.targetClass,
-            isClearable: true,
           });
         } else if (f.type === 'Date') {
           CellRender = EditableDateCell;
@@ -97,10 +123,11 @@ export const useColumns = ({ config, schema, plugins }: UseColumnsProps): UseCol
         return {
           id: field,
           header: field,
-          accessorFn: (d) => d[field] || null,
+          accessorFn: (item: Parse.Object<Parse.Attributes<any>>) => accessorFn(item, field, f.type),
           cell: CellRender,
           size: columnWidths[field],
           editable,
+          isAdmin,
           // Header: field,
           // accessor: field,
           // width: columnWidths[field] || 200,

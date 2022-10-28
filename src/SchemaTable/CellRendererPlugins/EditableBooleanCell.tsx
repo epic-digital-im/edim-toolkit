@@ -4,19 +4,32 @@ import DiscussionButton from '../../components/Buttons/DiscussionButton';
 import ToggleEditWrapper from "./ToggleEditWrapper";
 import { PluginTypes } from '../types';
 
-export const EditableBooleanCell = ({
-  value: initialValue,
-  row: { original },
-  column: { id, editable, discussion, discussionTitle, textAlign },
-  rowEditable,
-  setRowEditable,
-}) => {
+export const EditableBooleanCell = (props) => {
+  const {
+    column: {
+      columnDef: {
+        editable,
+        textAlign,
+        discussion,
+        discussionTitle,
+      }
+    },
+    row,
+    cell: {
+      getValue,
+    },
+    row: { original },
+    column, // This is a custom function that we supplied to our table instance
+  } = props;
+
+  const { id } = column;
+  const initialValue = getValue();
   const toast = useToast();
   const [value, setValue] = useState(Boolean(initialValue));
   const [prevValue, setPrevValue] = useState(Boolean(initialValue));
 
   const handleUpdate = () => {
-    const object = original._object;
+    const object = original;
     const updatedValue = !value;
     setIsLoading(true);
     object.set(id, updatedValue);
@@ -52,33 +65,27 @@ export const EditableBooleanCell = ({
     setValue(initialValue)
   }, [initialValue])
 
-  if (!rowEditable) {
-    return (
-      <ToggleEditWrapper
-        width={'100%'}
-        textAlign={textAlign || 'center'}
-        value={value ? 'Yes' : 'No'}
-        rowEditable={rowEditable}
-        setRowEditable={setRowEditable}
-        editable={editable}
-      />
-    )
-  }
-
   return (
-    <>
-      <Switch
-        isDisabled={isLoading}
-        isChecked={value}
-        onChange={onChange}
-      />
-      {discussion && <DiscussionButton
-        type='icon'
-        object={original._object}
-        context={id}
-        title={discussionTitle && discussionTitle(original._object)}
-      />}
-    </>
+    <ToggleEditWrapper
+      width={'100%'}
+      textAlign={textAlign || 'center'}
+      value={value ? 'Yes' : 'No'}
+      editable={editable}
+    >
+      <>
+        <Switch
+          isDisabled={isLoading}
+          isChecked={value}
+          onChange={onChange}
+        />
+        {discussion && <DiscussionButton
+          type='icon'
+          object={original}
+          context={id}
+          title={discussionTitle && discussionTitle(original)}
+        />}
+      </>
+    </ToggleEditWrapper>
   )
 }
 

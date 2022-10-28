@@ -6,60 +6,67 @@ import { ParsePropUpdater } from "../PropUpdater";
 import ToggleEditWrapper from './ToggleEditWrapper';
 import { PluginTypes } from '../types';
 
-export const EditableWeekdayCell = ({
-  value: initialValue,
-  row: { original },
-  column: { id, editable, discussion, discussionTitle, textAlign }, // This is a custom function that we supplied to our table instance
-  rowEditable,
-  setRowEditable
-}) => {
+export const EditableWeekdayCell = (props) => {
+  const {
+    column: {
+      columnDef: {
+        editable,
+        textAlign,
+        discussion,
+        discussionTitle,
+      }
+    },
+    row,
+    cell: {
+      getValue,
+    },
+    row: { original },
+    column,
+  } = props;
 
-  if (!rowEditable) {
-    return (
-      <ToggleEditWrapper
-        width={'100%'}
-        textAlign={textAlign || 'center'}
-        value={weekdayList[initialValue] || null}
-        rowEditable={rowEditable}
-        setRowEditable={setRowEditable}
-        editable={editable}
-      />
-    );
-  }
+  const { id } = column;
+  const initialValue = getValue();
 
   return (
-    <ParsePropUpdater object={original._object} property={id}>
-      {({ onChange, value, isLoading }) => {
+    <ToggleEditWrapper
+      width={'100%'}
+      textAlign={textAlign || 'center'}
+      value={weekdayList[initialValue] || null}
+      editable={editable}
+    >
+      <ParsePropUpdater object={original} property={id}>
+        {({ onChange, value, isLoading }) => {
 
-        const handleUpdateTask = (value: Weekdays) => {
-          const dayId = weekdayList.indexOf(value);
-          if (dayId > -1) {
-            onChange(dayId);
+          const handleUpdateTask = (value: Weekdays) => {
+            const dayId = weekdayList.indexOf(value);
+            if (dayId > -1) {
+              onChange(dayId);
+            }
           }
-        }
 
-        return (
-          <div key={`weekday_${value}`} style={{ width: '90%', zIndex: 1000 }}>
-            <WeekdaySelect
-              isDisabled={isLoading}
-              isLoading={isLoading}
-              initialValue={{
-                value: weekdayList[value],
-                label: weekdayList[value]
-              }}
-              onSelect={handleUpdateTask}
-            />
-            {discussion && <DiscussionButton
-              type='icon'
-              object={original._object}
-              context={id}
-              title={discussionTitle && discussionTitle(original._object)}
-            />}
-          </div>
-        )
-      }}
-    </ParsePropUpdater>
-  )
+          return (
+            <div key={`weekday_${value}`} style={{ width: '90%', zIndex: 1000 }}>
+              <WeekdaySelect
+                isDisabled={isLoading}
+                isLoading={isLoading}
+                initialValue={{
+                  value: weekdayList[value],
+                  label: weekdayList[value]
+                }}
+                onSelect={handleUpdateTask}
+              />
+              {discussion && <DiscussionButton
+                type='icon'
+                object={original}
+                context={id}
+                title={discussionTitle && discussionTitle(original)}
+              />}
+            </div>
+          )
+        }}
+      </ParsePropUpdater>
+    </ToggleEditWrapper>
+  );
 }
 
 export default {

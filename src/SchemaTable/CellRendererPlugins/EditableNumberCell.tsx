@@ -6,14 +6,27 @@ import ToggleEditWrapper from "./ToggleEditWrapper";
 import { PluginTypes } from '../types';
 
 // Create an editable cell renderer
-export const EditableNumberCell = ({
-  value: initialValue,
-  row: { original },
-  column, // This is a custom function that we supplied to our table instance
-  rowEditable,
-  setRowEditable
-}) => {
-  const { id, editable, discussion, discussionTitle, textAlign } = column;
+export const EditableNumberCell = (props) => {
+  const {
+    column: {
+      columnDef: {
+        editable,
+        textAlign,
+        discussion,
+        discussionTitle,
+      }
+    },
+    row,
+    cell: {
+      getValue,
+    },
+    row: { original },
+    column,
+  } = props;
+
+  const { id } = column;
+  const initialValue = getValue();
+
   const [local, setLocal] = useState(initialValue);
 
   const handleChange = (e: { target: { value: string } }) => {
@@ -24,63 +37,57 @@ export const EditableNumberCell = ({
     setLocal(initialValue)
   }, [initialValue]);
 
-  if (!rowEditable) {
-    return (
-      <ToggleEditWrapper
-        width={'100%'}
-        textAlign={textAlign || 'center'}
-        value={initialValue}
-        rowEditable={rowEditable}
-        setRowEditable={setRowEditable}
-        editable={editable}
-      />
-    )
-  }
-
   return (
-    <ParsePropUpdater object={original._object} property={id}>
-      {({ onChange, value, isLoading }) => {
-        const onBlur = () => {
-          if (local !== value) {
-            const val = parseFloat(local);
-            console.log(val);
-            if (!isNaN(val)) {
-              onChange(val);
+    <ToggleEditWrapper
+      width={'100%'}
+      textAlign={textAlign || 'center'}
+      value={initialValue}
+      editable={editable}
+    >
+      <ParsePropUpdater object={original} property={id}>
+        {({ onChange, value, isLoading }) => {
+          const onBlur = () => {
+            if (local !== value) {
+              const val = parseFloat(local);
+              console.log(val);
+              if (!isNaN(val)) {
+                onChange(val);
+              }
             }
           }
-        }
 
-        useEffect(() => {
-          setLocal(value)
-        }, [value])
+          useEffect(() => {
+            setLocal(value)
+          }, [value])
 
-        return (
-          <>
-            <Input
-              isDisabled={!editable || isLoading}
-              borderRadius={0}
-              borderColor="transparent"
-              value={local}
-              onChange={handleChange}
-              onBlur={onBlur}
-              background={'transparent'}
-              textAlign={'center'}
-              padding={'0'}
-              margin={'0'}
-              height={'45px'}
-              fontSize={'sm'}
-              type={'text'}
-            />
-            {discussion && <DiscussionButton
-              type='icon'
-              object={original._object}
-              context={id}
-              title={discussionTitle && discussionTitle(original._object)}
-            />}
-          </>
-        )
-      }}
-    </ParsePropUpdater>
+          return (
+            <>
+              <Input
+                isDisabled={!editable || isLoading}
+                borderRadius={0}
+                borderColor="transparent"
+                value={local}
+                onChange={handleChange}
+                onBlur={onBlur}
+                background={'transparent'}
+                textAlign={'center'}
+                padding={'0'}
+                margin={'0'}
+                height={'45px'}
+                fontSize={'sm'}
+                type={'text'}
+              />
+              {discussion && <DiscussionButton
+                type='icon'
+                object={original}
+                context={id}
+                title={discussionTitle && discussionTitle(original)}
+              />}
+            </>
+          )
+        }}
+      </ParsePropUpdater>
+    </ToggleEditWrapper>
   )
 }
 

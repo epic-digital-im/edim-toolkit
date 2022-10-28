@@ -27,10 +27,8 @@ export const EditableCell = (props) => {
   } = props;
 
   const initialValue = getValue();
-
-  // console.log(props);
-
   const { id } = column;
+
   const [local, setLocal] = useState(initialValue);
 
   const handleChange = (e: { target: { value: string } }) => {
@@ -41,65 +39,52 @@ export const EditableCell = (props) => {
     setLocal(initialValue)
   }, [initialValue]);
 
-  const isEditable = rowEditable(row);
-
-  if (!isEditable) {
-    const value = (typeof initialValue === 'object') ? JSON.stringify(initialValue) : initialValue;
-    return (
-      <ToggleEditWrapper
-        width={'100%'}
-        textAlign={textAlign || 'center'}
-        value={value}
-        rowEditable={editable}
-        setRowEditable={(shouldReset: boolean) => setRowEditable(row, shouldReset)}
-      />
-    );
-  }
-
   return (
-    <ParsePropUpdater object={original._object} property={id}>
-      {({ onChange, value, isLoading }) => {
-        const onBlur = () => {
-          if (local !== value) {
-            onChange(local);
+    <ToggleEditWrapper
+      width={'100%'}
+      textAlign={textAlign || 'center'}
+      value={initialValue}
+      editable={editable}
+    >
+      <ParsePropUpdater object={original} property={id}>
+        {({ onChange, value, isLoading }) => {
+          const onBlur = () => {
+            if (local !== value) {
+              onChange(local);
+            }
           }
-        }
 
-        useEffect(() => {
-          setLocal(value)
-        }, [value])
-        console.log({
-          id,
-          editable,
-          isLoading
-        })
-        return (
-          <>
-            <Input
-              isDisabled={!editable || isLoading}
-              borderRadius={0}
-              borderColor="transparent"
-              value={local}
-              onChange={handleChange}
-              onBlur={onBlur}
-              background={'transparent'}
-              textAlign={textAlign || 'center'}
-              padding={'0'}
-              pl={3}
-              margin={'0'}
-              height={'45px'}
-              fontSize={'sm'}
-            />
-            {discussion && <DiscussionButton
-              type='icon'
-              object={original._object}
-              context={id}
-              title={discussionTitle && discussionTitle(original._object)}
-            />}
-          </>
-        )
-      }}
-    </ParsePropUpdater>
+          useEffect(() => {
+            setLocal(value)
+          }, [value])
+
+          return (
+            <>
+              <Input
+                isDisabled={!editable || isLoading}
+                borderRadius={0}
+                borderColor="transparent"
+                value={local}
+                onChange={handleChange}
+                onBlur={onBlur}
+                background={'transparent'}
+                textAlign={textAlign || 'center'}
+                padding={'0'}
+                margin={'0'}
+                height={'45px'}
+                fontSize={'sm'}
+              />
+              {discussion && <DiscussionButton
+                type='icon'
+                object={original}
+                context={id}
+                title={discussionTitle && discussionTitle(original)}
+              />}
+            </>
+          )
+        }}
+      </ParsePropUpdater>
+    </ToggleEditWrapper>
   )
 }
 

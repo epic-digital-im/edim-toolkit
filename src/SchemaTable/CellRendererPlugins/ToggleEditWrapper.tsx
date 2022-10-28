@@ -1,36 +1,58 @@
-import React, { useRef } from "react";
-import { Box, ChakraComponent } from "@chakra-ui/react";
-import useDoubleClick from '../../hooks/useDoubleClick';
+import React, { useState } from "react";
+import { Flex, IconButton, ChakraComponent } from "@chakra-ui/react";
+import { EditIcon } from '@chakra-ui/icons';
+import useKeyPress from '../../hooks/useKeyPress';
 
-interface ToggleEditWrapperProps extends ChakraComponent<"div"> {
+interface ToggleEditWrapperProps extends ChakraComponent<typeof Flex> {
   value: string;
-  rowEditable: boolean;
+  editable: boolean;
   setRowEditable: (value?: boolean) => void;
+  setCellEditable?: (value?: boolean) => void;
 }
 
 const ToggleEditWrapper: React.FC<ToggleEditWrapperProps> = (props) => {
-  const { value, setRowEditable, ...rest } = props;
-  const buttonRef = useRef();
+  const [cellEditable, setCellEditable] = useState(false);
+  const { children, value, editable, ...rest } = props;
 
-  useDoubleClick({
-    onSingleClick: (e) => {
-      setRowEditable(true)
-    },
-    onDoubleClick: e => {
-      setRowEditable()
-    },
-    ref: buttonRef,
-    latency: 250
+  useKeyPress("Escape", () => {
+    setCellEditable(false)
   });
+
 
   if (value === undefined) {
     return null;
   }
+  if (typeof value === 'object') {
+    // return JSON.stringify(value);
+    return null;
+  }
 
   return (
-    <Box ref={buttonRef} {...rest}>
-      {value}
-    </Box>
+    <Flex
+      cursor={editable ? 'pointer' : 'default'}
+      alignItems={'center'}
+      justifyContent={'center'}
+      width={'100%'}
+      height={'100%'}
+      role="group"
+      {...rest}>
+      {cellEditable ? children : (
+        <>
+          {value}
+          {editable && (<IconButton
+            onClick={() => {
+              if (!setCellEditable) return;
+              setCellEditable(true)
+            }}
+            visibility={'hidden'}
+            _groupHover={{ visibility: 'visible' }}
+            size={'sm'}
+            backgroundColor={'transparent'}
+            aria-label="Edit" icon={<EditIcon />}
+          />)}
+        </>
+      )}
+    </Flex>
   );
 }
 

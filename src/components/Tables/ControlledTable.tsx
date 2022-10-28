@@ -319,12 +319,8 @@ export const ControlledTableComponent = (props: ControlledTableProps) => {
     onSelectionChange,
   } = props;
 
-  console.log(props);
 
   const [rowSelection, setRowSelection] = React.useState({})
-  const [rowsEditable, setRowsEditable] = useState<{ [key: string]: boolean }>({});
-
-  useKeyPress("Escape", () => setRowsEditable({}));
 
   const bgColor = useColorModeValue("gray.100", "gray.800");
   const bgColor2 = useColorModeValue("white", "gray.700");
@@ -373,14 +369,6 @@ export const ControlledTableComponent = (props: ControlledTableProps) => {
       return [...cols, ...props.columns].map((col) => ({
         ...col,
         columnStyle,
-        rowEditable: (row) => rowsEditable[row.id],
-        setRowEditable: (row, shouldReset?: boolean) => {
-          if (shouldReset) {
-            setRowsEditable({});
-          } else {
-            setRowsEditable({ ...rowsEditable, [row.id]: true })
-          }
-        },
       }));
     }, [props.columns, selectable]);
 
@@ -390,26 +378,18 @@ export const ControlledTableComponent = (props: ControlledTableProps) => {
     columnResizeMode,
     getCoreRowModel: getCoreRowModel(),
     onRowSelectionChange: setRowSelection,
-    debugTable: true,
-    debugHeaders: true,
-    debugColumns: true,
+    // debugTable: true,
+    // debugHeaders: true,
+    // debugColumns: true,
     state: {
-      rowsEditable,
       columnOrder,
       rowSelection,
     },
     onColumnOrderChange: setColumnOrder,
-    setRowsEditable,
   });
 
   const pageSize = data.length;
   const tableWidth = table.getCenterTotalSize();
-
-  console.log({
-    rowSelection,
-    columnOrder,
-    columnSizing: table.options.state.columnSizing,
-  });
 
   return (
     <Box width={'100%'}>

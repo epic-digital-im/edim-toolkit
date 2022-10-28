@@ -25,14 +25,27 @@ function useDebounce(value: any, delay: number) {
   return debouncedValue;
 }
 
-export const EditableColorPicker = ({
-  rowEditable,
-  setRowEditable,
-  value: initialValue,
-  row: { original },
-  column, // This is a custom function that we supplied to our table instance
-}) => {
-  const { id, editable, discussion, discussionTitle, textAlign } = column;
+export const EditableColorPicker = (props) => {
+  const {
+    column: {
+      columnDef: {
+        editable,
+        textAlign,
+        discussion,
+        discussionTitle,
+      }
+    },
+    row,
+    cell: {
+      getValue,
+    },
+    row: { original },
+    column,
+  } = props;
+
+  const { id } = column;
+  const initialValue = getValue();
+
   const toast = useToast();
   const [value, setValue] = useState(initialValue);
   const [prevValue, setPrevValue] = useState(initialValue);
@@ -52,7 +65,7 @@ export const EditableColorPicker = ({
   }
 
   const handleUpdate = () => {
-    const object = original._object;
+    const object = original;
     if (object.get(id) === debouncedSearchTerm) return;
     setIsLoading(true);
     setPrevValue(value);
@@ -81,43 +94,37 @@ export const EditableColorPicker = ({
     setValue(initialValue)
   }, [initialValue])
 
-  if (!rowEditable) {
-    return (
-      <ToggleEditWrapper
-        width={'100%'}
-        textAlign={textAlign || 'center'}
-        value={initialValue || null}
-        rowEditable={rowEditable}
-        setRowEditable={setRowEditable}
-        editable={editable}
-      />
-    );
-  }
-
   return (
-    <>
-      <Input
-        isDisabled={isLoading}
-        borderRadius={0}
-        borderColor="transparent"
-        value={value}
-        onChange={handleChange}
-        background={'transparent'}
-        textAlign={'center'}
-        padding={'0'}
-        margin={'0'}
-        height={'45px'}
-        fontSize={'sm'}
-        type="color"
-      />
-      {discussion && <DiscussionButton
-        type='icon'
-        object={original._object}
-        context={id}
-        title={discussionTitle && discussionTitle(original._object)}
-      />}
-    </>
-  )
+    <ToggleEditWrapper
+      width={'100%'}
+      textAlign={textAlign || 'center'}
+      value={initialValue || null}
+      editable={editable}
+    >
+      <>
+        <Input
+          isDisabled={isLoading}
+          borderRadius={0}
+          borderColor="transparent"
+          value={value}
+          onChange={handleChange}
+          background={'transparent'}
+          textAlign={'center'}
+          padding={'0'}
+          margin={'0'}
+          height={'45px'}
+          fontSize={'sm'}
+          type="color"
+        />
+        {discussion && <DiscussionButton
+          type='icon'
+          object={original}
+          context={id}
+          title={discussionTitle && discussionTitle(original)}
+        />}
+      </>
+    </ToggleEditWrapper>
+  );
 }
 
 export default {

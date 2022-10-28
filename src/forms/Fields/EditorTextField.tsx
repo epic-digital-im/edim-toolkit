@@ -10,6 +10,8 @@ import {
   FormLabel
 } from "@chakra-ui/react";
 
+import slugify from 'slugify';
+
 interface EditorTextFieldProps {
   name: string;
   value: number;
@@ -60,7 +62,7 @@ export const EditorTextParse: React.FC<EditorTextParseProps> = (props) => {
   )
 }
 
-export const EditorTextField = ({ label, ...props }: any) => {
+export const EditorTextField = ({ label, id, height, ...props }: any) => {
   const [field, meta, helpers] = useField(props);
   const { textColor } = useColorPalette();
   return (
@@ -73,8 +75,10 @@ export const EditorTextField = ({ label, ...props }: any) => {
         {label}
       </FormLabel>
       <Editor
+        id={field.name.replace(/[\W_]+/g, "")}
         value={field.value}
         onChange={helpers.setValue}
+        height={height}
       />
       {meta.touched && meta.error ? (
         <FormLabel

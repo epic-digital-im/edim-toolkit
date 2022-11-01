@@ -52,7 +52,14 @@ const Tabber: React.FC<TabsProps> = (props) => {
   return (
     <Tabs index={tabIndex} isFitted variant='enclosed' width="100%" onChange={handleTabChange}>
       <TabList>
-        {t.map((tab, index) => (<Tab key={`${index}_${tab.label}_Tab`}>{tab.label}</Tab>))}
+        {t.map((tab, index) => (
+          <Tab
+            fontSize={{ sm: 'xs', md: 'sm' }}
+            p={{ sm: '5px', md: 3 }}
+            key={`${index}_${tab.label}_Tab`}>
+            {tab.label}
+          </Tab>
+        ))}
       </TabList>
       <TabPanels borderWidth="1px" borderColor={'grey.200'} borderStyle="solid">
         {t.map((tab, index) => {

@@ -521,39 +521,42 @@ export const FilterTable = (props: FitlerTableProps) => {
                   zIndex={1000}
                   direction={{ sm: 'column', md: 'row' }}
                 >
-                  <Flex direction={'row'} alignItems={"center"}>
-                    {title && <Text color={textColor} fontWeight="bold" fontSize="lg" mr="1.5rem">
+                  <Flex direction={{ sm: 'column', md: 'row' }} alignItems={"center"}>
+                    {title && <Text color={textColor} fontWeight="bold" fontSize="lg" mr={{ sm: 0, md: "1.5rem" }} my={{ sm: 3, md: 0 }}>
                       {title}
                     </Text>}
                     <Stack
-                      direction={{ sm: "row", md: "row" }}
+                      direction={{ sm: "column", md: "row" }}
                       spacing={{ sm: "4px", md: "12px" }}
                       align="center"
                       me="12px"
-                      my="24px"
+                      my={{ sm: 0, md: "24px" }}
                       minW={{ sm: "100px", md: "200px" }}
                     >
-                      {!hidePaging && (<>
-                        <Select
-                          value={pageSize}
-                          onChange={(e) => setPageSize(Number(e.target.value))}
-                          color="gray.500"
-                          size="sm"
-                          borderRadius="12px"
-                          maxW="75px"
-                          cursor="pointer"
-                          backgroundColor={inputBgColor}
-                          color={textColor}
-                        >
-                          <option>25</option>
-                          <option>50</option>
-                          <option>100</option>
-                          <option>250</option>
-                        </Select>
-                        <Text fontSize="xs" color="gray.400" fontWeight="normal">
-                          entries per page
-                        </Text>
-                      </>)
+                      {!hidePaging && (
+                        <Flex direction={{ sm: 'row' }} alignItems={"center"} justifyContent={'center'} width={'100%'} mb={2}>
+                          <Select
+                            value={pageSize}
+                            onChange={(e) => setPageSize(Number(e.target.value))}
+                            color="gray.500"
+                            size="sm"
+                            borderRadius="12px"
+                            maxW="75px"
+                            cursor="pointer"
+                            backgroundColor={inputBgColor}
+                            color={textColor}
+                            mr={2}
+                          >
+                            <option>25</option>
+                            <option>50</option>
+                            <option>100</option>
+                            <option>250</option>
+                          </Select>
+                          <Text fontSize="xs" color="gray.400" fontWeight="normal">
+                            entries per page
+                          </Text>
+                        </Flex>
+                      )
                       }
                       {isAdmin && !filtersOwnRow && renderFilters && renderFilters()}
                     </Stack>

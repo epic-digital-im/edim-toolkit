@@ -90,7 +90,7 @@ export const DateSelectField = ({ label, ...props }: any) => {
       <FormLabel
         color={textColor}
         fontWeight="bold"
-        fontSize="xs"
+        fontSize={{ sm: 'xs', md: 'sm' }}
       >
         {label}
       </FormLabel>
@@ -98,7 +98,7 @@ export const DateSelectField = ({ label, ...props }: any) => {
         <Box width="40%">
           <Select
             borderRadius="15px"
-            fontSize="xs"
+            fontSize={{ sm: 'xs', md: 'sm' }}
             borderColor={monthmeta.touched && monthmeta.error ? inputBorderError : inputBorder}
             {...monthfield}
           >
@@ -111,7 +111,7 @@ export const DateSelectField = ({ label, ...props }: any) => {
               width={'100%'}
               textAlign={"center"}
               color={"red"}
-              fontSize="xs"
+              fontSize={{ sm: 'xs', md: 'sm' }}
               fontWeight="nxormal"
               mt={2}
             >
@@ -122,7 +122,7 @@ export const DateSelectField = ({ label, ...props }: any) => {
         <Box width="30%">
           <Select
             borderRadius="15px"
-            fontSize="xs"
+            fontSize={{ sm: 'xs', md: 'sm' }}
             borderColor={daymeta.touched && daymeta.error ? inputBorderError : inputBorder}
             {...dayfield}
           >
@@ -136,7 +136,7 @@ export const DateSelectField = ({ label, ...props }: any) => {
               width={'100%'}
               textAlign={"center"}
               color={"red"}
-              fontSize="xs"
+              fontSize={{ sm: 'xs', md: 'sm' }}
               fontWeight="nxormal"
               mt={2}
             >
@@ -147,7 +147,7 @@ export const DateSelectField = ({ label, ...props }: any) => {
         <Box width="30%">
           <Select
             borderRadius="15px"
-            fontSize="xs"
+            fontSize={{ sm: 'xs', md: 'sm' }}
             borderColor={yearmeta.touched && yearmeta.error ? inputBorderError : inputBorder}
             {...yearfield}
           >
@@ -161,7 +161,7 @@ export const DateSelectField = ({ label, ...props }: any) => {
               width={'100%'}
               textAlign={"center"}
               color={"red"}
-              fontSize="xs"
+              fontSize={{ sm: 'xs', md: 'sm' }}
               fontWeight="nxormal"
               mt={2}
             >
@@ -175,7 +175,7 @@ export const DateSelectField = ({ label, ...props }: any) => {
           width={'100%'}
           textAlign={"center"}
           color={"red"}
-          fontSize="xs"
+          fontSize={{ sm: 'xs', md: 'sm' }}
           fontWeight="normal"
           mt={2}
         >

@@ -73,7 +73,7 @@ export const SliderField = ({ label, ...props }: any) => {
       <FormLabel
         color={textColor}
         fontWeight="bold"
-        fontSize="xs"
+        fontSize={{ sm: 'xs', md: 'sm' }}
       >
         {label}
       </FormLabel>
@@ -87,7 +87,7 @@ export const SliderField = ({ label, ...props }: any) => {
           width={'100%'}
           textAlign={"center"}
           color={"red"}
-          fontSize="xs"
+          fontSize={{ sm: 'xs', md: 'sm' }}
           fontWeight="normal"
           mt={2}
         >

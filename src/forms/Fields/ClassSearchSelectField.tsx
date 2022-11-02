@@ -42,7 +42,7 @@ export const ClassSearchSelectField = ({ label, handleSelect, object, isMulti, i
       <FormLabel
         color={meta.error ? "red.500" : textColor}
         fontWeight="bold"
-        fontSize="xs"
+        fontSize={{ sm: 'xs', md: 'sm' }}
       >
         {label}
       </FormLabel>
@@ -63,7 +63,7 @@ export const ClassSearchSelectField = ({ label, handleSelect, object, isMulti, i
           width={'100%'}
           textAlign={"center"}
           color={"red"}
-          fontSize="xs"
+          fontSize={{ sm: 'xs', md: 'sm' }}
           fontWeight="normal"
           mt={2}
         >

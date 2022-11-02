@@ -22,7 +22,7 @@ export const ToggleField = ({ label, labelLeft, ...props }: any) => {
     <FormControl display='flex' alignItems='center'>
       {labelLeft ? (
         <>
-          <FormLabel color={textColor} htmlFor={fieldId} mb='0' mr='1rem'>
+          <FormLabel fontSize={{ sm: 'xs', md: 'sm' }} color={textColor} htmlFor={fieldId} mb='0' mr='1rem'>
             {label}
           </FormLabel>
           <Switch isChecked={field.value} onChange={() => helpers.setValue(!field.value)} id={fieldId} />
@@ -30,7 +30,7 @@ export const ToggleField = ({ label, labelLeft, ...props }: any) => {
       ) : (
         <>
           <Switch isChecked={field.value} onChange={() => helpers.setValue(!field.value)} id={fieldId} />
-          <FormLabel color={textColor} htmlFor={fieldId} mb='0' ml='1rem'>
+          <FormLabel fontSize={{ sm: 'xs', md: 'sm' }} color={textColor} htmlFor={fieldId} mb='0' ml='1rem'>
             {label}
           </FormLabel>
         </>
@@ -40,7 +40,7 @@ export const ToggleField = ({ label, labelLeft, ...props }: any) => {
           width={'100%'}
           textAlign={"center"}
           color={"red"}
-          fontSize="xs"
+          fontSize={{ sm: 'xs', md: 'sm' }}
           fontWeight="nxormal"
           mt={2}
         >

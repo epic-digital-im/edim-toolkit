@@ -65,7 +65,7 @@ export const GooglePlaceSelectorField: React.FC<GooglePlaceSelectorFieldProps> =
       <FormLabel
         color={invalidColor}
         fontWeight="bold"
-        fontSize="xs"
+        fontSize={{ sm: 'xs', md: 'sm' }}
       >
         {label}
       </FormLabel>
@@ -78,7 +78,7 @@ export const GooglePlaceSelectorField: React.FC<GooglePlaceSelectorFieldProps> =
           width={'100%'}
           textAlign={"center"}
           color={"red"}
-          fontSize="xs"
+          fontSize={{ sm: 'xs', md: 'sm' }}
           fontWeight="nxormal"
           mt={2}
         >

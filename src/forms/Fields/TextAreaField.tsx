@@ -37,13 +37,13 @@ export const TextAreaField = ({ label, ...props }: any) => {
       <FormLabel
         borderColor={meta.error ? "red.500" : textColor}
         fontWeight="bold"
-        fontSize="xs"
+        fontSize={{ sm: 'xs', md: 'sm' }}
       >
         {label}
       </FormLabel>
       <Textarea
         borderRadius="15px"
-        fontSize="xs"
+        fontSize={{ sm: 'xs', md: 'sm' }}
         borderColor={meta.error ? "red.500" : "gray.300"}
         {...field}
         {...props}
@@ -53,7 +53,7 @@ export const TextAreaField = ({ label, ...props }: any) => {
           width={'100%'}
           textAlign={"center"}
           color={"red"}
-          fontSize="xs"
+          fontSize={{ sm: 'xs', md: 'sm' }}
           fontWeight="nxormal"
           mt={2}
         >

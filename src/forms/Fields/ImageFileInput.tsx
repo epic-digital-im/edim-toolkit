@@ -300,7 +300,7 @@ export const ImageFileInputField = ({ label, buttonLabel, defaultFiles, ...props
       <FormLabel
         color={borderColor}
         fontWeight="bold"
-        fontSize="xs"
+        fontSize={{ sm: 'xs', md: 'sm' }}
       >
         {label}
       </FormLabel>
@@ -354,7 +354,7 @@ export const ImageFileInputField = ({ label, buttonLabel, defaultFiles, ...props
           width={'100%'}
           textAlign={"center"}
           color={"red"}
-          fontSize="xs"
+          fontSize={{ sm: 'xs', md: 'sm' }}
           fontWeight="normal"
         >
           {meta.error}

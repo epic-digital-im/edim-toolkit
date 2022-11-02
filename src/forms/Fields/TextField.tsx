@@ -69,12 +69,12 @@ export const TextField: React.FC<TextFieldProps> = ({ label, formControl, ...pro
       <FormLabel
         color={textColor}
         fontWeight="bold"
-        fontSize="xs"
+        fontSize={{ sm: 'xs', md: 'sm' }}
       >
         {label}
       </FormLabel>
       <Input
-        fontSize="xs"
+        fontSize={{ sm: 'xs', md: 'sm' }}
         borderColor={borderColor}
         color={textColor}
         backgroundColor={inputBgColor}
@@ -86,7 +86,7 @@ export const TextField: React.FC<TextFieldProps> = ({ label, formControl, ...pro
           width={'100%'}
           textAlign={"center"}
           color={"red"}
-          fontSize="xs"
+          fontSize={{ sm: 'xs', md: 'sm' }}
           fontWeight="nxormal"
           mt={2}
         >

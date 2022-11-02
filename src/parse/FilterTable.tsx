@@ -67,6 +67,7 @@ export interface FitlerTableProps {
   title?: string;
   renderRowCard?: (row: any, index: number, initialState: any, onEdit: (item: Parse.Object<Parse.Attributes>) => void, onDelete: (item: Parse.Object<Parse.Attributes>) => void) => React.ReactNode | null;
   renderForm?: (initialValues: any, onClose?: () => void, refetch?: () => void) => React.ReactNode | null;
+  renderFormInline?: boolean;
   handleCreateNew: () => void;
   renderHeader?: () => React.ReactNode | null;
   filtersOwnRow?: boolean;
@@ -94,6 +95,13 @@ export interface FitlerTableProps {
     pageIndex: number,
   };
   fullHeight?: boolean;
+}
+
+enum ViewType {
+  Table = 'table',
+  Map = 'map',
+  Form = 'form',
+  List = 'list',
 }
 
 export const IndeterminateCheckbox = forwardRef(
@@ -217,6 +225,7 @@ export const FilterTable = (props: FitlerTableProps) => {
     renderRowCard,
     showFilters,
     renderForm,
+    renderFormInline,
     handleCreateNew,
     renderHeader,
     filtersOwnRow,
@@ -297,7 +306,7 @@ export const FilterTable = (props: FitlerTableProps) => {
   const [csvData, setCsvData] = useState<any>();
   const ImportModalState = useDisclosure();
   const FormState = useDisclosure();
-  const intialView = (renderRowCard) ? 'list' : 'table';
+  const intialView = (renderRowCard) ? ViewType.List : ViewType.Table;
   const [viewType, setViewType] = useState(intialView);
   const [rowEditable, setRowEditable] = useState<{ [key: string]: boolean }>({});
   const columns = useMemo(() => columnsData, [columnsData]);
@@ -496,6 +505,14 @@ export const FilterTable = (props: FitlerTableProps) => {
     return arrPageCount;
   };
 
+  const handleCreateClick = () => {
+    if (!renderFormInline) {
+      return renderForm ? FormState.onOpen() : handleCreateNew()
+    } else {
+      setViewType(ViewType.Form);
+    }
+  }
+
   return (
     <Box width={'100%'}>
       {renderHeader && <Box p="12px 5px">
@@ -622,7 +639,7 @@ export const FilterTable = (props: FitlerTableProps) => {
                         size={"sm"}
                         mx={'0.5rem'}
                         leftIcon={<AddIcon />}
-                        onClick={renderForm ? FormState.onOpen : handleCreateNew}
+                        onClick={handleCreateClick}
                       >
                         {`Add ${objectType}`}
                       </Button>}
@@ -649,12 +666,12 @@ export const FilterTable = (props: FitlerTableProps) => {
               id="table-container"
               direction={'row'}
             >
-              {renderMap && viewType === "map" && (
+              {renderMap && viewType === ViewType.Map && (
                 <Box width={'100%'}>
                   {renderMap(data)}
                 </Box>
               )}
-              {renderRowCard && viewType === "list" && (
+              {renderRowCard && viewType === ViewType.List && (
                 <Grid
                   width={"100%"}
                   gap={6}
@@ -669,7 +686,7 @@ export const FilterTable = (props: FitlerTableProps) => {
                     });
                     const handleEdit = () => {
                       setInitialValues(row.original);
-                      FormState.onOpen();
+                      handleCreateClick()
                     }
                     const handleDelete = () => {
                       const item = tableData.find(i => i.id === objectId);
@@ -698,7 +715,7 @@ export const FilterTable = (props: FitlerTableProps) => {
                   })}
                 </Grid>
               )}
-              {viewType === "table" && (
+              {viewType === ViewType.Table && (
                 <Flex
                   color="gray.500"
                   mb="24px"
@@ -882,6 +899,20 @@ export const FilterTable = (props: FitlerTableProps) => {
                   </Flex>
                 </Flex>
               )}
+              {viewType === ViewType.Form && (
+                <Flex direction={'row'} justifyContent={'center'} width={'100%'}>
+                  <Flex width={'780px'} py={6}>
+                    {renderForm(
+                      initialValues,
+                      () => {
+                        setViewType(ViewType.List);
+                        setInitialValues(undefined);
+                      },
+                      refetch,
+                    )}
+                  </Flex>
+                </Flex>
+              )}
             </Flex>)}
           {showFilters && (
             <Flex
@@ -993,7 +1024,7 @@ export const FilterTable = (props: FitlerTableProps) => {
         </Flex>
       </Box>
       {
-        renderForm && <FormDialog
+        renderForm && !renderFormInline && <FormDialog
           isOpen={FormState.isOpen}
           onClose={() => {
             FormState.onClose();

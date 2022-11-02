@@ -91,7 +91,7 @@ export const DatePickerField = ({ label, ...props }: any) => {
       <FormLabel
         color={meta.error ? 'red' : textColor}
         fontWeight="bold"
-        fontSize="xs"
+        fontSize={{ sm: 'xs', md: 'sm' }}
       >
         {label}
       </FormLabel>
@@ -106,7 +106,7 @@ export const DatePickerField = ({ label, ...props }: any) => {
           width={'100%'}
           textAlign={"center"}
           color={"red"}
-          fontSize="xs"
+          fontSize={{ sm: 'xs', md: 'sm' }}
           fontWeight="normal"
           mt={2}
         >

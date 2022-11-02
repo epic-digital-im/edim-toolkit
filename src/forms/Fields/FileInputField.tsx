@@ -124,8 +124,8 @@ export const FileUploader: React.FC<FileUploaderProps> = ({ name, file, onDelete
 
   const handleLoad = async () => {
     try {
-      const base64 = await resizeImage(file, 1024, 0.7);
-      const upload = new Parse.File(file.name, { base64 });
+      // const base64 = await resizeImage(file, 1024, 0.7);
+      const upload = new Parse.File(file.name, file);
       upload.addMetadata('attached', 'false');
       await upload.save();
       helpers.setValue(upload);
@@ -176,18 +176,24 @@ export const FileUploader: React.FC<FileUploaderProps> = ({ name, file, onDelete
   )
 }
 
+interface FileArray { name: string, file: File };
+
 export const FileInputField = ({ name, label, initialValue, ...props }: any) => {
   const [field, meta, helpers] = useField(name);
   const inputRef = useRef<HTMLInputElement>(null);
   const { textColor } = useColorPalette();
-  const [files, setFiles] = React.useState<File[]>([]);
+  const [files, setFiles] = React.useState<FileArray[]>([]);
 
   const handleChange = (event) => {
     const newFiles = event.target.files;
     const f = [...files];
     for (let i = 0; i < newFiles.length; i++) {
-      if (!files.find((file) => file.name === newFiles[i].name)) {
-        f.push(newFiles[i]);
+      const fileName = `${new Date().getTime()}_${newFiles[i].name}`;
+      if (!files.find(({ file, name }) => name === fileName)) {
+        f.push({
+          name: fileName,
+          file: newFiles[i],
+        });
       } else {
         console.warn('Duplicate file name', newFiles[i].name);
       }
@@ -218,7 +224,7 @@ export const FileInputField = ({ name, label, initialValue, ...props }: any) => 
       <FormLabel
         color={textColor}
         fontWeight="bold"
-        fontSize="xs">
+        fontSize={{ sm: 'xs', md: 'sm' }}>
         {label}
       </FormLabel>
       <Flex direction={'row'} wrap={'wrap'} py={3}>
@@ -233,7 +239,7 @@ export const FileInputField = ({ name, label, initialValue, ...props }: any) => 
             />
           )
         })}
-        {files.map((file: File, i) => (
+        {files.map(({ name, file }: FileArray, i) => (
           <FileUploader
             name={`upload_${i}`}
             key={i}

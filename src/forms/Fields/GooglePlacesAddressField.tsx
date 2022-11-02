@@ -91,18 +91,18 @@ export const GooglePlacesAddressField = ({ googleMapsApiKey, onChange, fieldPref
 
   return (
     <>
-      <FormControl position={'relative'} mb={'1.5rem'}>
+      <FormControl position={'relative'}>
         <FormLabel
           color={textColor}
           fontWeight="bold"
-          fontSize="xs"
+          fontSize={{ sm: 'xs', md: 'sm' }}
         >
           Address 1
         </FormLabel>
         <Input
           borderRadius="15px"
           placeholder="eg. Street 120"
-          fontSize="xs"
+          fontSize={{ sm: 'xs', md: 'sm' }}
           borderColor={addressLine1Meta.touched && addressLine1Meta.error ? "red.500" : "gray.300"}
           {...addressLine1Field}
           onChange={handleInputChange}
@@ -112,7 +112,7 @@ export const GooglePlacesAddressField = ({ googleMapsApiKey, onChange, fieldPref
             width={'100%'}
             textAlign={"center"}
             color={"red"}
-            fontSize="xs"
+            fontSize={{ sm: 'xs', md: 'sm' }}
             fontWeight="nxormal"
             mt={2}
           >
@@ -131,7 +131,7 @@ export const GooglePlacesAddressField = ({ googleMapsApiKey, onChange, fieldPref
           </Box>
         )}
         {error && (
-          <FormLabel width={'100%'} textAlign={"center"} color={"red"} fontSize="xs" fontWeight="nxormal" mt={2}>
+          <FormLabel width={'100%'} textAlign={"center"} color={"red"} fontSize={{ sm: 'xs', md: 'sm' }} fontWeight="nxormal" mt={1.5}>
             {error}
           </FormLabel>
         )}
@@ -140,14 +140,14 @@ export const GooglePlacesAddressField = ({ googleMapsApiKey, onChange, fieldPref
         <FormLabel
           color={textColor}
           fontWeight="bold"
-          fontSize="xs"
+          fontSize={{ sm: 'xs', md: 'sm' }}
         >
           Address 2
         </FormLabel>
         <Input
           borderRadius="15px"
           placeholder="eg. Street 220"
-          fontSize="xs"
+          fontSize={{ sm: 'xs', md: 'sm' }}
           borderColor={addressLine2Meta.touched && addressLine2Meta.error ? "red.500" : "gray.300"}
           {...addressLine2Field}
         />
@@ -156,7 +156,7 @@ export const GooglePlacesAddressField = ({ googleMapsApiKey, onChange, fieldPref
             width={'100%'}
             textAlign={"center"}
             color={"red"}
-            fontSize="xs"
+            fontSize={{ sm: 'xs', md: 'sm' }}
             fontWeight="nxormal"
             mt={2}
           >
@@ -173,13 +173,13 @@ export const GooglePlacesAddressField = ({ googleMapsApiKey, onChange, fieldPref
             <FormLabel
               color={textColor}
               fontWeight="bold"
-              fontSize="xs"
+              fontSize={{ sm: 'xs', md: 'sm' }}
             >
               City
             </FormLabel>
             <Input
               borderRadius="15px"
-              fontSize="xs"
+              fontSize={{ sm: 'xs', md: 'sm' }}
               borderColor={cityMeta.touched && cityMeta.error ? "red.500" : "gray.300"}
               {...cityField}
             />
@@ -188,7 +188,7 @@ export const GooglePlacesAddressField = ({ googleMapsApiKey, onChange, fieldPref
                 width={'100%'}
                 textAlign={"center"}
                 color={"red"}
-                fontSize="xs"
+                fontSize={{ sm: 'xs', md: 'sm' }}
                 fontWeight="nxormal"
                 mt={2}
               >
@@ -202,13 +202,13 @@ export const GooglePlacesAddressField = ({ googleMapsApiKey, onChange, fieldPref
             <FormLabel
               color={textColor}
               fontWeight="bold"
-              fontSize="xs"
+              fontSize={{ sm: 'xs', md: 'sm' }}
             >
               State
             </FormLabel>
             <Input
               borderRadius="15px"
-              fontSize="xs"
+              fontSize={{ sm: 'xs', md: 'sm' }}
               borderColor={stateMeta.touched && stateMeta.error ? "red.500" : "gray.300"}
               {...stateField}
             />
@@ -217,7 +217,7 @@ export const GooglePlacesAddressField = ({ googleMapsApiKey, onChange, fieldPref
                 width={'100%'}
                 textAlign={"center"}
                 color={"red"}
-                fontSize="xs"
+                fontSize={{ sm: 'xs', md: 'sm' }}
                 fontWeight="nxormal"
                 mt={2}
               >
@@ -231,13 +231,13 @@ export const GooglePlacesAddressField = ({ googleMapsApiKey, onChange, fieldPref
             <FormLabel
               color={textColor}
               fontWeight="bold"
-              fontSize="xs"
+              fontSize={{ sm: 'xs', md: 'sm' }}
             >
               ZIP
             </FormLabel>
             <Input
               borderRadius="15px"
-              fontSize="xs"
+              fontSize={{ sm: 'xs', md: 'sm' }}
               borderColor={zipMeta.touched && zipMeta.error ? "red.500" : "gray.300"}
               {...zipField}
             />
@@ -246,7 +246,7 @@ export const GooglePlacesAddressField = ({ googleMapsApiKey, onChange, fieldPref
                 width={'100%'}
                 textAlign={"center"}
                 color={"red"}
-                fontSize="xs"
+                fontSize={{ sm: 'xs', md: 'sm' }}
                 fontWeight="nxormal"
                 mt={2}
               >
@@ -260,13 +260,13 @@ export const GooglePlacesAddressField = ({ googleMapsApiKey, onChange, fieldPref
             <FormLabel
               color={textColor}
               fontWeight="bold"
-              fontSize="xs"
+              fontSize={{ sm: 'xs', md: 'sm' }}
             >
               Coutry
             </FormLabel>
             <Input
               borderRadius="15px"
-              fontSize="xs"
+              fontSize={{ sm: 'xs', md: 'sm' }}
               borderColor={countryMeta.touched && countryMeta.error ? "red.500" : "gray.300"}
               {...countryField}
             />
@@ -275,7 +275,7 @@ export const GooglePlacesAddressField = ({ googleMapsApiKey, onChange, fieldPref
                 width={'100%'}
                 textAlign={"center"}
                 color={"red"}
-                fontSize="xs"
+                fontSize={{ sm: 'xs', md: 'sm' }}
                 fontWeight="nxormal"
                 mt={2}
               >

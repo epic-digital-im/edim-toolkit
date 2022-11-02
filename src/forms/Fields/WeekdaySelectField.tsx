@@ -26,13 +26,13 @@ export const WeekdaySelectField = ({ label, ...props }: any) => {
       <FormLabel
         color={textColor}
         fontWeight="bold"
-        fontSize="xs"
+        fontSize={{ sm: 'xs', md: 'sm' }}
       >
         {label}
       </FormLabel>
       <Select
         borderRadius="15px"
-        fontSize="xs"
+        fontSize={{ sm: 'xs', md: 'sm' }}
         borderColor={meta.error ? inputBorderError : inputBorder}
         {...field}
       >
@@ -47,7 +47,7 @@ export const WeekdaySelectField = ({ label, ...props }: any) => {
           width={'100%'}
           textAlign={"center"}
           color={"red"}
-          fontSize="xs"
+          fontSize={{ sm: 'xs', md: 'sm' }}
           fontWeight="normal"
           mt={2}
         >

@@ -98,7 +98,7 @@ export const DateRagePickerField = ({ label, orientation, ...props }: any) => {
       <FormLabel
         color={meta.error ? 'red' : textColor}
         fontWeight="bold"
-        fontSize="xs"
+        fontSize={{ sm: 'xs', md: 'sm' }}
       >
         {label}
       </FormLabel>
@@ -113,7 +113,7 @@ export const DateRagePickerField = ({ label, orientation, ...props }: any) => {
           width={'100%'}
           textAlign={"center"}
           color={"red"}
-          fontSize="xs"
+          fontSize={{ sm: 'xs', md: 'sm' }}
           fontWeight="normal"
           mt={2}
         >

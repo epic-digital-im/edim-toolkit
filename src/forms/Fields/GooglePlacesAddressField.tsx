@@ -136,7 +136,7 @@ export const GooglePlacesAddressField = ({ googleMapsApiKey, onChange, fieldPref
           </FormLabel>
         )}
       </FormControl>
-      <FormControl mb={'1.5rem'}>
+      <FormControl my={'1.5rem'}>
         <FormLabel
           color={textColor}
           fontWeight="bold"

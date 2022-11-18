@@ -21,6 +21,8 @@
     "client:local": "tsc --watch",
     "start:local": "tsc --watch",
     "start:client": "tsc --watch",
+    "start:client:runner": "tsc --watch",
+    "start:client:customer": "tsc --watch",
     "test": "jest"
   },
   "license": "ISC",

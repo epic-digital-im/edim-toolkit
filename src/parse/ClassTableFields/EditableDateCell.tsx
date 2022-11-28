@@ -13,7 +13,7 @@ export const EditableDateCell = ({ cell, row: { original }, column, rowEditable,
       <ToggleEditWrapper
         width={'100%'}
         textAlign={textAlign || 'center'}
-        value={d.toLocaleDateString && d.toLocaleDateString() || d}
+        value={d.toISOString().split('T')[0]}
         rowEditable={rowEditable}
         setRowEditable={setRowEditable}
         editable={editable}

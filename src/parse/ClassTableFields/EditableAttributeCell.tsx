@@ -1,7 +1,7 @@
 import Parse from 'parse/dist/parse.min.js';
 import React, { useState, useEffect } from "react";
 import { ClassNames } from "@app/shared/types";
-import { Attribute } from "@app/shared/parse-types";
+import { Attribute, AttributeAttributes } from "@app/shared/parse-types";
 
 import ClassSearchSelect from '../../components/Selectors/ClassSearchSelect';
 import DiscussionButton from '../../components/Buttons/DiscussionButton';
@@ -15,6 +15,7 @@ export interface EditableAttributeCellProps {
   isMulti?: boolean;
   isClearable?: boolean;
   editable?: boolean;
+  attributes?: AttributeAttributes[];
 }
 
 export const EditableAttributeCell = ({
@@ -24,6 +25,7 @@ export const EditableAttributeCell = ({
   labelGetter,
   isMulti,
   isClearable,
+  attributes,
 }: EditableAttributeCellProps) => ({
   rowEditable,
   setRowEditable,

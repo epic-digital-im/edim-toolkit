@@ -186,6 +186,13 @@ export const RelationPropUpdater = (props: ParsePropUpdaterProps): ReactElement 
   const toast = useToast();
   const { valueGetter, labelGetter } = getters(props.objectClass);
   const { label, object, property, objectClass, ...rest } = props;
+
+  console.log({
+    object,
+    property,
+    value: object.get(property),
+  })
+
   const [initialData, setInitialData] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const valueRef = React.useRef<any>();
@@ -225,13 +232,14 @@ export const RelationPropUpdater = (props: ParsePropUpdaterProps): ReactElement 
     console.log('handleUndo', op, valueRef.current);
     if (valueRef.current) {
       setIsLoading(true);
-      const relation = object.get(property);
+      const obj = await object.fetch();
+      const relation = obj.get(property);
       if (op === 'add') {
         await relation.remove(valueRef.current);
       } else if (op === 'remove') {
         await relation.add(valueRef.current);
       }
-      await object.save();
+      await obj.save();
       setIsLoading(false);
       toast({
         title: `${property} reverted.`,
@@ -247,10 +255,11 @@ export const RelationPropUpdater = (props: ParsePropUpdaterProps): ReactElement 
   const handleUpdate = async (value: any) => {
     valueRef.current = value;
     setIsLoading(true);
+    const obj = await object.fetch();
     if (value[0] !== undefined) {
-      object.relation(property).add(value);
+      obj.relation(property).add(value);
     }
-    await object.save();
+    await obj.save();
     await updateInitialData();
     setIsLoading(false);
     toast({

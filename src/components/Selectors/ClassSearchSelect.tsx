@@ -254,7 +254,7 @@ const ClassSearchSelect = (props: ClassSearchSelectProps) => {
       width: '100%',
       backgroundColor: bgColor,
       color: textColor,
-      height: 38,
+      height: '100%',
     }),
     control: (provided) => ({
       ...provided,

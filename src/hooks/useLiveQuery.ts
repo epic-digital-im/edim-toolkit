@@ -1,6 +1,11 @@
 import React, { useRef, useEffect } from "react";
-import Parse from 'parse/dist/parse.min.js';
-import { useQuery, useQueryClient, UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
+import Parse from "parse/dist/parse.min.js";
+import {
+  useQuery,
+  useQueryClient,
+  UseQueryOptions,
+  UseQueryResult,
+} from "@tanstack/react-query";
 
 interface Filter {
   method: string;
@@ -12,7 +17,12 @@ export interface ParseLiveQueryOptions {
   initialState?: any;
   objectClass?: string;
   objectId: string;
-  options?: Omit<UseQueryOptions<unknown, unknown, unknown, string>, "queryKey" | "queryFn"> | undefined;
+  options?:
+    | Omit<
+        UseQueryOptions<unknown, unknown, unknown, string>,
+        "queryKey" | "queryFn"
+      >
+    | undefined;
   include?: string[];
   isLive?: boolean;
 }
@@ -23,10 +33,10 @@ export const useLiveQuery = ({
   objectId,
   options,
   include,
-  isLive
+  isLive,
 }: ParseLiveQueryOptions): UseQueryResult<any> => {
   const o = options || {};
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const sub = useRef<Parse.LiveQuerySubscription | undefined>();
 
   const queryKey = initialState ? initialState.id : objectId;
@@ -41,40 +51,36 @@ export const useLiveQuery = ({
 
   const fetchObject = async () => {
     if (initialState) return initialState;
-    return ParseQuery.get(objectId)
-  }
+    return ParseQuery.get(objectId);
+  };
 
   const queryOptions = {
     enabled: Boolean(queryKey),
+    refetchOnWindowFocus: false,
     ...o,
-  }
+  };
 
   if (isLive) {
     queryOptions.staleTime = Infinity;
-    queryOptions.refetchOnWindowFocus = false;
   }
 
   const qk = [queryKey, { include }];
 
-  const query = useQuery(
-    qk,
-    () => fetchObject(),
-    queryOptions,
-  )
+  const query = useQuery(qk, () => fetchObject(), queryOptions);
 
   useEffect(() => {
     const subscribe = async () => {
       if (!sub.current) {
         const subscription = await ParseQuery.subscribe();
-        subscription.on('create', (item) => {
+        subscription.on("create", (item) => {
           // console.log('create', item);
           queryClient.setQueriesData(qk, item);
         });
-        subscription.on('update', (item) => {
+        subscription.on("update", (item) => {
           // console.log('update', item.id);
-          queryClient.setQueriesData(qk, item)
+          queryClient.setQueriesData(qk, item);
         });
-        subscription.on('delete', (item) => {
+        subscription.on("delete", (item) => {
           // console.log('delete', item.id);
           queryClient.removeQueries(qk);
         });
@@ -82,7 +88,7 @@ export const useLiveQuery = ({
       } else {
         // console.log(sub.current.id)
       }
-    }
+    };
     if (isLive) {
       subscribe();
     }
@@ -90,22 +96,28 @@ export const useLiveQuery = ({
       if (sub.current) {
         sub.current?.unsubscribe();
       }
-    }
-  }, [])
-  return query
-}
+    };
+  }, []);
+  return query;
+};
 
 export interface LiveCollectionQueryOptions {
   objectClass: string;
-  options?: Omit<UseQueryOptions<unknown, unknown, unknown, string>, "queryKey" | "queryFn"> | undefined;
+  options?:
+    | Omit<
+        UseQueryOptions<unknown, unknown, unknown, string>,
+        "queryKey" | "queryFn"
+      >
+    | undefined;
   include?: string[];
   filter?: Filter[];
-  ascending?: string,
-  descending?: string,
+  ascending?: string;
+  descending?: string;
   isLive?: boolean;
   isLongPolling?: boolean;
   queryKey?: any[];
   query?: Parse.Query<Parse.Object<any>>;
+  queryFn?: () => any | undefined;
   findAll?: boolean;
 }
 
@@ -120,6 +132,7 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
     isLive,
     isLongPolling,
     query,
+    queryFn,
     findAll,
   } = props;
 
@@ -128,7 +141,7 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
   }
 
   const o = options || {};
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const sub = useRef<Parse.LiveQuerySubscription | undefined>();
   const ParseQuery = query || new Parse.Query(objectClass);
 
@@ -154,11 +167,11 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
 
   const fetchCollection = async () => {
     if (!findAll || ascending) {
-      return ParseQuery.find()
+      return ParseQuery.find();
     } else {
-      return ParseQuery.findAll()
+      return ParseQuery.findAll();
     }
-  }
+  };
 
   const queryKey = props.queryKey || [
     objectClass,
@@ -167,16 +180,16 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
       ascending,
       filter,
       include,
-    }
-  ]
+    },
+  ];
 
   const queryOptions = {
-    ...o
-  }
+    refetchOnWindowFocus: false,
+    ...o,
+  };
 
   if (isLive || isLongPolling) {
     queryOptions.staleTime = Infinity;
-    queryOptions.refetchOnWindowFocus = false;
   }
 
   if (isLongPolling) {
@@ -185,8 +198,8 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
 
   const q = useQuery(
     queryKey,
-    () => fetchCollection(),
-    queryOptions,
+    () => (queryFn ? queryFn() : fetchCollection()),
+    queryOptions
   );
 
   useEffect(() => {
@@ -194,7 +207,7 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
       if (!sub.current) {
         try {
           const subscription = await ParseQuery.subscribe();
-          subscription.on('create', (item) => {
+          subscription.on("create", (item) => {
             queryClient.setQueriesData(queryKey, (oldData) => {
               if (Array.isArray(oldData)) {
                 return [...oldData, item];
@@ -202,16 +215,17 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
               return [item];
             });
           });
-          subscription.on('update', (item) => {
+          subscription.on("update", (item) => {
             queryClient.setQueriesData(queryKey, (oldData) => {
-              const update = (oldItem: any) => oldItem.id === item.id ? item : oldItem;
+              const update = (oldItem: any) =>
+                oldItem.id === item.id ? item : oldItem;
               if (Array.isArray(oldData)) {
                 return oldData.map(update);
               }
               return item;
-            })
+            });
           });
-          subscription.on('delete', (item) => {
+          subscription.on("delete", (item) => {
             queryClient.setQueriesData(queryKey, (oldData) => {
               const update = (oldItem: any) => oldItem.id !== item.id;
               if (Array.isArray(oldData)) {
@@ -220,8 +234,8 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
               return [];
             });
           });
-          subscription.on('open', console.log);
-          subscription.on('close', console.log);
+          subscription.on("open", console.log);
+          subscription.on("close", console.log);
           sub.current = subscription;
         } catch (err) {
           console.log(err);
@@ -229,15 +243,15 @@ export const useLiveCollectionQuery = (props: LiveCollectionQueryOptions) => {
       } else {
         console.log(sub.current.id);
       }
-    }
+    };
     if (isLive) {
       subscribe();
     }
     return () => {
       sub.current?.unsubscribe();
-    }
-  }, [])
+    };
+  }, []);
   return q;
-}
+};
 
 export default useLiveQuery;

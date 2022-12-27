@@ -1,15 +1,15 @@
-import Parse from 'parse/dist/parse.min.js';
+import Parse from "parse/dist/parse.min.js";
 import React, { useMemo } from "react";
 
 import Card from "../components/Card/Card";
 import CardBody from "../components/Card/CardBody";
 import CardHeader from "../components/Card/CardHeader";
 
-import { FilterTable } from './FilterTable';
+import { FilterTable, ViewType } from "./FilterTable";
 
-import { ParseCollectionLiveQuery } from '../hoc/ParseLiveQuery';
+import { ParseCollectionLiveQuery } from "../hoc/ParseLiveQuery";
 
-import getters from '@app/shared/utils/getters'
+import getters from "@app/shared/utils/getters";
 
 export interface ClassTableProps {
   history: any;
@@ -19,13 +19,24 @@ export interface ClassTableProps {
   initialState?: any | undefined;
   showFilters?: boolean | undefined;
   title?: string | undefined;
-  renderRowCard?: (row: any, index: number, initialState: any, onEdit: (item: Parse.Object<Parse.Attributes>) => void, onDelete: (item: Parse.Object<Parse.Attributes>) => void) => React.ReactNode | undefined;
-  renderForm?: (initialValues: any, onClose?: () => void, refetch?: () => void) => React.ReactNode | undefined;
+  renderRowCard?: (
+    row: any,
+    index: number,
+    initialState: any,
+    onEdit: (item: Parse.Object<Parse.Attributes>) => void,
+    onDelete: (item: Parse.Object<Parse.Attributes>) => void
+  ) => React.ReactNode | undefined;
+  renderForm?: (
+    initialValues: any,
+    onClose?: () => void,
+    refetch?: () => void
+  ) => React.ReactNode | undefined;
   renderHeader?: () => React.ReactNode | undefined;
   renderFilters?: () => React.ReactNode | undefined;
   renderMap?: () => React.ReactNode | undefined;
   query?: Parse.Query | undefined;
   queryKey?: any[] | undefined;
+  queryFn?: () => any | undefined;
   isAdmin?: boolean | undefined;
   isPropertyDetail?: boolean | undefined;
   findAll?: boolean | undefined;
@@ -38,14 +49,15 @@ export interface ClassTableProps {
   filter?: any | undefined;
   exportData?: () => void;
   handleCreateNew?: (props: { refetch: () => void }) => () => Promise<any>;
+  intialView?: ViewType;
 }
 
 export const ClassTable: React.FC<ClassTableProps> = (props) => {
-
   const {
     objectClass,
     renderHeader,
     query,
+    queryFn,
     queryKey,
     findAll,
     initialState,
@@ -63,6 +75,7 @@ export const ClassTable: React.FC<ClassTableProps> = (props) => {
   return (
     <ParseCollectionLiveQuery
       objectClass={objectClass}
+      queryFn={queryFn}
       query={query}
       queryKey={queryKey}
       findAll={findAll}
@@ -75,13 +88,12 @@ export const ClassTable: React.FC<ClassTableProps> = (props) => {
       }}
     >
       {({ data, isLoading, refetch, isError }) => {
-
         const handleCreateNew = async () => {
           const item = new Parse.Object(objectClass);
-          item.set(getter.prop, 'New Item');
+          item.set(getter.prop, "New Item");
           await item.save();
           refetch();
-        }
+        };
 
         const tableData = useMemo(() => {
           if (isLoading) return [];
@@ -103,16 +115,16 @@ export const ClassTable: React.FC<ClassTableProps> = (props) => {
             return {
               ...raw,
               _object: item,
-            }
+            };
           });
           return tableData;
         }, [queryKey, data, dupes]);
 
         return (
           <Card p="0">
-            {renderHeader && <CardHeader p="12px 5px">
-              {renderHeader()}
-            </CardHeader>}
+            {renderHeader && (
+              <CardHeader p="12px 5px">{renderHeader()}</CardHeader>
+            )}
             <CardBody pb="1.5rem">
               <FilterTable
                 {...tableProps}
@@ -123,12 +135,17 @@ export const ClassTable: React.FC<ClassTableProps> = (props) => {
                 refetch={refetch}
                 objectType={objectClass}
                 exportData={exportData}
-                handleCreateNew={props.handleCreateNew ? props.handleCreateNew({ refetch }) : handleCreateNew}
+                handleCreateNew={
+                  props.handleCreateNew
+                    ? props.handleCreateNew({ refetch })
+                    : handleCreateNew
+                }
+                intialView={props?.intialView}
               />
             </CardBody>
           </Card>
-        )
+        );
       }}
     </ParseCollectionLiveQuery>
   );
-}
+};

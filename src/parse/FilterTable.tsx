@@ -95,9 +95,10 @@ export interface FitlerTableProps {
     pageIndex: number,
   };
   fullHeight?: boolean;
+  intialView?: ViewType;
 }
 
-enum ViewType {
+export enum ViewType {
   Table = 'table',
   Map = 'map',
   Form = 'form',
@@ -306,8 +307,9 @@ export const FilterTable = (props: FitlerTableProps) => {
   const [csvData, setCsvData] = useState<any>();
   const ImportModalState = useDisclosure();
   const FormState = useDisclosure();
+
   const intialView = (renderRowCard) ? ViewType.List : ViewType.Table;
-  const [viewType, setViewType] = useState(intialView);
+  const [viewType, setViewType] = useState(props.intialView || intialView);
   const [rowEditable, setRowEditable] = useState<{ [key: string]: boolean }>({});
   const columns = useMemo(() => columnsData, [columnsData]);
 

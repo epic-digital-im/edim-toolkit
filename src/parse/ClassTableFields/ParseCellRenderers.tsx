@@ -56,10 +56,7 @@ export const RelationButtonRenderer = (props: any) => {
 
   const label = abbrevString(objectData.name, 30);
 
-  const detailLink = (isAdmin)
-    ? `/admin/${classRoute}/${objectData.objectId}`
-    : `/customer/${classRoute}/${objectData.objectId}`
-
+  const detailLink = `/${classRoute}/${objectData.objectId}`;
 
   return (isPropertyDetail)
     ? (
